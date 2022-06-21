@@ -1,0 +1,7 @@
+include: "rules/common.smk"
+include: "rules/normalise.smk"
+include: "rules/annotate.smk"
+include: "rules/misc.smk"
+
+rule all:
+    input: expand("results/{sample}/{sample}.scout-annotated.vcf.gz", sample=samples["sample"])

@@ -1,0 +1,6 @@
+*.pyc
+.snakemake/
+
+data/
+results/
+venv/
