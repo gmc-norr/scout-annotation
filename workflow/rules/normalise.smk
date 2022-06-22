@@ -1,6 +1,6 @@
 rule decompose:
     input:
-        vcf=lambda wc: get_vcf_file(wc.sample)
+        vcf=get_vcf_file
     output:
         vcf=temp("results/{sample}/{sample}.decomposed.vcf")
     log: "results/{sample}/{sample}.decomposed.log"
