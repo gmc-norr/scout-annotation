@@ -5,4 +5,4 @@ include: "rules/ped.smk"
 include: "rules/misc.smk"
 
 rule all:
-    input: expand("results/{sample}/{sample}.scout-annotated.vcf.gz", sample=samples["sample"])
+    input: outfiles

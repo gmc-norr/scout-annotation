@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from pathlib import Path
 import yaml
@@ -18,9 +19,29 @@ def get_vcf_file(wildcards):
 
 def get_ped(wildcards):
     ped = samples[samples["sample"] == wildcards.sample]["ped"].values
-    print(ped, wildcards)
     assert len(ped) == 1
     if not ped[0]:
-        print(ped)
         return ped
-    return "results/{sample}/{sample}.ped".format(**wildcards)
+    return "mock_ped/{sample}.ped".format(**wildcards)
+
+def get_result_files():
+    infiles = []
+    outfiles = []
+    for s, p in zip(samples["sample"], samples["ped"]):
+        infiles.append(f"annotation/{s}/{s}.decomposed.vep.annovar.genmod.vcf.gz")
+        outfiles.append(f"results/{s}/{s}.scout-annotated.vcf.gz")
+
+        infiles.append(f"annotation/{s}/{s}.decomposed.vep.annovar.genmod.vcf.gz.tbi")
+        outfiles.append(f"results/{s}/{s}.scout-annotated.vcf.gz.tbi")
+
+        if isinstance(p, str) and len(p) > 0:
+            infiles.append(p)
+        else:
+            infiles.append(f"mock_ped/{s}.ped")
+        outfiles.append(f"results/{s}/{s}.ped")
+    return infiles, outfiles
+
+infiles, outfiles = get_result_files()
+
+# for inf, outf in zip(infiles, outfiles):
+#     print(inf, ":", outf)

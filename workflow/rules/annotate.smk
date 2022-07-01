@@ -1,15 +1,15 @@
 rule vep:
     input:
-        vcf="results/{sample}/{sample}.decomposed.vcf.gz",
-        tabix="results/{sample}/{sample}.decomposed.vcf.gz.tbi",
+        vcf="decompose/{sample}/{sample}.decomposed.vcf.gz",
+        tabix="decompose/{sample}/{sample}.decomposed.vcf.gz.tbi",
         fasta=config["reference"]["fasta"],
         cache=config["vep"]["cache"],
         plugin=config["vep"]["plugin"],
         plugin_data=config["vep"]["plugin-data"],
         swegen=config["vep"]["swegen"]
     output:
-        vcf="results/{sample}/{sample}.decomposed.vep.vcf"
-    log: "results/{sample}/{sample}.decomposed.vep.log"
+        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.vcf")
+    log: "annotation/{sample}/{sample}.decomposed.vep.log"
     params:
         mode=config.get("vep", {}).get("mode", ""),
         cache_type=config.get("vep", {}).get("cache_type", "merged")
@@ -68,14 +68,14 @@ rule vep:
 
 rule annovar:
     input:
-        vcf="results/{sample}/{sample}.decomposed.vep.vcf"
+        vcf="annotation/{sample}/{sample}.decomposed.vep.vcf"
     output:
-        vcf="results/{sample}/{sample}.decomposed.vep.annovar.hg19_multianno.vcf",
-        txt="results/{sample}/{sample}.decomposed.vep.annovar.hg19_multianno.txt",
-        avinput="results/{sample}/{sample}.decomposed.vep.annovar.avinput",
-    log: "results/{sample}/{sample}.decomposed.vep.annovar.log"
+        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.annovar.hg19_multianno.vcf"),
+        txt=temp("annotation/{sample}/{sample}.decomposed.vep.annovar.hg19_multianno.txt"),
+        avinput=temp("annotation/{sample}/{sample}.decomposed.vep.annovar.avinput"),
+    log: "annotation/{sample}/{sample}.decomposed.vep.annovar.log"
     params:
-        prefix="results/{sample}/{sample}.decomposed.vep.annovar"
+        prefix="annotation/{sample}/{sample}.decomposed.vep.annovar"
     shell:
         """
         /usr/local/bin/annovar/table_annovar.pl \\
@@ -93,11 +93,11 @@ rule annovar:
 
 rule genmod:
     input:
-        vcf="results/{sample}/{sample}.decomposed.vep.annovar.hg19_multianno.vcf",
+        vcf="annotation/{sample}/{sample}.decomposed.vep.annovar.hg19_multianno.vcf",
         ped=get_ped,
         rank_model=config["genmod"]["rank_model"]
     output:
-        vcf="results/{sample}/{sample}.decomposed.vep.annovar.genmod.vcf"
+        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.annovar.genmod.vcf")
     conda: "../env/genmod.yaml"
     shell:
         """

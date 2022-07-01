@@ -2,8 +2,8 @@ rule decompose:
     input:
         vcf=get_vcf_file
     output:
-        vcf=temp("results/{sample}/{sample}.decomposed.vcf")
-    log: "results/{sample}/{sample}.decomposed.log"
+        vcf=temp("decompose/{sample}/{sample}.decomposed.vcf")
+    log: "decompose/{sample}/{sample}.decomposed.log"
     container: config.get("decompose", {}).get("container", config["default_container"])
     shell:
         """
