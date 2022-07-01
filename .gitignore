@@ -1,6 +1,11 @@
+.vscode
+
 *.pyc
 .snakemake/
 
-data/
+annotation/
+./data/
+decompose/
+mock_ped/
 results/
 venv/
