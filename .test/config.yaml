@@ -1,0 +1,28 @@
+samples: "samples.tsv"
+resources: "resources.yaml"
+
+default_container: ""
+
+reference:
+  fasta: /storage/userdata/references/homo_sapiens/hg19/fasta/hg19.fa.gz
+
+decompose:
+  container: docker://hydragenetics/vt:2015.11.10
+
+bgzip:
+  container: docker://hydragenetics/common:0.1.1
+
+tabix:
+  container: docker://hydragenetics/common:0.1.1
+
+vep:
+  container: docker://hydragenetics/vep:105
+  cache: /storage/userdata/references/homo_sapiens/vep/vep_data_105
+  cache_type: merged
+  plugin: /storage/userdata/references/homo_sapiens/vep/vep_data_105/plugins
+  plugin-data: /storage/userdata/references/homo_sapiens/vep/vep_data_100/hg19
+  swegen: /storage/userdata/references/homo_sapiens/hg19/index/swegen_20180409/anon-SweGen_STR_NSPHS_1000samples_SNV_hg19.vcf.gz
+  mode: --offline --cache
+
+genmod:
+  rank_model: ../config/rank_score_model_rare_disease.ini

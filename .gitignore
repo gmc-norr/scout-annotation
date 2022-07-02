@@ -1,10 +1,11 @@
 .vscode
+*.swp
 
 *.pyc
 .snakemake/
 
 annotation/
-./data/
+/data/
 decompose/
 mock_ped/
 results/
