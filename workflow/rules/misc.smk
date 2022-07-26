@@ -5,7 +5,6 @@ rule copy_results:
         import subprocess
 
         for infile, outfile in zip(input, output):
-            print(f"copying {infile} to {outfile}")
             subprocess.run([
                 "cp", infile, outfile
             ], shell=False, check=True)
