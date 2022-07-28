@@ -25,4 +25,5 @@ vep:
   mode: --offline --cache
 
 genmod:
+  container: docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0
   rank_model: config/rank_score_model_rare_disease.ini

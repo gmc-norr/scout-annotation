@@ -98,6 +98,7 @@ rule genmod:
         rank_model=config["genmod"]["rank_model"]
     output:
         vcf=temp("annotation/{sample}/{sample}.decomposed.vep.annovar.genmod.vcf")
+    container: config.get("genmod", {}).get("container", config["default_container"])
     conda: "../env/genmod.yaml"
     shell:
         """

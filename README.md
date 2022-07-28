@@ -19,7 +19,6 @@ snakemake \
     -s ../workflow/Snakefile \
     -c 1 \
     --use-singularity \
-    --singularity-args "--bind /storage" \
-    --use-conda \
+    --singularity-args "--bind /storage --bind $(realpath ..)" \
     --configfile config.yaml
 ```
