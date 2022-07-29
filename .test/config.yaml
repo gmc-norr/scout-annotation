@@ -1,6 +1,10 @@
 samples: "samples.tsv"
 resources: "resources.yaml"
 
+genome_build: "37"
+rank_model_version: "1.26"
+scout_owner: "clingen"
+
 default_container: ""
 
 reference:

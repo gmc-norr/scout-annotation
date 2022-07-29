@@ -2,7 +2,8 @@ include: "rules/common.smk"
 include: "rules/normalise.smk"
 include: "rules/annotate.smk"
 include: "rules/ped.smk"
+include: "rules/scout_load_config.smk"
 include: "rules/misc.smk"
 
 rule all:
-    input: outfiles
+    input: outfiles, load_configs
