@@ -95,7 +95,7 @@ rule genmod:
     input:
         vcf="annotation/{sample}/{sample}.decomposed.vep.annovar.hg19_multianno.vcf",
         ped=get_ped,
-        rank_model=config["genmod"]["rank_model"]
+        rank_model=get_rank_model
     output:
         vcf=temp("annotation/{sample}/{sample}.decomposed.vep.annovar.genmod.vcf")
     container: config.get("genmod", {}).get("container", config["default_container"])
@@ -116,4 +116,17 @@ rule genmod:
         genmod compound \\
             --vep \\
             - > {output.vcf}
+        """
+
+rule genmod_rankmodel:
+    output:
+        rank_model="rank_model/{type}_rank_model_v{version}.ini",
+    params:
+        uri=lambda wc: config["genmod"][f"{wc.type}_rank_model_uri"].format(version=wc.version),
+        filename=lambda wc: f"{wc.type}_rank_model_v{wc.version}.ini"
+    log: "rank_model/{type}_rank_model_v{version}.log"
+    shell:
+        """
+        echo "fetching {params.uri}" > {log}
+        curl -fsSL {params.uri} > {output.rank_model} 2>> {log}
         """

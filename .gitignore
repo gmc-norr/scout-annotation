@@ -8,5 +8,6 @@ annotation/
 /data/
 decompose/
 mock_ped/
+rank_model/
 results/
 venv/

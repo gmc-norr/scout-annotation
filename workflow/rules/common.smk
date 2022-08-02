@@ -52,6 +52,12 @@ def get_vcf_samples(wildcards):
     assert len(samples) == 1
     return samples[0]
 
+def get_rank_model(wildcards):
+    sample_track = get_track(wildcards)
+    # TODO: set this up for cancer and structural variants
+    version = config["genmod"]["rd_rank_model_version"]
+    return f"rank_model/rd_rank_model_v{version}.ini"
+
 def get_result_files():
     infiles = []
     outfiles = []
