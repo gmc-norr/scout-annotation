@@ -6,7 +6,8 @@ rule vep:
         cache=config["vep"]["cache"],
         plugin=config["vep"]["plugin"],
         plugin_data=config["vep"]["plugin-data"],
-        swegen=config["vep"]["swegen"]
+        swegen=config["vep"]["swegen"],
+        clinvar=config["vep"]["clinvar"]
     output:
         vcf=temp("annotation/{sample}/{sample}.decomposed.vep.vcf")
     log: "annotation/{sample}/{sample}.decomposed.vep.log"
@@ -23,12 +24,12 @@ rule vep:
             --vcf \\
             --assembly GRCh37 \\
             --dir_plugins {input.plugin} \\
-            --plugin CADD,{input.plugin_data}/cadd_data/cadd/hg19/whole_genome_SNVs.tsv.gz,{input.plugin_data}/cadd_data/cadd/hg19/InDels.tsv.gz \\
-            --plugin LoFtool,{input.plugin_data}/loftool_data/LoFtool_scores.txt \\
-            --plugin MaxEntScan,{input.plugin_data}/maxEntScan,SWA,NCS \\
-            --plugin REVEL,{input.plugin_data}/revel/new_tabbed_revel.tsv.gz \\
-            --plugin dbNSFP,{input.plugin_data}/dbNSFP/dbNSFP3.5a_hg19.gz,GERP++_RS,phastCons100way_vertebrate,phyloP100way_vertebrate \\
-            --custom {input.plugin_data}/clinvar/hg19/clinvar.vcf.gz,ClinVar,vcf,exact,0,CLNSIG,CLNREVSTAT \\
+            --plugin CADD,{input.plugin_data}/CADD_1.6/whole_genome_SNVs.tsv.gz,{input.plugin_data}/CADD_1.6/InDels.tsv.gz \\
+            --plugin LoFtool,{input.plugin_data}/LoFtool/LoFtool_scores.txt \\
+            --plugin MaxEntScan,{input.plugin_data}/MaxEntScan,SWA,NCS \\
+            --plugin REVEL,{input.plugin_data}/revel_1.3/new_tabbed_revel.tsv.gz \\
+            --plugin dbNSFP,{input.plugin_data}/dbNSFP_4.1a/dbNSFP4.1a_grch37.gz,GERP++_RS,phastCons100way_vertebrate,phyloP100way_vertebrate \\
+            --custom {input.clinvar},CLINVAR,vcf,exact,0,CLNSIG,CLNREVSTAT \\
             --custom {input.swegen},SweGen,vcf,exact,0,AF \\
             --dir_cache {input.cache} \\
             --fork {threads} \\
