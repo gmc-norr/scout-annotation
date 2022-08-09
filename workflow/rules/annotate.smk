@@ -111,20 +111,20 @@ rule genmod:
     conda: "../env/genmod.yaml"
     shell:
         """
-        genmod annotate \\
+        genmod -v annotate \\
             --annotate_regions \\
-            {input.vcf} | \\
-        genmod models \\
+            {input.vcf} 2>{log} | \\
+        genmod -v models \\
             --family_file {input.ped} \\
             --vep \\
-            - | \\
-        genmod score \\
+            - 2>{log} | \\
+        genmod -v score \\
             --rank_results \\
             --score_config {input.rank_model} \\
-            - | \\
-        genmod compound \\
+            - 2>{log} | \\
+        genmod -v compound \\
             --vep \\
-            - > {output.vcf}
+            - 2>{log} > {output.vcf}
         """
 
 rule genmod_rankmodel:
