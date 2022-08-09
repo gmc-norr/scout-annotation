@@ -67,16 +67,23 @@ rule vep:
             &> {log}
         """
 
-rule annovar:
+rule most_severe_consequence:
     input:
         vcf="annotation/{sample}/{sample}.decomposed.vep.vcf"
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.annovar.hg19_multianno.vcf"),
-        txt=temp("annotation/{sample}/{sample}.decomposed.vep.annovar.hg19_multianno.txt"),
-        avinput=temp("annotation/{sample}/{sample}.decomposed.vep.annovar.avinput"),
-    log: "annotation/{sample}/{sample}.decomposed.vep.annovar.log"
+        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf"
+    script: "../scripts/most_severe_consequence.py"
+
+rule annovar:
+    input:
+        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf"
+    output:
+        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.hg19_multianno.vcf"),
+        txt=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.hg19_multianno.txt"),
+        avinput=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.avinput"),
+    log: "annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.log"
     params:
-        prefix="annotation/{sample}/{sample}.decomposed.vep.annovar"
+        prefix="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar"
     shell:
         """
         /usr/local/bin/annovar/table_annovar.pl \\
@@ -94,11 +101,12 @@ rule annovar:
 
 rule genmod:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.annovar.hg19_multianno.vcf",
+        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.hg19_multianno.vcf",
         ped=get_ped,
         rank_model=get_rank_model
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.annovar.genmod.vcf")
+        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.genmod.vcf")
+    log: "annotation/{sample}/{sample}.genmod.log"
     container: config.get("genmod", {}).get("container", config["default_container"])
     conda: "../env/genmod.yaml"
     shell:

@@ -63,10 +63,10 @@ def get_result_files():
     outfiles = []
     load_configs = []
     for s, p in zip(samples["sample"], samples["ped"]):
-        infiles.append(f"annotation/{s}/{s}.decomposed.vep.annovar.genmod.vcf.gz")
+        infiles.append(f"annotation/{s}/{s}.decomposed.vep.most_severe_csq.annovar.genmod.vcf.gz")
         outfiles.append(f"results/{s}/{s}.scout-annotated.vcf.gz")
 
-        infiles.append(f"annotation/{s}/{s}.decomposed.vep.annovar.genmod.vcf.gz.tbi")
+        infiles.append(f"annotation/{s}/{s}.decomposed.vep.most_severe_csq.annovar.genmod.vcf.gz.tbi")
         outfiles.append(f"results/{s}/{s}.scout-annotated.vcf.gz.tbi")
 
         if isinstance(p, str) and len(p) > 0:
