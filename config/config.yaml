@@ -18,6 +18,12 @@ bgzip:
 tabix:
   container: docker://hydragenetics/common:0.1.1
 
+vcfanno:
+  container: docker://clinicalgenomics/vcfanno:0.3.2
+  base_path: "/storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37"
+  config_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/{track}/vcfanno/grch37_vcfanno_config_{version}.toml"
+  config_version: "0.1"
+
 vep:
   container: docker://hydragenetics/vep:105
   cache: /storage/userdata/references/homo_sapiens/vep/vep_data_105

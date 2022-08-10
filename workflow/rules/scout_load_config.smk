@@ -10,5 +10,6 @@ rule scout_load_config:
         phenotype="affected",
         analysis_type=get_analysis_type,
         track=get_track,
+        rank_model_version=get_rank_model_version,
         vcf_samples=get_vcf_samples
     script: "../scripts/scout_load_config.py"

@@ -74,38 +74,45 @@ rule most_severe_consequence:
         vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf"
     script: "../scripts/most_severe_consequence.py"
 
-rule annovar:
+rule vcfanno:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf"
+        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf",
+        toml=get_vcfanno_config
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.hg19_multianno.vcf"),
-        txt=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.hg19_multianno.txt"),
-        avinput=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.avinput"),
-    log: "annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.log"
+        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.vcf"
+    log: "annotation/{sample}/{sample}.vcfanno.log"
     params:
-        prefix="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar"
+        base_path=config.get("vcfanno", {}).get("base_path", "")
+    container: config.get("vcfanno", {}).get("container", config["default_container"])
     shell:
         """
-        /usr/local/bin/annovar/table_annovar.pl \\
-            --buildver hg19 \\
-            --vcfinput \\
-            --out {params.prefix} \\
-            --remove \\
-            --protocol spidex \\
-            --operation f \\
-            --nastring . \\
-            --polish \\
+        vcfanno \\
+            -base-path {params.base_path} \\
+            {input.toml} \\
             {input.vcf} \\
-            /usr/local/bin/annovar/humandb &> {log}
+            > {output.vcf} \\
+            2> {log}
+        """
+
+rule vcfanno_config:
+    output:
+        toml="rank_model/grch{build}_{track}_vcfanno_config_{version}.toml"
+    log: "rank_model/grch{build}_{track}_vcfanno_config_{version}.log"
+    params:
+        uri=lambda wc: config["vcfanno"]["config_uri"].format(version=wc.version, track=wc.track)
+    shell:
+        """
+        echo "fetching {params.uri}" > {log}
+        curl -fsSL {params.uri} > {output.toml} 2>> {log}
         """
 
 rule genmod:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.hg19_multianno.vcf",
+        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.vcf",
         ped=get_ped,
         rank_model=get_rank_model
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.annovar.genmod.vcf")
+        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf")
     log: "annotation/{sample}/{sample}.genmod.log"
     container: config.get("genmod", {}).get("container", config["default_container"])
     conda: "../env/genmod.yaml"
@@ -129,10 +136,9 @@ rule genmod:
 
 rule genmod_rankmodel:
     output:
-        rank_model="rank_model/{type}_rank_model_v{version}.ini",
+        rank_model="rank_model/{type}_rank_model_v{version}.ini"
     params:
-        uri=lambda wc: config["genmod"][f"{wc.type}_rank_model_uri"].format(version=wc.version),
-        filename=lambda wc: f"{wc.type}_rank_model_v{wc.version}.ini"
+        uri=lambda wc: config["genmod"][f"{wc.type}_rank_model_uri"].format(version=wc.version)
     log: "rank_model/{type}_rank_model_v{version}.log"
     shell:
         """

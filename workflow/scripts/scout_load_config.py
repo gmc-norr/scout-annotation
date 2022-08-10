@@ -4,7 +4,7 @@ import yaml
 
 def generate_load_config(vcf, ped):
     genome_build = snakemake.config["genome_build"]
-    rank_model_version = snakemake.config["rank_model_version"]
+    rank_model_version = snakemake.params["rank_model_version"]
     scout_owner = snakemake.config["scout_owner"]
 
     load_config = dict(

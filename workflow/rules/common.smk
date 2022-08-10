@@ -11,7 +11,8 @@ with open(config["resources"]) as f:
 samples = pd.read_csv(config["samples"], sep="\t")
 
 wildcard_constraints:
-    ext=r"vcf(\.gz)?$"
+    ext=r"vcf(\.gz)?$",
+    track=r"(rare_disease|cancer)"
 
 
 def _get_sample_row(wildcards):
@@ -52,21 +53,32 @@ def get_vcf_samples(wildcards):
     assert len(samples) == 1
     return samples[0]
 
+def get_rank_model_version(wildcards):
+    # TODO: set this up for cancer and structural variants
+    return config["genmod"]["rd_rank_model_version"]
+
 def get_rank_model(wildcards):
     sample_track = get_track(wildcards)
     # TODO: set this up for cancer and structural variants
-    version = config["genmod"]["rd_rank_model_version"]
+    version = get_rank_model_version(wildcards)
     return f"rank_model/rd_rank_model_v{version}.ini"
+
+def get_vcfanno_config(wildcards):
+    sample_track = get_track(wildcards)
+    genome_build = config["genome_build"]
+    # TODO: set this up for cancer and structural variants
+    version = config["vcfanno"]["config_version"]
+    return f"rank_model/grch{genome_build}_rare_disease_vcfanno_config_{version}.toml"
 
 def get_result_files():
     infiles = []
     outfiles = []
     load_configs = []
     for s, p in zip(samples["sample"], samples["ped"]):
-        infiles.append(f"annotation/{s}/{s}.decomposed.vep.most_severe_csq.annovar.genmod.vcf.gz")
+        infiles.append(f"annotation/{s}/{s}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz")
         outfiles.append(f"results/{s}/{s}.scout-annotated.vcf.gz")
 
-        infiles.append(f"annotation/{s}/{s}.decomposed.vep.most_severe_csq.annovar.genmod.vcf.gz.tbi")
+        infiles.append(f"annotation/{s}/{s}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz.tbi")
         outfiles.append(f"results/{s}/{s}.scout-annotated.vcf.gz.tbi")
 
         if isinstance(p, str) and len(p) > 0:
