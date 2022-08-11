@@ -54,21 +54,22 @@ def get_vcf_samples(wildcards):
     return samples[0]
 
 def get_rank_model_version(wildcards):
-    # TODO: set this up for cancer and structural variants
-    return config["genmod"]["rd_rank_model_version"]
+    sample_track = get_track(wildcards)
+    # TODO: set this up for structural variants
+    return config["genmod"][sample_track]["rank_model_version"]
 
 def get_rank_model(wildcards):
     sample_track = get_track(wildcards)
-    # TODO: set this up for cancer and structural variants
+    # TODO: set this up for structural variants
     version = get_rank_model_version(wildcards)
-    return f"rank_model/rd_rank_model_v{version}.ini"
+    return f"rank_model/{sample_track}_rank_model_{version}.ini"
 
 def get_vcfanno_config(wildcards):
     sample_track = get_track(wildcards)
     genome_build = config["genome_build"]
-    # TODO: set this up for cancer and structural variants
+    # TODO: set this up for structural variants
     version = config["vcfanno"]["config_version"]
-    return f"rank_model/grch{genome_build}_rare_disease_vcfanno_config_{version}.toml"
+    return f"rank_model/grch{genome_build}_{sample_track}_vcfanno_config_{version}.toml"
 
 def get_result_files():
     infiles = []
