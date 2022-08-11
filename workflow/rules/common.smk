@@ -8,7 +8,7 @@ configfile: "config/config.yaml"
 with open(config["resources"]) as f:
     resources = yaml.load(f, Loader=yaml.FullLoader)
 
-samples = pd.read_csv(config["samples"], sep="\t")
+samples = pd.read_csv(config["samples"], sep="\t", comment="#")
 
 wildcard_constraints:
     ext=r"vcf(\.gz)?$",
