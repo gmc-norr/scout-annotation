@@ -71,7 +71,7 @@ rule most_severe_consequence:
     input:
         vcf="annotation/{sample}/{sample}.decomposed.vep.vcf"
     output:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf"
+        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf")
     script: "../scripts/most_severe_consequence.py"
 
 rule vcfanno:
@@ -79,7 +79,7 @@ rule vcfanno:
         vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf",
         toml=get_vcfanno_config
     output:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.vcf"
+        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.vcf")
     log: "annotation/{sample}/{sample}.vcfanno.log"
     params:
         base_path=config.get("vcfanno", {}).get("base_path", "")
