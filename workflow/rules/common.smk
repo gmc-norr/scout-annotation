@@ -33,22 +33,22 @@ def get_ped(wildcards):
 def get_sex(wildcards):
     sex = _get_sample_row(wildcards)["sex"]
     assert len(sex) == 1
-    return sex[0]
+    return sex.values[0]
 
 def get_analysis_type(wildcards):
     analysis_type = _get_sample_row(wildcards)["type"]
     assert len(analysis_type) == 1
-    return analysis_type[0]
+    return analysis_type.values[0]
 
 def get_track(wildcards):
     track = _get_sample_row(wildcards)["track"]
     assert len(track) == 1
-    return track[0]
+    return track.values[0]
 
 def get_vcf_samples(wildcards):
     vcf_filename = _get_sample_row(wildcards)["vcf"]
     assert len(vcf_filename) == 1
-    vcf = cyvcf2.VCF(vcf_filename[0])
+    vcf = cyvcf2.VCF(vcf_filename.values[0])
     samples = vcf.samples
     assert len(samples) == 1
     return samples[0]
