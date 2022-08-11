@@ -25,7 +25,7 @@ rule vep:
             --assembly GRCh37 \\
             --dir_plugins {input.plugin} \\
             --plugin CADD,{input.plugin_data}/CADD_1.6/whole_genome_SNVs.tsv.gz,{input.plugin_data}/CADD_1.6/InDels.tsv.gz \\
-            --plugin LoFtool,{input.plugin_data}/LoFtool/LoFtool_scores.txt \\
+            --plugin LoFtool,{input.plugin}/LoFtool_scores.txt \\
             --plugin MaxEntScan,{input.plugin_data}/MaxEntScan,SWA,NCS \\
             --plugin REVEL,{input.plugin_data}/revel_1.3/new_tabbed_revel.tsv.gz \\
             --plugin dbNSFP,{input.plugin_data}/dbNSFP_4.1a/dbNSFP4.1a_grch37.gz,GERP++_RS,phastCons100way_vertebrate,phyloP100way_vertebrate \\
