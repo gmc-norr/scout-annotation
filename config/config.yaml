@@ -21,8 +21,12 @@ tabix:
 vcfanno:
   container: docker://clinicalgenomics/vcfanno:0.3.2
   base_path: "/storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37"
-  config_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/{track}/vcfanno/grch37_vcfanno_config_{version}.toml"
-  config_version: "0.1"
+  rare_disease:
+    config_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/rare_disease/vcfanno/grch37_vcfanno_config_{version}.toml"
+    config_version: "0.1"
+  cancer:
+    config_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/cancer/vcfanno/grch37_vcfanno_config_{version}.toml"
+    config_version: "0.1"
 
 vep:
   container: docker://hydragenetics/vep:105
@@ -37,7 +41,7 @@ vep:
 genmod:
   container: docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0
   rare_disease:
-    rank_model_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/rare_disease/rank_model/rd_rank_model_{version}.ini"
+    rank_model_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/rare_disease/rank_model/rare_disease_rank_model_{version}.ini"
     rank_model_version: "0.1"
   cancer:
     rank_model_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/cancer/rank_model/cancer_rank_model_{version}.ini"

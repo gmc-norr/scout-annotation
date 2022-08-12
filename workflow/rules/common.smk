@@ -68,7 +68,7 @@ def get_vcfanno_config(wildcards):
     sample_track = get_track(wildcards)
     genome_build = config["genome_build"]
     # TODO: set this up for structural variants
-    version = config["vcfanno"]["config_version"]
+    version = config["vcfanno"][sample_track]["config_version"]
     return f"rank_model/grch{genome_build}_{sample_track}_vcfanno_config_{version}.toml"
 
 def get_result_files():
