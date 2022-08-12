@@ -10,6 +10,7 @@ validate(config, "../schema/config.schema.yaml")
 
 with open(config["resources"]) as f:
     resources = yaml.load(f, Loader=yaml.FullLoader)
+validate(resources, "../schema/resources.schema.yaml")
 
 samples = pd.read_csv(config["samples"], sep="\t", comment="#")
 

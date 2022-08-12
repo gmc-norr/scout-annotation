@@ -1,0 +1,15 @@
+$schema: "http://json-schema.org/draft-06/schema#"
+description: workflow resource configuration
+properties:
+  default_resources:
+    type: object
+    properties:
+      threads:
+        type: integer
+        description: default number of threads for parallelisable processes
+        minimum: 1
+    required:
+      - threads
+
+required:
+  - default_resources
