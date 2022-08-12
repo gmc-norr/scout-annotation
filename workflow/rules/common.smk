@@ -2,9 +2,12 @@ import cyvcf2
 import numpy as np
 import pandas as pd
 from pathlib import Path
+from snakemake.utils import validate
 import yaml
 
 configfile: "config/config.yaml"
+validate(config, "../schema/config.schema.yaml")
+
 with open(config["resources"]) as f:
     resources = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -13,7 +16,6 @@ samples = pd.read_csv(config["samples"], sep="\t", comment="#")
 wildcard_constraints:
     ext=r"vcf(\.gz)?$",
     track=r"(rare_disease|cancer)"
-
 
 def _get_sample_row(wildcards):
     return samples[samples["sample"] == wildcards.sample]

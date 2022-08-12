@@ -1,0 +1,185 @@
+$schema: "http://json-schema.org/draft-06/schema#"
+description: workflow configuration
+properties:
+  samples:
+    type: string
+    description: path to sample table file
+    format: uri-reference
+  resources:
+    type: string
+    description: path to resources config file
+    format: uri-reference
+  genome_build:
+    type: string
+    description: GRCh genome build
+    enum:
+      - "37"
+      - "38"
+  scout_owner:
+    type: string
+    description: Scout institute that should own the case
+  default_container:
+    type: string
+    description: default singularity container to be used
+    format: uri-reference
+  reference:
+    type: object
+    properties:
+      fasta:
+        type: string
+        description: genome fasta file
+        format: uri-reference
+    required:
+      - fasta
+  decompose:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+  bgzip:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+  tabix:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+  vcfanno:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+      base_path:
+        type: string
+        description: base path for annotation files
+        format: uri-reference
+      rare_disease:
+        properties:
+          config_uri:
+            type: string
+            description: uri for the vcfanno config file, with a placeholder for version
+            format: uri-reference
+          config_version:
+            type: string
+            description: version of the config file to use
+        required:
+          - config_uri
+          - config_version
+      cancer:
+        type: object
+        properties:
+          config_uri:
+            type: string
+            description: uri for the vcfanno config file, with a placeholder for version
+            format: uri-reference
+          config_version:
+            type: string
+            description: version of the config file to use
+        required:
+          - config_uri
+          - config_version
+    required:
+      - base_path
+      - rare_disease
+      - cancer
+  vep:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+      cache:
+        type: string
+        description: path to VEP cache directory
+        format: uri-reference
+      cache_type:
+        type: string
+        description: cache type to use
+        enum:
+          - merged
+          - refseq
+      plugin:
+        type: string
+        description: path to VEP plugin directory
+        format: uri-reference
+      plugin-data:
+        type: string
+        description: path to VEP plugin data directory
+        format: uri-reference
+      swegen:
+        type: string
+        description: path to SweGen VCF file
+        format: uri-reference
+      clinvar:
+        type: string
+        description: path to ClinVar VCF file
+        format: uri-reference
+      mode:
+        type: string
+        description: what mode to run VEP in, as command-line flags
+        default: --offline --cache
+    required:
+      - cache
+      - cache_type
+      - plugin
+      - plugin-data
+      - swegen
+      - clinvar
+      - mode
+  genmod:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+      rare_disease:
+        type: object
+        properties:
+          rank_model_uri:
+            type: string
+            description: URI for the rank model to use, with a placeholder for version
+            format: uri-reference
+          rank_model_version:
+            type: string
+            description: version of the rank model to use
+        required:
+          - rank_model_uri
+          - rank_model_version
+      cancer:
+        type: object
+        properties:
+          rank_model_uri:
+            type: string
+            description: URI for the rank model to use, with a placeholder for version
+            format: uri-reference
+          rank_model_version:
+            type: string
+            description: version of the rank model to use
+        required:
+          - rank_model_uri
+          - rank_model_version
+    required:
+      - rare_disease
+      - cancer
+
+required:
+  - samples
+  - resources
+  - genome_build
+  - scout_owner
+  - reference
+  - vcfanno
+  - vep
+  - genmod
