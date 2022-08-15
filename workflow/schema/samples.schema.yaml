@@ -1,0 +1,40 @@
+$schema: "http://json-schema.org/draft-06/schema#"
+description: a row in the sample table
+properties:
+  sample:
+    type: string
+    regex: /[^_]+/
+  sex:
+    type: string
+    description: sex of the individual sequenced
+    enum:
+      - male
+      - female
+      - unknown
+  type:
+    type: string
+    description: type of sequencing
+    enum:
+      - wgs
+      - wes
+      - panel
+  track:
+    type: string
+    description: the Scout track the sample belongs to
+    enum:
+      - cancer
+      - rare_disease
+  vcf:
+    type: string
+    description: path to the VCF file for the sample
+    format: uri-reference
+  ped:
+    type: string
+    description: path to PED file for the sample
+    format: uri-reference
+required:
+  - sample
+  - sex
+  - type
+  - track
+  - vcf

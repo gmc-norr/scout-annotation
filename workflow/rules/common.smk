@@ -13,6 +13,7 @@ with open(config["resources"]) as f:
 validate(resources, "../schema/resources.schema.yaml")
 
 samples = pd.read_csv(config["samples"], sep="\t", comment="#")
+validate(samples, "../schema/samples.schema.yaml")
 
 wildcard_constraints:
     ext=r"vcf(\.gz)?$",
