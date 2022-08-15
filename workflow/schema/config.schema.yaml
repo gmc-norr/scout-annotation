@@ -63,35 +63,26 @@ properties:
         type: string
         description: base path for annotation files
         format: uri-reference
-      rare_disease:
-        properties:
-          config_uri:
-            type: string
-            description: uri for the vcfanno config file, with a placeholder for version
-            format: uri-reference
-          config_version:
-            type: string
-            description: version of the config file to use
-        required:
-          - config_uri
-          - config_version
-      cancer:
+      config_uri:
+        type: string
+        description: uri for the vcfanno config file, with a placeholders for track and version
+        format: uri-reference
+      config_version:
         type: object
         properties:
-          config_uri:
+          rare_disease:
             type: string
-            description: uri for the vcfanno config file, with a placeholder for version
-            format: uri-reference
-          config_version:
+            description: version of the rare disease config file to use
+          cancer:
             type: string
-            description: version of the config file to use
+            description: version of the cancer config file to use
         required:
-          - config_uri
-          - config_version
+          - rare_disease
+          - cancer
     required:
       - base_path
-      - rare_disease
-      - cancer
+      - config_uri
+      - config_version
   vep:
     type: object
     properties:
@@ -144,35 +135,25 @@ properties:
         type: string
         description: singularity container to be used
         format: uri-reference
-      rare_disease:
+      rank_model_uri:
+        type: string
+        description: URI for the rank model to use, with a placeholder for version
+        format: uri-reference
+      rank_model_version:
         type: object
         properties:
-          rank_model_uri:
+          rare_disase:
             type: string
-            description: URI for the rank model to use, with a placeholder for version
-            format: uri-reference
-          rank_model_version:
+            description: version of the rare disease rank model to use
+          cancer:
             type: string
-            description: version of the rank model to use
+            description: version of the cancer rank model to use
         required:
-          - rank_model_uri
-          - rank_model_version
-      cancer:
-        type: object
-        properties:
-          rank_model_uri:
-            type: string
-            description: URI for the rank model to use, with a placeholder for version
-            format: uri-reference
-          rank_model_version:
-            type: string
-            description: version of the rank model to use
-        required:
-          - rank_model_uri
-          - rank_model_version
+          - rare_disease
+          - cancer
     required:
-      - rare_disease
-      - cancer
+      - rank_model_uri
+      - rank_model_version
 
 required:
   - samples

@@ -99,7 +99,7 @@ rule vcfanno_config:
         toml="rank_model/grch{build}_{track}_vcfanno_config_{version}.toml"
     log: "rank_model/grch{build}_{track}_vcfanno_config_{version}.log"
     params:
-        uri=lambda wc: config["vcfanno"][wc.track]["config_uri"].format(version=wc.version)
+        uri=lambda wc: config["vcfanno"]["config_uri"].format(track=wc.track, version=wc.version)
     shell:
         """
         echo "fetching {params.uri}" > {log}
@@ -138,7 +138,7 @@ rule genmod_rankmodel:
     output:
         rank_model="rank_model/{track}_rank_model_{version}.ini"
     params:
-        uri=lambda wc: config["genmod"][wc.track]["rank_model_uri"].format(version=wc.version)
+        uri=lambda wc: config["genmod"]["rank_model_uri"].format(track=wc.track, version=wc.version)
     log: "rank_model/{track}_rank_model_{version}.log"
     shell:
         """
