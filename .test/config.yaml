@@ -3,6 +3,7 @@ resources: "resources.yaml"
 
 genome_build: "37"
 scout_owner: "clingen"
+output_directory: results
 
 default_container: docker://hydragenetics/common:0.1.1
 

@@ -1,7 +1,7 @@
 rule copy_results:
     input: infiles
     output: outfiles
-    log: "results/copy_results.log"
+    log: f"{config.get('output_directory', 'results')}/copy_results.log"
     run:
         import subprocess
 

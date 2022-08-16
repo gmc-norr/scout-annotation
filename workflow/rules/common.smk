@@ -79,20 +79,21 @@ def get_result_files():
     infiles = []
     outfiles = []
     load_configs = []
+    outdir = config.get("output_directory", "results")
     for s, p in zip(samples["sample"], samples["ped"]):
         infiles.append(f"annotation/{s}/{s}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz")
-        outfiles.append(f"results/{s}/{s}.scout-annotated.vcf.gz")
+        outfiles.append(f"{outdir}/{s}/{s}.scout-annotated.vcf.gz")
 
         infiles.append(f"annotation/{s}/{s}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz.tbi")
-        outfiles.append(f"results/{s}/{s}.scout-annotated.vcf.gz.tbi")
+        outfiles.append(f"{outdir}/{s}/{s}.scout-annotated.vcf.gz.tbi")
 
         if isinstance(p, str) and len(p) > 0:
             infiles.append(p)
         else:
             infiles.append(f"mock_ped/{s}.ped")
-        outfiles.append(f"results/{s}/{s}.ped")
+        outfiles.append(f"{outdir}/{s}/{s}.ped")
 
-        load_configs.append(f"results/{s}/{s}.load_config.yaml")
+        load_configs.append(f"{outdir}/{s}/{s}.load_config.yaml")
 
     return infiles, outfiles, load_configs
 

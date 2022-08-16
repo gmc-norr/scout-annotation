@@ -1,10 +1,10 @@
 rule scout_load_config:
     input:
-        vcf="results/{sample}/{sample}.scout-annotated.vcf.gz",
-        ped="results/{sample}/{sample}.ped"
+        vcf=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.scout-annotated.vcf.gz",
+        ped=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.ped"
     output:
-        yaml="results/{sample}/{sample}.load_config.yaml"
-    log: "results/{sample}/{sample}.load_config.log"
+        yaml=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.load_config.yaml"
+    log: f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.load_config.log"
     container: config.get("scout_load_config", {}).get("container", config.get("default_container", ""))
     params:
         sample_name=lambda wc: wc.sample,
