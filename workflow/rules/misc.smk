@@ -1,6 +1,7 @@
 rule copy_results:
     input: infiles
     output: outfiles
+    log: "results/copy_results.log"
     run:
         import subprocess
 

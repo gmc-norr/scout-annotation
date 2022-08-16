@@ -1,0 +1,10 @@
+name: most_severe_consequence
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+    - cyvcf2

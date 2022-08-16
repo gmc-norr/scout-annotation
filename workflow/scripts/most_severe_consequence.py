@@ -1,5 +1,3 @@
-from cmath import inf
-from multiprocessing.managers import DictProxy
 import cyvcf2
 
 

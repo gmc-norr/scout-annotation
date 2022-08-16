@@ -4,6 +4,8 @@ rule scout_load_config:
         ped="results/{sample}/{sample}.ped"
     output:
         yaml="results/{sample}/{sample}.load_config.yaml"
+    log: "results/{sample}/{sample}.load_config.log"
+    container: config.get("scout_load_config", {}).get("container", config.get("default_container", ""))
     params:
         sample_name=lambda wc: wc.sample,
         sex=get_sex,

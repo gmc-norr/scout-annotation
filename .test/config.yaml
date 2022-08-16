@@ -4,7 +4,7 @@ resources: "resources.yaml"
 genome_build: "37"
 scout_owner: "clingen"
 
-default_container: ""
+default_container: docker://hydragenetics/common:0.1.1
 
 reference:
   fasta: /storage/userdata/references/homo_sapiens/hg19/fasta/hg19.fa.gz
@@ -26,6 +26,10 @@ vcfanno:
     rare_disease: "0.1"
     cancer: "0.1"
 
+vcfanno_config:
+  container: docker://bschiffthaler/curl:7.72.0
+  extra: --insecure
+
 vep:
   container: docker://hydragenetics/vep:105
   cache: /storage/userdata/references/homo_sapiens/vep/vep_data_105
@@ -42,3 +46,7 @@ genmod:
   rank_model_version:
     rare_disease: "0.1"
     cancer: "0.1"
+
+genmod_rankmodel:
+  container: docker://bschiffthaler/curl:7.72.0
+  extra: --insecure

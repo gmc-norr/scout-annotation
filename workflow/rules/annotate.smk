@@ -72,6 +72,8 @@ rule most_severe_consequence:
         vcf="annotation/{sample}/{sample}.decomposed.vep.vcf"
     output:
         vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf")
+    log: "annotation/{sample}/{sample}.most_severe_consequence.log"
+    conda: "../env/most_severe_consequence.yaml"
     script: "../scripts/most_severe_consequence.py"
 
 rule vcfanno:
@@ -99,11 +101,13 @@ rule vcfanno_config:
         toml="rank_model/grch{build}_{track}_vcfanno_config_{version}.toml"
     log: "rank_model/grch{build}_{track}_vcfanno_config_{version}.log"
     params:
-        uri=lambda wc: config["vcfanno"]["config_uri"].format(track=wc.track, version=wc.version)
+        uri=lambda wc: config["vcfanno"]["config_uri"].format(track=wc.track, version=wc.version),
+        extra=config.get("vcfanno_config", {}).get("extra", "")
+    container: config.get("vcfanno_config", {}).get("container", config["default_container"])
     shell:
         """
         echo "fetching {params.uri}" > {log}
-        curl -fsSL {params.uri} > {output.toml} 2>> {log}
+        curl {params.extra} -fsSL {params.uri} > {output.toml} 2>> {log}
         """
 
 rule genmod:
@@ -115,7 +119,6 @@ rule genmod:
         vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf")
     log: "annotation/{sample}/{sample}.genmod.log"
     container: config.get("genmod", {}).get("container", config["default_container"])
-    conda: "../env/genmod.yaml"
     shell:
         """
         genmod -v annotate \\
@@ -138,10 +141,12 @@ rule genmod_rankmodel:
     output:
         rank_model="rank_model/{track}_rank_model_{version}.ini"
     params:
-        uri=lambda wc: config["genmod"]["rank_model_uri"].format(track=wc.track, version=wc.version)
+        uri=lambda wc: config["genmod"]["rank_model_uri"].format(track=wc.track, version=wc.version),
+        extra=config.get("genmod_rankmodel", {}).get("extra", "")
     log: "rank_model/{track}_rank_model_{version}.log"
+    container: config.get("genmod_rankmodel", {}).get("container", config["default_container"])
     shell:
         """
         echo "fetching {params.uri}" > {log}
-        curl -fsSL {params.uri} > {output.rank_model} 2>> {log}
+        curl {params.extra} -fsSL {params.uri} > {output.rank_model} 2>> {log}
         """

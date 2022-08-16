@@ -154,6 +154,15 @@ properties:
     required:
       - rank_model_uri
       - rank_model_version
+  genmod_rankmodel:
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+      extra:
+        type: string
+        description: arguments to pass to curl
 
 required:
   - samples

@@ -97,6 +97,3 @@ def get_result_files():
     return infiles, outfiles, load_configs
 
 infiles, outfiles, load_configs = get_result_files()
-
-# for inf, outf in zip(infiles, outfiles):
-#     print(inf, ":", outf)
