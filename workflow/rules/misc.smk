@@ -3,9 +3,21 @@ rule copy_results:
     output: outfiles
     log: f"{config.get('output_directory', 'results')}/copy_results.log"
     run:
+        import logging
+        import pathlib
         import subprocess
 
+        logging.basicConfig(
+            filename=log[0],
+            filemode="a",
+            format="%(asctime)s:%(levelname)s: %(message)s",
+            datefmt="%Y-%m-%dT%H:%M:%S",
+            level=0,
+        )
+        logging.info("copying %d files", len(input))
+
         for infile, outfile in zip(input, output):
+            logging.info("%s --> %s", infile, pathlib.Path(outfile).resolve())
             subprocess.run([
                 "cp", infile, outfile
             ], shell=False, check=True)
