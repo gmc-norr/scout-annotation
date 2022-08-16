@@ -5,6 +5,8 @@ from pathlib import Path
 from snakemake.utils import validate
 import yaml
 
+ruleorder: copy_results > tabix
+
 configfile: "config/config.yaml"
 validate(config, "../schema/config.schema.yaml")
 
@@ -75,25 +77,15 @@ def get_vcfanno_config(wildcards):
     version = config["vcfanno"]["config_version"][sample_track]
     return f"rank_model/grch{genome_build}_{sample_track}_vcfanno_config_{version}.toml"
 
-def get_result_files():
-    infiles = []
+def get_output_files():
     outfiles = []
     load_configs = []
+    outdir = config.get("output_directory", "results")
     for s, p in zip(samples["sample"], samples["ped"]):
-        infiles.append(f"annotation/{s}/{s}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz")
-        outfiles.append(f"results/{s}/{s}.scout-annotated.vcf.gz")
+        outfiles.append(f"{outdir}/{s}/{s}.scout-annotated.vcf.gz")
+        outfiles.append(f"{outdir}/{s}/{s}.scout-annotated.vcf.gz.tbi")
+        outfiles.append(f"{outdir}/{s}/{s}.ped")
+        load_configs.append(f"{outdir}/{s}/{s}.load_config.yaml")
+    return outfiles, load_configs
 
-        infiles.append(f"annotation/{s}/{s}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz.tbi")
-        outfiles.append(f"results/{s}/{s}.scout-annotated.vcf.gz.tbi")
-
-        if isinstance(p, str) and len(p) > 0:
-            infiles.append(p)
-        else:
-            infiles.append(f"mock_ped/{s}.ped")
-        outfiles.append(f"results/{s}/{s}.ped")
-
-        load_configs.append(f"results/{s}/{s}.load_config.yaml")
-
-    return infiles, outfiles, load_configs
-
-infiles, outfiles, load_configs = get_result_files()
+outfiles, load_configs = get_output_files()

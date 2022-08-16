@@ -18,6 +18,10 @@ properties:
   scout_owner:
     type: string
     description: Scout institute that should own the case
+  output_directory:
+    type: string
+    description: directory where the final results should be saved
+    format: uri-reference
   default_container:
     type: string
     description: default singularity container to be used
@@ -169,6 +173,7 @@ required:
   - resources
   - genome_build
   - scout_owner
+  - output_directory
   - reference
   - vcfanno
   - vep
