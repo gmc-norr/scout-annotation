@@ -1,7 +1,7 @@
 rule copy_results:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.vcf.gz",
-        tbi="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.vcf.gz.tbi",
+        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz",
+        tbi="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz.tbi",
         ped=get_ped,
     output:
         vcf=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.scout-annotated.vcf.gz",
