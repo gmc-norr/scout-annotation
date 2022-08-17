@@ -13,7 +13,7 @@ SO_RANK = {
     "inframe_insertion": dict(so_id="SO:0001821", rank=9),
     "inframe_deletion": dict(so_id="SO:0001822", rank=10),
     "missense_variant": dict(so_id="SO:0001583", rank=11),
-    "protein_altering variant": dict(so_id="SO:0001818", rank=12),
+    "protein_altering_variant": dict(so_id="SO:0001818", rank=12),
     "splice_region_variant": dict(so_id="SO:0001630", rank=13),
     "splice_donor_5th_base_variant": dict(so_id="SO:0001787", rank=14),
     "splice_donor_region_variant": dict(so_id="SO:0002170", rank=15),
