@@ -2,6 +2,14 @@ import pathlib
 import yaml
 
 
+def get_track_name(track):
+    match track:
+        case "cancer":
+            return "cancer"
+        case "rare_disease" | "rare":
+            return "rare"
+
+
 def generate_load_config(vcf, ped):
     genome_build = snakemake.config["genome_build"]
     rank_model_version = snakemake.params["rank_model_version"]
@@ -12,7 +20,7 @@ def generate_load_config(vcf, ped):
         genome_build=genome_build,
         rank_model_version=rank_model_version,
         owner=scout_owner,
-        track=snakemake.params["track"],
+        track=get_track_name(snakemake.params["track"]),
         samples=[
             dict(
                 sample_id=snakemake.params["vcf_samples"],
