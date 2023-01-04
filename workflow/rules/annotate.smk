@@ -110,32 +110,70 @@ rule vcfanno_config:
         curl {params.extra} -fsSL {params.uri} > {output.toml} 2>> {log}
         """
 
-rule genmod:
+
+rule genmod_annotate:
     input:
         vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.vcf",
-        ped=get_ped,
-        rank_model=get_rank_model
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf")
-    log: "annotation/{sample}/{sample}.genmod.log"
+        vcf=temp("annotation/{sample}/{sample}.genmod_annotate.vcf"),
+    log: "annotation/{sample}/{sample}.genmod_annotate.log"
     container: config.get("genmod", {}).get("container", config["default_container"])
     shell:
         """
-        genmod -v annotate \\
+        genmod annotate \\
             --annotate_regions \\
-            {input.vcf} 2>{log} | \\
-        genmod -v models \\
+            {input.vcf} > {output.vcf} 2> {log}
+        """
+
+
+rule genmod_models:
+    input:
+        vcf="annotation/{sample}/{sample}.genmod_annotate.vcf",
+        ped=get_ped,
+    output:
+        vcf=temp("annotation/{sample}/{sample}.genmod_models.vcf"),
+    log: "annotation/{sample}/{sample}.genmod_models.log"
+    container: config.get("genmod", {}).get("container", config["default_container"])
+    shell:
+        """
+        genmod models \\
             --family_file {input.ped} \\
             --vep \\
-            - 2>{log} | \\
-        genmod -v score \\
+            {input.vcf} > {output.vcf} 2> {log}
+        """
+
+
+rule genmod_score:
+    input:
+        vcf="annotation/{sample}/{sample}.genmod_models.vcf",
+        rank_model=get_rank_model,
+    output:
+        vcf=temp("annotation/{sample}/{sample}.genmod_score.vcf"),
+    log: "annotation/{sample}/{sample}.genmod_score.log"
+    container: config.get("genmod", {}).get("container", config["default_container"])
+    shell:
+        """
+        genmod score \\
             --rank_results \\
             --score_config {input.rank_model} \\
-            - 2>{log} | \\
-        genmod -v compound \\
-            --vep \\
-            - 2>{log} > {output.vcf}
+            {input.vcf} > {output.vcf} 2> {log}
         """
+
+
+rule genmod_compound:
+    input:
+        vcf="annotation/{sample}/{sample}.genmod_score.vcf",
+    output:
+        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf"),
+    log: "annotation/{sample}/{sample}.genmod_compound.log"
+    container: config.get("genmod", {}).get("container", config["default_container"])
+    shell:
+        """
+        genmod compound \\
+            --vep \\
+            {input.vcf} > {output.vcf} 2> {log}
+        """
+
 
 rule genmod_rankmodel:
     output:
