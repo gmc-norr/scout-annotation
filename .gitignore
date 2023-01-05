@@ -3,6 +3,7 @@
 
 *.pyc
 .snakemake/
+.python-version
 
 annotation/
 /data/
@@ -11,3 +12,4 @@ mock_ped/
 rank_model/
 results/
 venv/
+samples.tsv
