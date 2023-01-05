@@ -15,7 +15,7 @@ rule vep:
         mode=config.get("vep", {}).get("mode", ""),
         cache_type=config.get("vep", {}).get("cache_type", "merged")
     threads: resources.get("vep", {}).get("threads", resources["default_resources"]["threads"])
-    container: config.get("vep", {}).get("container", config["default_container"])
+    container: "docker://hydragenetics/vep:105"
     shell:
         """
         vep {params.mode} \\
@@ -85,7 +85,7 @@ rule vcfanno:
     log: "annotation/{sample}/{sample}.vcfanno.log"
     params:
         base_path=config.get("vcfanno", {}).get("base_path", "")
-    container: config.get("vcfanno", {}).get("container", config["default_container"])
+    container: "docker://clinicalgenomics/vcfanno:0.3.2"
     shell:
         """
         vcfanno \\
@@ -103,7 +103,7 @@ rule vcfanno_config:
     params:
         uri=lambda wc: config["vcfanno"]["config_uri"].format(track=wc.track, version=wc.version),
         extra=config.get("vcfanno_config", {}).get("extra", "")
-    container: config.get("vcfanno_config", {}).get("container", config["default_container"])
+    container: "docker://bschiffthaler/curl:7.72.0"
     shell:
         """
         echo "fetching {params.uri}" > {log}
@@ -117,7 +117,7 @@ rule genmod_annotate:
     output:
         vcf=temp("annotation/{sample}/{sample}.genmod_annotate.vcf"),
     log: "annotation/{sample}/{sample}.genmod_annotate.log"
-    container: config.get("genmod", {}).get("container", config["default_container"])
+    container: "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
     shell:
         """
         genmod annotate \\
@@ -133,7 +133,7 @@ rule genmod_models:
     output:
         vcf=temp("annotation/{sample}/{sample}.genmod_models.vcf"),
     log: "annotation/{sample}/{sample}.genmod_models.log"
-    container: config.get("genmod", {}).get("container", config["default_container"])
+    container: "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
     shell:
         """
         genmod models \\
@@ -150,7 +150,7 @@ rule genmod_score:
     output:
         vcf=temp("annotation/{sample}/{sample}.genmod_score.vcf"),
     log: "annotation/{sample}/{sample}.genmod_score.log"
-    container: config.get("genmod", {}).get("container", config["default_container"])
+    container: "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
     shell:
         """
         genmod score \\
@@ -166,7 +166,7 @@ rule genmod_compound:
     output:
         vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf"),
     log: "annotation/{sample}/{sample}.genmod_compound.log"
-    container: config.get("genmod", {}).get("container", config["default_container"])
+    container: "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
     shell:
         """
         genmod compound \\
@@ -182,7 +182,7 @@ rule genmod_rankmodel:
         uri=lambda wc: config["genmod"]["rank_model_uri"].format(track=wc.track, version=wc.version),
         extra=config.get("genmod_rankmodel", {}).get("extra", "")
     log: "rank_model/{track}_rank_model_{version}.log"
-    container: config.get("genmod_rankmodel", {}).get("container", config["default_container"])
+    container: 'docker://bschiffthaler/curl:7.72.0'
     shell:
         """
         echo "fetching {params.uri}" > {log}

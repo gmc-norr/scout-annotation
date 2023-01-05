@@ -5,7 +5,7 @@ rule scout_load_config:
     output:
         yaml=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.load_config.yaml"
     log: f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.load_config.log"
-    container: config.get("scout_load_config", {}).get("container", config.get("default_container", ""))
+    container: "docker://python:3.10.7-slim"
     params:
         sample_name=lambda wc: wc.sample,
         sex=get_sex,

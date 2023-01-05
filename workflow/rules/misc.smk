@@ -34,7 +34,7 @@ rule tabix:
     output:
         tabix=temp("{filepath}.vcf.gz.tbi")
     log: "{filepath}.tabix.log"
-    container: config.get("tabix", {}).get("container", config["default_container"])
+    container: "docker://hydragenetics/common:0.1.1"
     shell:
         """
         tabix {input.vcf}
@@ -46,7 +46,7 @@ rule bgzip:
     output:
         vcfgz=temp("{filepath}.vcf.gz")
     log: "{filepath}.bgzip.log"
-    container: config.get("bgzip", {}).get("container", config["default_container"])
+    container: "docker://hydragenetics/common:0.1.1"
     shell:
         """
         bgzip {input.vcf}
