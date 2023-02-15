@@ -16,22 +16,26 @@ def get_vep_gene(variant: cyvcf2.Variant) -> List[AnyStr]:
     return variant.INFO.get("CSQ").split("|")[CSQ_DEF.index("SYMBOL")]
 
 
-def filter_vcf(vcf_filename: AnyStr, panels: Dict, output_filename: AnyStr, hard_filter: bool=True) -> cyvcf2.VCF:
+def filter_vcf(
+    vcf_filename: AnyStr,
+    panels: Dict,
+    output_filename: AnyStr,
+    hard_filter: bool = True,
+) -> cyvcf2.VCF:
     global CSQ_DEF
     vcf = cyvcf2.VCF(vcf_filename)
     CSQ_DEF = vcf.get_header_type("CSQ").get("Description").split()[-1].split("|")
 
-    vcf.add_filter_to_header(dict(
-        ID="PANEL",
-        Description="Variant not in panel gene"
-    ))
+    vcf.add_filter_to_header(dict(ID="PANEL", Description="Variant not in panel gene"))
 
-    vcf.add_info_to_header(dict(
-        ID="PANEL",
-        Number=".",
-        Type="String",
-        Description="Gene panel in which the gene was found, if any"
-    ))
+    vcf.add_info_to_header(
+        dict(
+            ID="PANEL",
+            Number=".",
+            Type="String",
+            Description="Gene panel in which the gene was found, if any",
+        )
+    )
 
     panel_metadata = f"##PANELS=<names=\"{','.join(panels.keys())}\",genes=\""
 
@@ -44,7 +48,7 @@ def filter_vcf(vcf_filename: AnyStr, panels: Dict, output_filename: AnyStr, hard
             gene_to_panel[g].append(pname)
 
     if len(panel_union) > 0:
-        vcf.add_to_header(f"{panel_metadata[:-1]}\">")
+        vcf.add_to_header(f'{panel_metadata[:-1]}">')
 
     writer = cyvcf2.Writer(output_filename, vcf, "w")
     writer.write_header()
@@ -76,7 +80,7 @@ def main():
     panels = {}
     for p in panel_files:
         p = pathlib.Path(p)
-        panels[p.stem] = get_panel_genes(p) 
+        panels[p.stem] = get_panel_genes(p)
 
     filter_vcf(vcf_filename, panels, output_filename, hard_filter)
 
