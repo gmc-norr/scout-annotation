@@ -22,12 +22,6 @@ properties:
     type: string
     description: directory where the final results should be saved
     format: uri-reference
-  panel_directory:
-    type: string
-    description: >
-      directory where Scout panel files are kept, see
-      https://clinical-genomics.github.io/scout/user-guide/panels/
-    format: uri-reference
   panel_filtering:
     type: object
     properties:
@@ -36,8 +30,16 @@ properties:
         description: >
           Whether or not panel filtering should be hard or soft
         default: yes
+      panel_directory:
+        type: string
+        description: >
+          directory where Scout panel files are kept, see
+          https://clinical-genomics.github.io/scout/user-guide/panels/
+        format: uri-reference
+        default: panels
     required:
       - hard_filter
+      - panel_directory
   default_container:
     type: string
     description: default singularity container to be used
@@ -190,7 +192,6 @@ required:
   - genome_build
   - scout_owner
   - output_directory
-  - panel_directory
   - panel_filtering
   - reference
   - vcfanno

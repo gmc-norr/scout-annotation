@@ -26,7 +26,7 @@ def _get_sample_row(wildcards):
 
 def get_panel_dict():
     panels = {}
-    for p in Path(config["panel_directory"]).glob("*.tsv"):
+    for p in Path(config["panel_filtering"]["panel_directory"]).glob("*.tsv"):
         panels[p.stem] = p
     return panels
 
