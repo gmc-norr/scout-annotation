@@ -32,9 +32,14 @@ properties:
     type: string
     description: path to PED file for the sample
     format: uri-reference
+  panels:
+    type: string
+    description: comma separated list of panels to apply to sample
+    default: ""
 required:
   - sample
   - sex
   - type
   - track
   - vcf
+  - panels

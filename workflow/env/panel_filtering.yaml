@@ -1,0 +1,11 @@
+name: panel_filtering
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+    - cyvcf2
+    - pandas
