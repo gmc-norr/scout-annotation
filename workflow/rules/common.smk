@@ -24,6 +24,20 @@ wildcard_constraints:
 def _get_sample_row(wildcards):
     return samples[samples["sample"] == wildcards.sample]
 
+def get_panel_dict():
+    panels = {}
+    for p in Path(config["panel_directory"]).glob("*.tsv"):
+        panels[p.stem] = p
+    return panels
+
+def get_panels(wildcards):
+    panel_dict = get_panel_dict()
+    panels = _get_sample_row(wildcards)["panels"].values
+    assert len(panels) == 1
+    if pd.isnull(panels[0]):
+        return []
+    return [panel_dict[p] for p in panels[0].split(",")]
+
 def get_vcf_file(wildcards):
     vcf_filename = _get_sample_row(wildcards)["vcf"].values
     assert len(vcf_filename) == 1, "duplicate sample IDs found"

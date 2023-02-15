@@ -1,3 +1,3 @@
-sample	sex	type	track	vcf	ped
-HD832-chr7	unknown	panel	cancer	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf	
-HD832-chr7-rd	unknown	panel	rare_disease	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf	
+sample	sex	type	track	vcf	ped	panels
+HD832-chr7	unknown	panel	cancer	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel
+HD832-chr7-rd	unknown	panel	rare_disease	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		

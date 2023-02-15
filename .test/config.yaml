@@ -4,8 +4,12 @@ resources: "resources.yaml"
 genome_build: "37"
 scout_owner: "clingen"
 output_directory: results
+panel_directory: panels
 
 default_container: docker://hydragenetics/common:0.1.1
+
+panel_filtering:
+  hard_filter: yes
 
 reference:
   fasta: /storage/userdata/references/homo_sapiens/hg19/fasta/hg19.fa.gz
