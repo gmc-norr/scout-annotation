@@ -33,15 +33,19 @@ def filter_vcf(vcf_filename: AnyStr, panels: Dict, output_filename: AnyStr, hard
         Description="Gene panel in which the gene was found, if any"
     ))
 
-    vcf.add_to_header(f"##panels={','.join(panels.keys())}")
+    panel_metadata = f"##PANELS=<names=\"{','.join(panels.keys())}\",genes=\""
 
     panel_union = set()
     gene_to_panel = defaultdict(list)
     for pname, p in panels.items():
         panel_union.update(set(p))
+        panel_metadata += f"{pname}:[{','.join(p)}],"
         for g in p:
             gene_to_panel[g].append(pname)
-    
+
+    if len(panel_union) > 0:
+        vcf.add_to_header(f"{panel_metadata[:-1]}\">")
+
     writer = cyvcf2.Writer(output_filename, vcf, "w")
     writer.write_header()
 
