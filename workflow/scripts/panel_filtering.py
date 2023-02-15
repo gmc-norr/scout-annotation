@@ -48,7 +48,7 @@ def filter_vcf(vcf_filename: AnyStr, panels: Dict, output_filename: AnyStr, hard
     for variant in vcf:
         variant_gene = get_vep_gene(variant)
         variant.INFO["PANEL"] = ",".join(gene_to_panel[variant_gene])
-        if variant_gene not in panel_union:
+        if len(panel_union) > 0 and variant_gene not in panel_union:
             if variant.FILTER is None:
                 variant.FILTER = ["PANEL"]
             else:
