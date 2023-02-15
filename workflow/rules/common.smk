@@ -30,13 +30,16 @@ def get_panel_dict():
         panels[p.stem] = p
     return panels
 
-def get_panels(wildcards):
-    panel_dict = get_panel_dict()
+def get_sample_panels(wildcards):
     panels = _get_sample_row(wildcards)["panels"].values
     assert len(panels) == 1
     if pd.isnull(panels[0]):
         return []
-    return [panel_dict[p] for p in panels[0].split(",")]
+    return panels[0].split(",")
+
+def get_panel_files(wildcards):
+    panel_dict = get_panel_dict()
+    return [panel_dict[p] for p in get_sample_panels(wildcards)]
 
 def get_vcf_file(wildcards):
     vcf_filename = _get_sample_row(wildcards)["vcf"].values

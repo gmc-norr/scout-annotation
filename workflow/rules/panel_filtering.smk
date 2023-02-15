@@ -1,7 +1,7 @@
 rule panel_filtering:
     input:
         vcf="annotation/{sample}/{sample}.decomposed.vep.vcf",
-        panels=get_panels,
+        panels=get_panel_files,
     output:
         vcf=temp("annotation/{sample}/{sample}.decomposed.vep.panel_filtered.vcf"),
     log: "annotation/{sample}/{sample}.panel_filtering.log",

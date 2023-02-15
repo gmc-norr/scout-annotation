@@ -21,6 +21,7 @@ def generate_load_config(vcf, ped):
         rank_model_version=rank_model_version,
         owner=scout_owner,
         track=get_track_name(snakemake.params["track"]),
+        gene_panels=snakemake.params["panels"],
         samples=[
             dict(
                 sample_id=snakemake.params["vcf_samples"],
