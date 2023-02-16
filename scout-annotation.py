@@ -2,11 +2,12 @@
 
 from types import resolve_bases
 import click
+import hashlib
 import pathlib
 import subprocess
 import sys
 import time
-from typing import Dict
+from typing import Dict, List
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
@@ -21,18 +22,23 @@ def get_panels():
     return panel_dict
 
 
-def write_samples(samples: Dict, directory: pathlib.Path):
+def write_samples(samples: List[Dict], directory: pathlib.Path):
     if not directory.is_dir():
         directory.mkdir()
 
-    # TODO: better file name, this will not be unique
-    filename = pathlib.Path(directory, time.strftime("%Y%m%d") + "_samples.txt")
+    sample_md5 = hashlib.md5(
+        ",".join(d["sample"] for d in samples).encode("utf8")
+    ).hexdigest()[:8]
+    filename = pathlib.Path(
+        directory, f"{time.strftime('%Y%m%d')}-{sample_md5}_samples.txt"
+    )
 
     # Header
     cols = ("sample", "sex", "type", "track", "vcf", "ped", "panels")
     with open(filename, "w") as f:
         print("\t".join(cols), file=f)
-        print("\t".join(str(samples[c]) for c in cols), file=f)
+        for s in samples:
+            print("\t".join(str(s[c]) for c in cols), file=f)
 
     return filename
 
@@ -124,7 +130,7 @@ def single(ctx, vcf, profile, name, track, samples_dir, seq_type, sex, bam_file,
             exit(1)
     print(f"annotate {vcf} with panels: {panel}")
 
-    samples_file = write_samples(sample, samples_dir)
+    samples_file = write_samples([sample], samples_dir)
 
     args = [
         "snakemake",
