@@ -50,22 +50,32 @@ def cli(ctx, config):
     pass
 
 
-@cli.command(epilog="""
+@cli.command(
+    epilog="""
     Gene panels that are added to a case should exist in Scout. To see
-    panels available to the pipeline, run `scout-annotation.py panels`.""")
+    panels available to the pipeline, run `scout-annotation.py panels`."""
+)
 @click.argument(
     "vcf",
-    type=click.Path(path_type=pathlib.Path, exists=True, dir_okay=False, file_okay=True, resolve_path=True)
+    type=click.Path(
+        path_type=pathlib.Path,
+        exists=True,
+        dir_okay=False,
+        file_okay=True,
+        resolve_path=True,
+    ),
 )
-@click.option(
-    "-n",
-    "--name",
-    help="sample name"
-)
+@click.option("-n", "--name", help="sample name")
 @click.option(
     "--profile",
     help="snakemake profile to use",
-    type=click.Path(path_type=pathlib.Path, exists=True, dir_okay=True, file_okay=False, resolve_path=True)
+    type=click.Path(
+        path_type=pathlib.Path,
+        exists=True,
+        dir_okay=True,
+        file_okay=False,
+        resolve_path=True,
+    ),
 )
 @click.option(
     "-t",
@@ -77,7 +87,9 @@ def cli(ctx, config):
 @click.option(
     "--samples-dir",
     help="path to directory where to store sample files",
-    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False, resolve_path=True),
+    type=click.Path(
+        path_type=pathlib.Path, dir_okay=True, file_okay=False, resolve_path=True
+    ),
     default=pathlib.Path("./sample_files"),
 )
 @click.option(
@@ -97,13 +109,15 @@ def cli(ctx, config):
     "-b",
     "--bam-file",
     help="path to alignment BAM file",
-    type=click.Path(path_type=pathlib.Path, dir_okay=False, file_okay=True, resolve_path=True)
+    type=click.Path(
+        path_type=pathlib.Path, dir_okay=False, file_okay=True, resolve_path=True
+    ),
 )
 @click.option(
     "-p",
     "--panel",
     help="gene panel to filter by, can be passed multiple times",
-    multiple=True
+    multiple=True,
 )
 @click.pass_context
 def single(ctx, vcf, profile, name, track, samples_dir, seq_type, sex, bam_file, panel):
@@ -120,7 +134,7 @@ def single(ctx, vcf, profile, name, track, samples_dir, seq_type, sex, bam_file,
         "vcf": vcf,
         "bam": bam_file,
         "panels": ",".join(panel),
-        "ped": ""
+        "ped": "",
     }
 
     gene_panels = get_panels()
@@ -134,8 +148,10 @@ def single(ctx, vcf, profile, name, track, samples_dir, seq_type, sex, bam_file,
 
     args = [
         "snakemake",
-        "-s", pathlib.Path(pathlib.Path(__file__).parent, "workflow/Snakefile"),
-        "--config", f"samples={samples_file}"
+        "-s",
+        pathlib.Path(pathlib.Path(__file__).parent, "workflow/Snakefile"),
+        "--config",
+        f"samples={samples_file}",
     ]
     if profile is not None:
         args.append("--profile")
