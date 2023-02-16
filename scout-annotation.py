@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from types import resolve_bases
 import click
 import pathlib
 import subprocess
@@ -46,10 +47,20 @@ def cli(ctx, config):
 @cli.command(epilog="""
     Gene panels that are added to a case should exist in Scout. To see
     panels available to the pipeline, run `scout-annotation.py panels`.""")
-@click.argument("vcf", type=click.Path(path_type=pathlib.Path))
-@click.option("-n", "--name", help="sample name")
-@click.option("-o", "--owner", help="case owner", default="clingen")
-@click.option("-p", "--profile", help="snakemake profile to use", type=click.Path(path_type=pathlib.Path))
+@click.argument(
+    "vcf",
+    type=click.Path(path_type=pathlib.Path, exists=True, dir_okay=False, file_okay=True, resolve_path=True)
+)
+@click.option(
+    "-n",
+    "--name",
+    help="sample name"
+)
+@click.option(
+    "--profile",
+    help="snakemake profile to use",
+    type=click.Path(path_type=pathlib.Path, exists=True, dir_okay=True, file_okay=False, resolve_path=True)
+)
 @click.option(
     "-t",
     "--track",
@@ -60,7 +71,7 @@ def cli(ctx, config):
 @click.option(
     "--samples-dir",
     help="path to directory where to store sample files",
-    type=click.Path(path_type=pathlib.Path),
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False, resolve_path=True),
     default=pathlib.Path("./sample_files"),
 )
 @click.option(
@@ -80,7 +91,7 @@ def cli(ctx, config):
     "-b",
     "--bam-file",
     help="path to alignment BAM file",
-    type=click.Path()
+    type=click.Path(path_type=pathlib.Path, dir_okay=False, file_okay=True, resolve_path=True)
 )
 @click.option(
     "-p",
@@ -89,7 +100,7 @@ def cli(ctx, config):
     multiple=True
 )
 @click.pass_context
-def single(ctx, vcf, profile, owner, name, track, samples_dir, seq_type, sex, bam_file, panel):
+def single(ctx, vcf, profile, name, track, samples_dir, seq_type, sex, bam_file, panel):
     """Annotate a single sample."""
 
     if name is None:
@@ -123,7 +134,6 @@ def single(ctx, vcf, profile, owner, name, track, samples_dir, seq_type, sex, ba
     if profile is not None:
         args.append("--profile")
         args.append(profile)
-    print(args)
     subprocess.Popen(args).communicate()
 
 
