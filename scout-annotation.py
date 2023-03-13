@@ -91,6 +91,11 @@ def cli(ctx, config, resources):
     ),
 )
 @click.option(
+    "--dryrun",
+    help="perform a snakemake dryrun, no results are produced",
+    is_flag=True,
+)
+@click.option(
     "-t",
     "--track",
     help="sample track",
@@ -134,7 +139,7 @@ def cli(ctx, config, resources):
 )
 @click.pass_obj
 def single(
-    config, vcf, profile, name, track, samples_dir, seq_type, sex, bam_file, panel
+    config, vcf, profile, dryrun, name, track, samples_dir, seq_type, sex, bam_file, panel
 ):
     """Annotate a single sample."""
 
@@ -174,6 +179,8 @@ def single(
     if profile is not None:
         args.append("--profile")
         args.append(profile)
+    if dryrun:
+        args.append("--dryrun")
     subprocess.Popen(args).communicate()
 
 
@@ -223,6 +230,11 @@ def single(
     ),
 )
 @click.option(
+    "--dryrun",
+    help="perform a snakemake dryrun, no results are produced",
+    is_flag=True,
+)
+@click.option(
     "-s",
     "--seq-type",
     help="type of sequencing",
@@ -237,7 +249,7 @@ def single(
 )
 @click.pass_obj
 def batch(
-    config, vcf_dir, bam_dir, ped_dir, sep, track, samples_dir, profile, seq_type, panel
+    config, vcf_dir, bam_dir, ped_dir, sep, track, samples_dir, profile, dryrun, seq_type, panel
 ):
     """Annotate a batch of samples."""
     if bam_dir is None:
@@ -326,6 +338,8 @@ def batch(
     if profile is not None:
         args.append("--profile")
         args.append(profile)
+    if dryrun:
+        args.append("--dryrun")
 
     subprocess.Popen(args).communicate()
 
