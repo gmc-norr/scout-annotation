@@ -366,8 +366,7 @@ def batch(
 
 
 @cli.command()
-@click.pass_context
-def panels(ctx):
+def panels():
     """List available gene panels"""
     print("#name\tn_genes\tpath")
     for panel_name, (n_genes, p) in get_panels().items():
