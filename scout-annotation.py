@@ -155,11 +155,8 @@ def single(config, vcf, profile, name, track, samples_dir, seq_type, sex, bam_fi
         if p not in gene_panels:
             print(f"error: panel not found: {p}", file=sys.stderr)
             exit(1)
-    print(f"annotate {vcf} with panels: {panel}")
 
     samples_file = write_samples([sample], samples_dir)
-
-    print(config.config, config.resources)
 
     args = [
         "snakemake",
