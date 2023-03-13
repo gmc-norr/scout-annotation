@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from types import resolve_bases
 import click
 import hashlib
 import pathlib
@@ -10,6 +9,12 @@ import time
 from typing import Dict, List
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+
+
+class Config:
+    def __init__(self, config, resources):
+        self.config = config
+        self.resources = resources
 
 
 def get_panels():
@@ -45,9 +50,10 @@ def write_samples(samples: List[Dict], directory: pathlib.Path):
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.option("-c", "--config", help="config file", default="config/config.yaml")
+@click.option("-r", "--resources", help="resources file", default=None)
 @click.pass_context
-def cli(ctx, config):
-    pass
+def cli(ctx, config, resources):
+    ctx.obj = Config(config, resources)
 
 
 @cli.command(
@@ -119,8 +125,8 @@ def cli(ctx, config):
     help="gene panel to filter by, can be passed multiple times",
     multiple=True,
 )
-@click.pass_context
-def single(ctx, vcf, profile, name, track, samples_dir, seq_type, sex, bam_file, panel):
+@click.pass_obj
+def single(config, vcf, profile, name, track, samples_dir, seq_type, sex, bam_file, panel):
     """Annotate a single sample."""
 
     if name is None:
@@ -146,13 +152,19 @@ def single(ctx, vcf, profile, name, track, samples_dir, seq_type, sex, bam_file,
 
     samples_file = write_samples([sample], samples_dir)
 
+    print(config.config, config.resources)
+
     args = [
         "snakemake",
         "-s",
         pathlib.Path(pathlib.Path(__file__).parent, "workflow/Snakefile"),
+        "--configfile",
+        config.config,
         "--config",
         f"samples={samples_file}",
     ]
+    if config.resources is not None:
+        args.append(f"resources={config.resources}")
     if profile is not None:
         args.append("--profile")
         args.append(profile)
