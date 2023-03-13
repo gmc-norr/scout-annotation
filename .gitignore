@@ -7,6 +7,7 @@
 
 annotation/
 /data/
+/sample_files
 decompose/
 mock_ped/
 rank_model/
