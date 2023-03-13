@@ -17,6 +17,12 @@ class Config:
         self.resources = resources
 
 
+def get_version():
+    version_path = pathlib.Path(pathlib.Path(__file__).parent, "version.txt")
+    with open(version_path) as f:
+        return f.read().strip()
+
+
 def get_panels():
     panel_paths = pathlib.Path(__file__).parent.glob("panels/*.tsv")
     panel_dict = {}
@@ -51,6 +57,7 @@ def write_samples(samples: List[Dict], directory: pathlib.Path):
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.option("-c", "--config", help="config file", default="config/config.yaml")
 @click.option("-r", "--resources", help="resources file", default=None)
+@click.version_option(version=get_version())
 @click.pass_context
 def cli(ctx, config, resources):
     ctx.obj = Config(config, resources)
