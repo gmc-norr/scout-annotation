@@ -239,6 +239,7 @@ def single(config, vcf, profile, name, track, samples_dir, seq_type, sex, bam_fi
 )
 @click.pass_obj
 def batch(config, vcf_dir, bam_dir, ped_dir, sep, track, samples_dir, profile, seq_type, panel):
+    """Annotate a batch of samples."""
     if bam_dir is None:
         bam_dir = vcf_dir
 
