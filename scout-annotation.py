@@ -133,7 +133,9 @@ def cli(ctx, config, resources):
     multiple=True,
 )
 @click.pass_obj
-def single(config, vcf, profile, name, track, samples_dir, seq_type, sex, bam_file, panel):
+def single(
+    config, vcf, profile, name, track, samples_dir, seq_type, sex, bam_file, panel
+):
     """Annotate a single sample."""
 
     if name is None:
@@ -177,23 +179,22 @@ def single(config, vcf, profile, name, track, samples_dir, seq_type, sex, bam_fi
 
 @cli.command()
 @click.argument(
-    "vcf-dir",
-    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
+    "vcf-dir", type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
 )
 @click.option(
     "--bam-dir",
     help="directory to look for BAM files in (default: vcf-dir)",
-    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False),
 )
 @click.option(
     "--ped-dir",
     help="directory to look for PED files in (default: vcf-dir)",
-    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False),
 )
 @click.option(
     "--sep",
     help="character separating sample name from the rest of the file name",
-    default="_"
+    default="_",
 )
 @click.option(
     "-t",
@@ -235,7 +236,9 @@ def single(config, vcf, profile, name, track, samples_dir, seq_type, sex, bam_fi
     multiple=True,
 )
 @click.pass_obj
-def batch(config, vcf_dir, bam_dir, ped_dir, sep, track, samples_dir, profile, seq_type, panel):
+def batch(
+    config, vcf_dir, bam_dir, ped_dir, sep, track, samples_dir, profile, seq_type, panel
+):
     """Annotate a batch of samples."""
     if bam_dir is None:
         bam_dir = vcf_dir
@@ -256,13 +259,17 @@ def batch(config, vcf_dir, bam_dir, ped_dir, sep, track, samples_dir, profile, s
     for vf in vcf_files:
         sample_split = vf.stem.split(sep)
         if len(sample_split) < 2:
-            print(f'error: separator "{sep}" not found in filename: {vf.name}',
-                  file=sys.stderr)
+            print(
+                f'error: separator "{sep}" not found in filename: {vf.name}',
+                file=sys.stderr,
+            )
             exit(1)
         sample_name = sample_split[0]
         if sample_name in sample_names:
-            print(f"error: duplicated sample name found, check input files: {sample_name}",
-                  file=sys.stderr)
+            print(
+                f"error: duplicated sample name found, check input files: {sample_name}",
+                file=sys.stderr,
+            )
             exit(1)
         sample_names.add(sample_name)
 
@@ -270,8 +277,10 @@ def batch(config, vcf_dir, bam_dir, ped_dir, sep, track, samples_dir, profile, s
         if len(bam_filename) == 0:
             bam_filename = ""
         elif len(bam_filename) > 1:
-            print(f"error: found more than one possible bam file for {sample_name}",
-                  file=sys.stderr)
+            print(
+                f"error: found more than one possible bam file for {sample_name}",
+                file=sys.stderr,
+            )
             exit(1)
         else:
             bam_filename = bam_filename[0]
@@ -280,8 +289,10 @@ def batch(config, vcf_dir, bam_dir, ped_dir, sep, track, samples_dir, profile, s
         if len(ped_filename) == 0:
             ped_filename = ""
         elif len(ped_filename) > 1:
-            print(f"error: found more than one possible ped file for {sample_name}",
-                  file=sys.stderr)
+            print(
+                f"error: found more than one possible ped file for {sample_name}",
+                file=sys.stderr,
+            )
             exit(1)
         else:
             ped_filename = ped_filename[0]
