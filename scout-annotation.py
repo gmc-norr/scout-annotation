@@ -264,7 +264,8 @@ def batch(
             print(f"error: panel not found: {p}", file=sys.stderr)
             exit(1)
 
-    vcf_files = vcf_dir.glob("*.vcf.gz")
+    vcf_files = list(vcf_dir.glob("*.vcf"))
+    vcf_files.extend(vcf_dir.glob("*.vcf.gz"))
     sample_names = set()
     samples = []
 
