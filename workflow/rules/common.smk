@@ -3,11 +3,14 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from snakemake.utils import validate
+import sys
 import yaml
 
 ruleorder: copy_results > tabix
 
-configfile: "config/config.yaml"
+if not workflow.overwrite_configfiles:
+    print("error: ", file=sys.stderr)
+
 validate(config, "../schema/config.schema.yaml")
 
 with open(config["resources"]) as f:
