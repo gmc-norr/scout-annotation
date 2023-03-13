@@ -139,7 +139,17 @@ def cli(ctx, config, resources):
 )
 @click.pass_obj
 def single(
-    config, vcf, profile, dryrun, name, track, samples_dir, seq_type, sex, bam_file, panel
+    config,
+    vcf,
+    profile,
+    dryrun,
+    name,
+    track,
+    samples_dir,
+    seq_type,
+    sex,
+    bam_file,
+    panel,
 ):
     """Annotate a single sample."""
 
@@ -249,7 +259,17 @@ def single(
 )
 @click.pass_obj
 def batch(
-    config, vcf_dir, bam_dir, ped_dir, sep, track, samples_dir, profile, dryrun, seq_type, panel
+    config,
+    vcf_dir,
+    bam_dir,
+    ped_dir,
+    sep,
+    track,
+    samples_dir,
+    profile,
+    dryrun,
+    seq_type,
+    panel,
 ):
     """Annotate a batch of samples."""
     if bam_dir is None:
