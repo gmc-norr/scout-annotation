@@ -31,6 +31,19 @@ wildcard_constraints:
 def _get_sample_row(wildcards):
     return samples[samples["sample"] == wildcards.sample]
 
+def get_bai_file(wildcards):
+    bam = get_bam_file(wildcards)
+    if len(bam) == 0:
+        return []
+    return f"{get_bam_file(wildcards)}.bai"
+
+def get_bam_file(wildcards):
+    bam = _get_sample_row(wildcards)["bam"].values
+    assert len(bam) == 1
+    if pd.isnull(bam[0]):
+        return []
+    return bam[0]
+
 def get_panel_dict():
     panels = {}
     if not panel_path.exists():
@@ -115,6 +128,9 @@ def get_output_files():
         outfiles.append(f"{outdir}/{s}/{s}.scout-annotated.vcf.gz")
         outfiles.append(f"{outdir}/{s}/{s}.scout-annotated.vcf.gz.tbi")
         outfiles.append(f"{outdir}/{s}/{s}.ped")
+        if len(get_bam_file(snakemake.io.Namedlist(fromdict={"sample": s}))) != 0:
+            outfiles.append(f"{outdir}/{s}/{s}.bam")
+            outfiles.append(f"{outdir}/{s}/{s}.bam.bai")
         load_configs.append(f"{outdir}/{s}/{s}.load_config.yaml")
     return outfiles, load_configs
 

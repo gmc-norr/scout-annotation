@@ -36,6 +36,10 @@ properties:
     type: string
     description: comma separated list of panels to apply to sample
     default: ""
+  bam:
+    type: string
+    description: path to BAM file for the sample
+    format: uri-reference
 required:
   - sample
   - sex

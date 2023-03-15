@@ -1,3 +1,22 @@
+rule link_bam:
+    input:
+        bam=get_bam_file,
+        bai=get_bai_file,
+    output:
+        bam=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.bam",
+        bai=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.bam.bai",
+    log: f"{config.get('output_directory', 'results')}/{{sample}}/link_bam.log",
+    run:
+        from pathlib import Path
+        outbam = Path(output.bam)
+        outbai = Path(output.bai)
+        if outbam.exists():
+            outbam.unlink()
+        if outbai.exists():
+            outbai.unlink()
+        outbam.symlink_to(input.bam)
+        outbai.symlink_to(input.bai)
+
 rule copy_results:
     input:
         vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz",

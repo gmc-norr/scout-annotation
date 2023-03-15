@@ -37,6 +37,10 @@ def generate_load_config(vcf, ped):
     else:
         load_config["vcf_snv"] = vcf.name
 
+    if snakemake.params["include_bam"]:
+        bam = f"{snakemake.params['sample_name']}.bam"
+        load_config["samples"][0]["alignment_path"] = bam
+
     return load_config
 
 
