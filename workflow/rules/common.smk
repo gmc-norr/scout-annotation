@@ -48,7 +48,11 @@ def get_sample_panels(wildcards):
 
 def get_panel_files(wildcards):
     panel_dict = get_panel_dict()
-    return [panel_dict[p] for p in get_sample_panels(wildcards)]
+    try:
+        panel_files = [panel_dict[p] for p in get_sample_panels(wildcards)]
+    except KeyError as ie:
+        raise KeyError(f"panel not found: {ie}")
+    return panel_files
 
 def get_vcf_file(wildcards):
     vcf_filename = _get_sample_row(wildcards)["vcf"].values
