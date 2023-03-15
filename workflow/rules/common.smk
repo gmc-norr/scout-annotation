@@ -21,8 +21,8 @@ samples = pd.read_csv(config["samples"], sep="\t", comment="#")
 validate(samples, "../schema/samples.schema.yaml")
 
 panel_path = Path(config["panel_filtering"]["panel_directory"])
-if not panel_path.is_absolute():
-    panel_path = Path(snakemake.workflow.srcdir("../.."), panel_path)
+if not panel_path.exists() and not panel_path.is_absolute():
+    panel_path = Path(snakemake.workflow.srcdir("../.."), panel_path).resolve()
 
 wildcard_constraints:
     ext=r"vcf(\.gz)?$",
@@ -33,6 +33,8 @@ def _get_sample_row(wildcards):
 
 def get_panel_dict():
     panels = {}
+    if not panel_path.exists():
+        raise FileNotFoundError(f"directory not found: {panel_path}")
     for p in panel_path.glob("*.tsv"):
         panels[p.stem] = p
     return panels
@@ -46,7 +48,11 @@ def get_sample_panels(wildcards):
 
 def get_panel_files(wildcards):
     panel_dict = get_panel_dict()
-    return [panel_dict[p] for p in get_sample_panels(wildcards)]
+    try:
+        panel_files = [panel_dict[p] for p in get_sample_panels(wildcards)]
+    except KeyError as ie:
+        raise KeyError(f"panel not found: {ie}")
+    return panel_files
 
 def get_vcf_file(wildcards):
     vcf_filename = _get_sample_row(wildcards)["vcf"].values
