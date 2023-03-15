@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.4.0](https://github.com/gmc-norr/scout-annotation/compare/v0.3.0...v0.4.0) (2023-03-15)
+
+
+### Features
+
+* add batch command to cli ([5f70d29](https://github.com/gmc-norr/scout-annotation/commit/5f70d29e5b714187385951ed0fa0571b41f7958a))
+* use repo dir if local dir is nonexistent ([ccb01b5](https://github.com/gmc-norr/scout-annotation/commit/ccb01b5df56bc233fb646155dc676811be438a29))
+
+
+### Bug Fixes
+
+* better error for missing panel ([9641d00](https://github.com/gmc-norr/scout-annotation/commit/9641d00b44d6d293002eef4f647d46ba37ceef82))
+* get version from command line ([d57a285](https://github.com/gmc-norr/scout-annotation/commit/d57a28522e0d563a63bd26d83ed6128222bb3a54))
+* relative path not correctly resolved ([f4f5d2a](https://github.com/gmc-norr/scout-annotation/commit/f4f5d2ac7c58f63a2d4601e8d4cd0f5497ce42ab))
+
 ## [0.3.0](https://github.com/gmc-norr/scout-annotation/compare/v0.2.3...v0.3.0) (2023-03-13)
 
 
