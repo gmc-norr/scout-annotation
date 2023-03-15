@@ -38,6 +38,9 @@ def get_bai_file(wildcards):
     return f"{get_bam_file(wildcards)}.bai"
 
 def get_bam_file(wildcards):
+    sample_row = _get_sample_row(wildcards)
+    if "bam" not in sample_row:
+        return []
     bam = _get_sample_row(wildcards)["bam"].values
     assert len(bam) == 1
     if pd.isnull(bam[0]):
