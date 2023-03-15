@@ -24,6 +24,7 @@ def get_version():
 
 
 def get_panels():
+    # TODO: fetch panel directory from config
     panel_paths = pathlib.Path(__file__).parent.glob("panels/*.tsv")
     panel_dict = {}
     for p in panel_paths:

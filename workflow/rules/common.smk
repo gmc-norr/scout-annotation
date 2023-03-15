@@ -20,6 +20,10 @@ validate(resources, "../schema/resources.schema.yaml")
 samples = pd.read_csv(config["samples"], sep="\t", comment="#")
 validate(samples, "../schema/samples.schema.yaml")
 
+panel_path = Path(config["panel_filtering"]["panel_directory"])
+if not panel_path.is_absolute():
+    panel_path = Path(snakemake.workflow.srcdir("../.."), panel_path)
+
 wildcard_constraints:
     ext=r"vcf(\.gz)?$",
     track=r"(rare_disease|cancer)"
@@ -29,7 +33,7 @@ def _get_sample_row(wildcards):
 
 def get_panel_dict():
     panels = {}
-    for p in Path(config["panel_filtering"]["panel_directory"]).glob("*.tsv"):
+    for p in panel_path.glob("*.tsv"):
         panels[p.stem] = p
     return panels
 

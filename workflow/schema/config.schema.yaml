@@ -33,8 +33,10 @@ properties:
       panel_directory:
         type: string
         description: >
-          directory where Scout panel files are kept, see
-          https://clinical-genomics.github.io/scout/user-guide/panels/
+          Directory where Scout panel files are kept, see
+          https://clinical-genomics.github.io/scout/user-guide/panels/.
+          If this is a relative path, it is assumed that it is relative to
+          the root of the scout-annotation workflow repository.
         format: uri-reference
         default: panels
     required:
