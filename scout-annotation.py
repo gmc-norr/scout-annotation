@@ -46,7 +46,7 @@ def write_samples(samples: List[Dict], directory: pathlib.Path):
     )
 
     # Header
-    cols = ("sample", "sex", "type", "track", "vcf", "ped", "panels")
+    cols = ("sample", "sex", "type", "track", "vcf", "bam", "ped", "panels")
     with open(filename, "w") as f:
         print("\t".join(cols), file=f)
         for s in samples:
@@ -163,7 +163,7 @@ def single(
         "type": seq_type,
         "track": track,
         "vcf": vcf,
-        "bam": bam_file,
+        "bam": bam_file if bam_file is not None else "",
         "panels": ",".join(panel),
         "ped": "",
     }
