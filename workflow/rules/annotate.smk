@@ -67,9 +67,11 @@ rule vep:
             &> {log}
         """
 
+
+
 rule most_severe_consequence:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.panel_filtered.vcf"
+        vcf=lambda wc: f"annotation/{{sample}}/{{sample}}.decomposed.vep.panel_filtered.filter-{get_filter_tag(wc)}.vcf"
     output:
         vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf")
     log: "annotation/{sample}/{sample}.most_severe_consequence.log"

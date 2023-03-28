@@ -47,6 +47,16 @@ def get_bam_file(wildcards):
         return []
     return bam[0]
 
+def get_filter_tag(wildcards):
+    track = _get_sample_row(wildcards)["track"].values
+    assert len(track) == 1
+    if track == "rare_disease":
+        return "rare_disease"
+    elif track == "cancer":
+        return "somatic"
+    else:
+        raise ValueError(f"no filter for track {track}")
+
 def get_panel_dict():
     panels = {}
     if not panel_path.exists():
@@ -116,12 +126,27 @@ def get_rank_model(wildcards):
     version = get_rank_model_version(wildcards)
     return f"rank_model/{sample_track}_rank_model_{version}.ini"
 
+def get_vcf_filter(wildcards):
+    filter_definition = config.get("vcf_filter", {}).get(wildcards.tag)
+    if not filter_definition:
+        raise KeyError(f"no such vcf filter definition: {wildcards.tag}")
+    return filter_definition
+
 def get_vcfanno_config(wildcards):
     sample_track = get_track(wildcards)
     genome_build = config["genome_build"]
     # TODO: set this up for structural variants
     version = config["vcfanno"]["config_version"][sample_track]
     return f"rank_model/grch{genome_build}_{sample_track}_vcfanno_config_{version}.toml"
+
+def get_vembrane_expression(wildcards):
+    filter_file = get_vcf_filter(wildcards)
+    with open(filter_file) as f:
+        definition = yaml.load(f, Loader=yaml.FullLoader)
+        expressions = []
+        for filter in definition["filters"]:
+            expressions.append(" ".join([x.strip() for x in filter["expression"].splitlines()]))
+    return "(" + ") and (".join(expressions) + ")"
 
 def get_output_files():
     outfiles = []
