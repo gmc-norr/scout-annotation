@@ -291,7 +291,11 @@ def batch(
     samples = []
 
     for vf in vcf_files:
-        sample_split = vf.stem.split(sep)
+        try:
+            sample_split = vf.name.split(sep)
+        except ValueError as ve:
+            print(f"error: {ve}", file=sys.stderr)
+            exit(1)
         if len(sample_split) < 2:
             print(
                 f'error: separator "{sep}" not found in filename: {vf.name}',
