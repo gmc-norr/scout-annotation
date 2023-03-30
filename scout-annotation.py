@@ -97,6 +97,11 @@ def cli(ctx, config, resources):
     is_flag=True,
 )
 @click.option(
+    "--notemp",
+    help="do not output files marked as temporary",
+    is_flag=True,
+)
+@click.option(
     "-t",
     "--track",
     help="sample track",
@@ -144,6 +149,7 @@ def single(
     vcf,
     profile,
     dryrun,
+    notemp,
     name,
     track,
     samples_dir,
@@ -192,6 +198,8 @@ def single(
         args.append(profile)
     if dryrun:
         args.append("--dryrun")
+    if notemp:
+        args.append("--notemp")
     subprocess.Popen(args).communicate()
 
 
@@ -246,6 +254,11 @@ def single(
     is_flag=True,
 )
 @click.option(
+    "--notemp",
+    help="do not output files marked as temporary",
+    is_flag=True,
+)
+@click.option(
     "-s",
     "--seq-type",
     help="type of sequencing",
@@ -269,6 +282,7 @@ def batch(
     samples_dir,
     profile,
     dryrun,
+    notemp,
     seq_type,
     panel,
 ):
@@ -366,6 +380,8 @@ def batch(
         args.append(profile)
     if dryrun:
         args.append("--dryrun")
+    if notemp:
+        args.append("--notemp")
 
     subprocess.Popen(args).communicate()
 
