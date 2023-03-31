@@ -1,4 +1,4 @@
-rule vcf_filtering:
+checkpoint vcf_filtering:
     input:
         vcf="{file}.vcf",
         filter_definition=get_vcf_filter,

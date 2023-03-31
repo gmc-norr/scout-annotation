@@ -31,6 +31,21 @@ wildcard_constraints:
 def _get_sample_row(wildcards):
     return samples[samples["sample"] == wildcards.sample]
 
+def get_annotated_vcf(wildcards):
+    vcf_filtering = checkpoints.vcf_filtering.get(
+        file="annotation/{sample}/{sample}.decomposed.vep.panel_filtered".format(**wildcards),
+        tag=get_filter_tag(wildcards),
+    )
+    with vcf_filtering.output["vcf"].open() as f:
+        n_variants = sum(1 for line in f if not line.startswith("#"))
+    if n_variants == 0:
+        return f'{vcf_filtering.output["vcf"]}.gz'
+    else:
+        return "annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz"
+
+def get_annotated_vcf_index(wildcards):
+    return f"{get_annotated_vcf(wildcards)}.tbi"
+
 def get_bai_file(wildcards):
     bam = get_bam_file(wildcards)
     if len(bam) == 0:
