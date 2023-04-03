@@ -82,6 +82,8 @@ def get_panel_dict():
 
 def get_sample_panels(wildcards):
     panels = _get_sample_row(wildcards)["panels"].values
+    if len(panels) == 0:
+        return []
     assert len(panels) == 1
     if pd.isnull(panels[0]):
         return []
@@ -97,7 +99,10 @@ def get_panel_files(wildcards):
 
 def get_vcf_file(wildcards):
     vcf_filename = _get_sample_row(wildcards)["vcf"].values
-    assert len(vcf_filename) == 1, "duplicate sample IDs found"
+    if len(vcf_filename) == 0:
+        raise RuntimeError("sample not found in sample file")
+    if len(vcf_filename) != 1:
+        raise RuntimeError("duplicate sample IDs found in sample file")
     return vcf_filename[0]
 
 def get_ped(wildcards):
