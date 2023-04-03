@@ -1,11 +1,13 @@
 filters:
   - name: common variation
     description: >
-      Exclude variants that have a frequency of >= 1%  within gnomAD or SweGen.
+      Exclude variants that have a frequency of >= 5%  within gnomAD or SweGen.
+      If no frequency is reported in any of these populations, the variant is
+      kept.
     expression: >
-      (CSQ["gnomAD_AF"] is NA or CSQ["gnomAD_AF"] < 0.01)
+      (CSQ["gnomAD_AF"] is NA or CSQ["gnomAD_AF"] < 0.05)
       and
-      (CSQ["SweGen_AF"] is NA or float(CSQ["SweGen_AF"]) < 0.01)
+      (CSQ["SweGen_AF"] is NA or float(CSQ["SweGen_AF"]) < 0.05)
 
   - name: intronic variants
     description: >
@@ -23,13 +25,11 @@ filters:
       Only include variants have >= 5 supporting reads for the alternative
       allele.
     expression: >
-      FORMAT["AD"][0][1] >= 5
+      FORMAT["AO"][0] >= 5
 
   - name: vaf
     description: >
-      Only include variants with a VAF >= 1%
+      Only include variants with a VAF >= 3%
     expression: >
-      FORMAT["AF"][0] >= 0.01
-        if "AF" in FORMAT
-        else FORMAT["AD"][0][1] / FORMAT["DP"][0] >= 0.01
+      FORMAT["AF"][0] >= 0.03
 

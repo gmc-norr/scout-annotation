@@ -23,13 +23,11 @@ filters:
       Only include variants have >= 5 supporting reads for the alternative
       allele.
     expression: >
-      FORMAT["AD"][0][1] >= 5
+      FORMAT["AO"][0] >= 5
 
   - name: vaf
     description: >
       Only include variants with a VAF >= 1%
     expression: >
       FORMAT["AF"][0] >= 0.01
-        if "AF" in FORMAT
-        else FORMAT["AD"][0][1] / FORMAT["DP"][0] >= 0.01
 
