@@ -27,7 +27,10 @@ filters:
 
   - name: vaf
     description: >
-      Only include variants with a VAF >= 1%
+      Only include variants with a VAF >= 1%. A missing AF should indicate that
+      it the frequency is uncertain for whatever reason, and a manual assessment
+      has to be performed. Therefore, variants with a missing AF also pass the
+      filter.
     expression: >
-      FORMAT["AF"][0] >= 0.01
+      FORMAT["AF"][0] is NA or FORMAT["AF"][0] >= 0.01
 

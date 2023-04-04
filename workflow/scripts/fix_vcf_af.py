@@ -2,14 +2,6 @@ from pysam import VariantFile
 import sys
 
 
-def add_ad(variant):
-    pass
-
-
-def add_af(variant):
-    pass
-
-
 def main():
     input_vcf = snakemake.input.vcf
     output_vcf = snakemake.output.vcf
@@ -44,7 +36,10 @@ def main():
             else:
                 for ao in v.samples[0]["AO"]:
                     afs.append(ao / v.samples[0]["DP"])
-            v.samples[0]["AF"] = afs
+            if len(afs) > 1:
+                v.samples[0]["AF"] = None
+            else:
+                v.samples[0]["AF"] = afs
         
         ovcf.write(v)
 
