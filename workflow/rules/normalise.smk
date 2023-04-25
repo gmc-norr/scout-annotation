@@ -10,11 +10,24 @@ rule decompose:
         vt decompose {input.vcf} -o {output.vcf} 2> {log}
         """
 
+rule normalize:
+    input:
+        vcf="decompose/{sample}/{sample}.decomposed.vcf",
+        fasta=config.get("reference", {}).get("fasta"),
+    output:
+        vcf=temp("decompose/{sample}/{sample}.decomposed.normalized.vcf"),
+    log: "decompose/{sample}/{sample}.decomposed.normalized.log",
+    container: "docker://hydragenetics/vt:2015.11.10",
+    shell:
+        """
+        vt normalize -n -r {input.fasta} {input.vcf} -o {output.vcf} 2> {log}
+        """
+
 rule fix_vcf_af:
     input:
-        vcf="decompose/{sample}/{sample}.decomposed.vcf"
+        vcf="decompose/{sample}/{sample}.decomposed.normalized.vcf"
     output:
-        vcf=temp("decompose/{sample}/{sample}.decomposed.fix-af.vcf")
+        vcf=temp("decompose/{sample}/{sample}.decomposed.normalized.fix-af.vcf")
     log: "decompose/{sample}/{sample}.decomposed.fix-af.log"
     container: "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
     script: "../scripts/fix_vcf_af.py"
