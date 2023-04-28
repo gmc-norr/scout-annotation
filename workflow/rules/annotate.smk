@@ -71,19 +71,19 @@ rule vep:
 
 rule most_severe_consequence:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.vcf",
+        vcf="annotation/{sample}/{sample}.decomposed.vep.vcfanno.vcf",
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf")
+        vcf=temp("annotation/{sample}/{sample}.annotated.vcf")
     log: "annotation/{sample}/{sample}.most_severe_consequence.log"
     conda: "../env/most_severe_consequence.yaml"
     script: "../scripts/most_severe_consequence.py"
 
 rule vcfanno:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf",
+        vcf="annotation/{sample}/{sample}.decomposed.vep.vcf",
         toml=get_vcfanno_config
     output:
-        vcf=temp("annotation/{sample}/{sample}.annotated.vcf")
+        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.vcfanno.vcf")
     log: "annotation/{sample}/{sample}.vcfanno.log"
     params:
         base_path=config.get("vcfanno", {}).get("base_path", "")
