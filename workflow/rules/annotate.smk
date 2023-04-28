@@ -71,7 +71,7 @@ rule vep:
 
 rule most_severe_consequence:
     input:
-        vcf=lambda wc: f"annotation/{{sample}}/{{sample}}.decomposed.vep.panel_filtered.filter-{get_filter_tag(wc)}.vcf"
+        vcf="annotation/{sample}/{sample}.decomposed.vep.vcf",
     output:
         vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf")
     log: "annotation/{sample}/{sample}.most_severe_consequence.log"
@@ -83,7 +83,7 @@ rule vcfanno:
         vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf",
         toml=get_vcfanno_config
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.vcf")
+        vcf=temp("annotation/{sample}/{sample}.annotated.vcf")
     log: "annotation/{sample}/{sample}.vcfanno.log"
     params:
         base_path=config.get("vcfanno", {}).get("base_path", "")
@@ -115,7 +115,7 @@ rule vcfanno_config:
 
 rule genmod_annotate:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.vcf",
+        vcf=get_filtered_vcf,
     output:
         vcf=temp("annotation/{sample}/{sample}.genmod_annotate.vcf"),
     log: "annotation/{sample}/{sample}.genmod_annotate.log"
@@ -166,7 +166,7 @@ rule genmod_compound:
     input:
         vcf="annotation/{sample}/{sample}.genmod_score.vcf",
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf"),
+        vcf=temp("annotation/{sample}/{sample}.annotated.genmod.vcf"),
     log: "annotation/{sample}/{sample}.genmod_compound.log"
     container: "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
     shell:

@@ -24,6 +24,12 @@ properties:
     enum:
       - cancer
       - rare_disease
+  filtering:
+    type: string
+    description: >
+      What SNV filter to apply to the sample. Should be a filter that is
+      defined in the config file under vcf_filtering. 
+    default: ""
   vcf:
     type: string
     description: path to the VCF file for the sample
@@ -41,6 +47,7 @@ properties:
     description: path to BAM file for the sample
     format: uri-reference
 required:
+  - filtering
   - sample
   - sex
   - type

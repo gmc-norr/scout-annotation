@@ -32,19 +32,54 @@ def _get_sample_row(wildcards):
     return samples[samples["sample"] == wildcards.sample]
 
 def get_annotated_vcf(wildcards):
-    vcf_filtering = checkpoints.vcf_filtering.get(
-        file="annotation/{sample}/{sample}.decomposed.vep.panel_filtered".format(**wildcards),
-        tag=get_filter_tag(wildcards),
-    )
-    with vcf_filtering.output["vcf"].open() as f:
-        n_variants = sum(1 for line in f if not line.startswith("#"))
-    if n_variants == 0:
-        return f'{vcf_filtering.output["vcf"]}.gz'
-    else:
-        return "annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz"
+    snv_filter = get_sample_snv_filter_tag(wildcards)
+    sample_panels = get_sample_panels(wildcards)
+
+    if len(sample_panels) > 0:
+        # Check the number of variants after panel filtering
+        panel_filtering = checkpoints.panel_filtering.get(**wildcards)
+        with panel_filtering.output["vcf"].open() as f:
+            n_variants = sum(1 for line in f if not line.startswith("#"))
+        if n_variants == 0:
+            # No variants left for SNV filtering and ranking
+            return f'{panel_filtering.output["vcf"]}.gz'
+
+    if snv_filter is not None:
+        # Check the number of variants after snv filtering
+        vcf_filename = "annotation/{sample}/{sample}.annotated".format(**wildcards)
+        if len(sample_panels) > 0:
+            vcf_filename = "annotation/{sample}/{sample}.annotated.panel_filtered".format(**wildcards)
+        vcf_filtering = checkpoints.vcf_filtering.get(
+            file=vcf_filename,
+            tag=get_sample_snv_filter_tag(wildcards),
+        )
+        with vcf_filtering.output["vcf"].open() as f:
+            n_variants = sum(1 for line in f if not line.startswith("#"))
+        if n_variants == 0:
+            # No variants left for ranking
+            return f'{vcf_filtering.output["vcf"]}.gz'
+
+    # Annotated, but not filtered vcf
+    return "annotation/{sample}/{sample}.annotated.vcf.gz".format(**wildcards)
 
 def get_annotated_vcf_index(wildcards):
     return f"{get_annotated_vcf(wildcards)}.tbi"
+
+def get_filtered_vcf(wildcards):
+    snv_filter = get_sample_snv_filter_tag(wildcards)
+    sample_panels = get_sample_panels(wildcards)
+
+    if snv_filter is None and len(sample_panels) == 0:
+        # no filtering at all, return annotated VCF
+        return "annotation/{sample}/{sample}.annotated.vcf"
+
+    if snv_filter is None:
+        # only panel filtering
+        return "annotation/{sample}/{sample}.annotated.panel_filtered.vcf".format(**wildcards)
+
+    # both panel and snv filtering
+    return "annotation/{sample}/{sample}.annotated.panel_filtered.filter-{snv_filter}.vcf".format(**wildcards, snv_filter=snv_filter)
+
 
 def get_bai_file(wildcards):
     bam = get_bam_file(wildcards)
@@ -62,16 +97,6 @@ def get_bam_file(wildcards):
         return []
     return bam[0]
 
-def get_filter_tag(wildcards):
-    track = _get_sample_row(wildcards)["track"].values
-    assert len(track) == 1
-    if track == "rare_disease":
-        return "rare_disease"
-    elif track == "cancer":
-        return "somatic"
-    else:
-        raise ValueError(f"no filter for track {track}")
-
 def get_panel_dict():
     panels = {}
     if not panel_path.exists():
@@ -88,6 +113,13 @@ def get_sample_panels(wildcards):
     if pd.isnull(panels[0]):
         return []
     return panels[0].split(",")
+
+def get_sample_snv_filter_tag(wildcards):
+    filtering = _get_sample_row(wildcards)["filtering"]
+    assert len(filtering) == 1
+    if pd.isnull(filtering.values[0]):
+        return None
+    return filtering.values[0]
 
 def get_panel_files(wildcards):
     panel_dict = get_panel_dict()
