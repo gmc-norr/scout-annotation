@@ -68,5 +68,5 @@ rule bgzip:
     container: "docker://hydragenetics/common:0.1.1"
     shell:
         """
-        bgzip {input.vcf}
+        bgzip -c {input.vcf} > {output.vcfgz}
         """
