@@ -25,7 +25,7 @@ filters:
       Only include variants have >= 5 supporting reads for the alternative
       allele.
     expression: >
-      FORMAT["AO"][0] >= 5
+      FORMAT["AO"][0] is NA or FORMAT["AO"][0] >= 5
 
   - name: vaf
     description: >
