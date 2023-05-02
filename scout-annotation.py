@@ -188,6 +188,7 @@ def single(
         pathlib.Path(pathlib.Path(__file__).parent, "workflow/Snakefile"),
         "--configfile",
         config.config,
+        "--rerun-incomplete",
         "--config",
         f"samples={samples_file}",
     ]
@@ -368,6 +369,7 @@ def batch(
         "snakemake",
         "-s",
         pathlib.Path(pathlib.Path(__file__).parent, "workflow/Snakefile"),
+        "--rerun-incomplete",
         "--configfile",
         config.config,
         "--config",
