@@ -117,14 +117,14 @@ def get_sample_panels(wildcards):
 def get_sample_snv_filter_tag(wildcards):
     filtering = _get_sample_row(wildcards)["filtering"]
     assert len(filtering) == 1
-    if pd.isnull(filtering.values[0]):
+    if pd.isnull(filtering.values[0]) or filtering.values[0] == "":
         return None
     return filtering.values[0]
 
 def get_panel_files(wildcards):
     panel_dict = get_panel_dict()
     try:
-        panel_files = [panel_dict[p] for p in get_sample_panels(wildcards)]
+        panel_files = [panel_dict[p] for p in get_sample_panels(wildcards) if p != ""]
     except KeyError as ie:
         raise KeyError(f"panel not found: {ie}")
     return panel_files
