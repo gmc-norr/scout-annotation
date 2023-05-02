@@ -1,0 +1,19 @@
+resources: "resources.yaml"
+
+reference:
+  fasta: /storage/userdata/references/homo_sapiens/hg19/fasta/hg19.fa.gz
+
+vcf_filter:
+  rare_disease: ../../config/rare_disease_filter.yaml
+  somatic: ../../config/somatic_filter.yaml
+  strict: strict_filter.yaml
+
+vcfanno:
+  base_path: "/storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37"
+
+vep:
+  cache: /storage/userdata/references/homo_sapiens/vep/vep_data_105
+  plugin: /storage/userdata/references/homo_sapiens/vep/vep_data_105/plugins
+  plugin-data: /storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37
+  swegen: /storage/userdata/references/homo_sapiens/hg19/index/swegen_20180409/anon-SweGen_STR_NSPHS_1000samples_SNV_hg19.vcf.gz
+  clinvar: /storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37/clinvar_20220730/clinvar_20220730.vcf.gz

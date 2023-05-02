@@ -97,6 +97,11 @@ def cli(ctx, config, resources):
     is_flag=True,
 )
 @click.option(
+    "--notemp",
+    help="do not output files marked as temporary",
+    is_flag=True,
+)
+@click.option(
     "-t",
     "--track",
     help="sample track",
@@ -144,6 +149,7 @@ def single(
     vcf,
     profile,
     dryrun,
+    notemp,
     name,
     track,
     samples_dir,
@@ -182,6 +188,7 @@ def single(
         pathlib.Path(pathlib.Path(__file__).parent, "workflow/Snakefile"),
         "--configfile",
         config.config,
+        "--rerun-incomplete",
         "--config",
         f"samples={samples_file}",
     ]
@@ -192,6 +199,8 @@ def single(
         args.append(profile)
     if dryrun:
         args.append("--dryrun")
+    if notemp:
+        args.append("--notemp")
     subprocess.Popen(args).communicate()
 
 
@@ -246,6 +255,11 @@ def single(
     is_flag=True,
 )
 @click.option(
+    "--notemp",
+    help="do not output files marked as temporary",
+    is_flag=True,
+)
+@click.option(
     "-s",
     "--seq-type",
     help="type of sequencing",
@@ -269,6 +283,7 @@ def batch(
     samples_dir,
     profile,
     dryrun,
+    notemp,
     seq_type,
     panel,
 ):
@@ -291,7 +306,11 @@ def batch(
     samples = []
 
     for vf in vcf_files:
-        sample_split = vf.stem.split(sep)
+        try:
+            sample_split = vf.name.split(sep)
+        except ValueError as ve:
+            print(f"error: {ve}", file=sys.stderr)
+            exit(1)
         if len(sample_split) < 2:
             print(
                 f'error: separator "{sep}" not found in filename: {vf.name}',
@@ -350,6 +369,7 @@ def batch(
         "snakemake",
         "-s",
         pathlib.Path(pathlib.Path(__file__).parent, "workflow/Snakefile"),
+        "--rerun-incomplete",
         "--configfile",
         config.config,
         "--config",
@@ -362,6 +382,8 @@ def batch(
         args.append(profile)
     if dryrun:
         args.append("--dryrun")
+    if notemp:
+        args.append("--notemp")
 
     subprocess.Popen(args).communicate()
 

@@ -20,5 +20,5 @@ snakemake \
     -c 1 \
     --use-singularity \
     --singularity-args "--bind /storage --bind $(realpath ..)" \
-    --configfile config.yaml
+    --configfiles ../config/config.yaml config.yaml
 ```

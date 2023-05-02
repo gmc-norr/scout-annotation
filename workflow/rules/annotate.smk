@@ -1,7 +1,7 @@
 rule vep:
     input:
-        vcf="decompose/{sample}/{sample}.decomposed.vcf.gz",
-        tabix="decompose/{sample}/{sample}.decomposed.vcf.gz.tbi",
+        vcf="decompose/{sample}/{sample}.decomposed.normalized.fix-af.vcf.gz",
+        tabix="decompose/{sample}/{sample}.decomposed.normalized.fix-af.vcf.gz.tbi",
         fasta=config["reference"]["fasta"],
         cache=config["vep"]["cache"],
         plugin=config["vep"]["plugin"],
@@ -67,21 +67,23 @@ rule vep:
             &> {log}
         """
 
+
+
 rule most_severe_consequence:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.panel_filtered.vcf"
+        vcf="annotation/{sample}/{sample}.decomposed.vep.vcfanno.vcf",
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf")
+        vcf=temp("annotation/{sample}/{sample}.annotated.vcf")
     log: "annotation/{sample}/{sample}.most_severe_consequence.log"
     conda: "../env/most_severe_consequence.yaml"
     script: "../scripts/most_severe_consequence.py"
 
 rule vcfanno:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcf",
+        vcf="annotation/{sample}/{sample}.decomposed.vep.vcf",
         toml=get_vcfanno_config
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.vcf")
+        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.vcfanno.vcf")
     log: "annotation/{sample}/{sample}.vcfanno.log"
     params:
         base_path=config.get("vcfanno", {}).get("base_path", "")
@@ -113,7 +115,7 @@ rule vcfanno_config:
 
 rule genmod_annotate:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.vcf",
+        vcf=get_filtered_vcf,
     output:
         vcf=temp("annotation/{sample}/{sample}.genmod_annotate.vcf"),
     log: "annotation/{sample}/{sample}.genmod_annotate.log"
@@ -164,7 +166,7 @@ rule genmod_compound:
     input:
         vcf="annotation/{sample}/{sample}.genmod_score.vcf",
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf"),
+        vcf=temp("annotation/{sample}/{sample}.annotated.genmod.vcf"),
     log: "annotation/{sample}/{sample}.genmod_compound.log"
     container: "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
     shell:

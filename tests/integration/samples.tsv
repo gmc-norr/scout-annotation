@@ -1,0 +1,8 @@
+sample	sex	type	filtering	track	vcf	ped	panels
+sample1	unknown	panel		cancer	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel1
+sample2	unknown	panel		rare_disease	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel3
+sample3	unknown	panel	strict	cancer	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		
+sample4	unknown	panel	rare_disease	rare_disease	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		
+sample5	unknown	panel	somatic	cancer	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel1,test_panel2
+sample6	unknown	panel	rare_disease	rare_disease	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel3
+sample7	unknown	panel	strict	rare_disease	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel2

@@ -11,6 +11,10 @@ panel_filtering:
   hard_filter: yes
   panel_directory: panels
 
+vcf_filter:
+  rare_disease: config/rare_disease_filter.yaml
+  somatic: config/somatic_filter.yaml
+
 reference:
   fasta: /storage/userdata/references/homo_sapiens/hg19/fasta/hg19.fa.gz
 

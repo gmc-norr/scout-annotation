@@ -1,4 +1,6 @@
+import pathlib
 import cyvcf2
+import tempfile
 
 
 SO_RANK = {
@@ -44,8 +46,37 @@ SO_RANK = {
 }
 
 
+def new_vcf_file(vcf):
+    """
+    Create a new vcf file where it is made sure that the VEP software header
+    line appears before the CSQ INFO header line.
+    """
+    vep_software_line = None
+    vep_info_line = None
+    vcf_file = tempfile.NamedTemporaryFile("w+t", delete=False)
+    with open(vcf) as f:
+        for line in f:
+            if line.startswith("#CHROM"):
+                print(vep_software_line, file=vcf_file)
+                print(vep_info_line, file=vcf_file)
+            if line.startswith("##INFO=<ID=CSQ"):
+                vep_info_line = line.strip()
+                continue
+            if line.startswith("##VEP"):
+                vep_software_line = line.strip()
+                continue
+            print(line.strip(), file=vcf_file)
+
+    vcf_file.close()
+
+    return pathlib.Path(vcf_file.name)
+
+
 def main():
-    vcf = cyvcf2.VCF(snakemake.input.vcf)
+    input_vcf = new_vcf_file(snakemake.input.vcf)
+    vcf = cyvcf2.VCF(input_vcf)
+
+    input_vcf.unlink()
 
     vcf.add_info_to_header(dict(
         ID="MOST_SEVERE_CONSEQUENCE",

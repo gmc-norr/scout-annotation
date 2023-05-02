@@ -1,9 +1,9 @@
-rule panel_filtering:
+checkpoint panel_filtering:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.vcf",
+        vcf="annotation/{sample}/{sample}.annotated.vcf",
         panels=get_panel_files,
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.panel_filtered.vcf"),
+        vcf=temp("annotation/{sample}/{sample}.annotated.panel_filtered.vcf"),
     log: "annotation/{sample}/{sample}.panel_filtering.log",
     params:
         hard_filter=config.get("panel_filtering", {}).get("hard_filter", True),

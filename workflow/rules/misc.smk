@@ -5,7 +5,7 @@ rule link_bam:
     output:
         bam=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.bam",
         bai=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.bam.bai",
-    log: f"{config.get('output_directory', 'results')}/{{sample}}/link_bam.log",
+    log: f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.link_bam.log",
     run:
         from pathlib import Path
         outbam = Path(output.bam)
@@ -19,14 +19,14 @@ rule link_bam:
 
 rule copy_results:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz",
-        tbi="annotation/{sample}/{sample}.decomposed.vep.most_severe_csq.vcfanno.genmod.vcf.gz.tbi",
+        vcf=get_annotated_vcf,
+        tbi=get_annotated_vcf_index,
         ped=get_ped,
     output:
         vcf=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.scout-annotated.vcf.gz",
         tbi=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.scout-annotated.vcf.gz.tbi",
         ped=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.ped",
-    log: f"{config.get('output_directory', 'results')}/{{sample}}/copy_results.log"
+    log: f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.copy_results.log"
     run:
         import logging
         import pathlib
@@ -68,5 +68,5 @@ rule bgzip:
     container: "docker://hydragenetics/common:0.1.1"
     shell:
         """
-        bgzip {input.vcf}
+        bgzip -c {input.vcf} > {output.vcfgz}
         """
