@@ -88,10 +88,10 @@ def scout_vcfs(integration):
 def scout_vcfs_no_filtering(integration_no_filtering):
     return [
         dict(
-            sample="sample1",
+            sample="sample2-1",
             empty=False,
-            n_variants=162,
-            path=Path("tests/integration/results/sample1/sample1.scout-annotated.vcf.gz"),
+            n_variants=160,
+            path=Path("tests/integration/results_no-filtering/sample2-1/sample2-1.scout-annotated.vcf.gz"),
         ),
     ]
 
