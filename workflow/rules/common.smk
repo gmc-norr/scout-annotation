@@ -59,8 +59,8 @@ def get_annotated_vcf(wildcards):
             # No variants left for ranking
             return f'{vcf_filtering.output["vcf"]}.gz'
 
-    # Annotated, but not filtered vcf
-    return "annotation/{sample}/{sample}.annotated.vcf.gz".format(**wildcards)
+    # genmod-annotated VCF
+    return "annotation/{sample}/{sample}.annotated.genmod.vcf.gz".format(**wildcards)
 
 def get_annotated_vcf_index(wildcards):
     return f"{get_annotated_vcf(wildcards)}.tbi"
