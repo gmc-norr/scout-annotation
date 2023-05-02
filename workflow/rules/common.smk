@@ -83,9 +83,9 @@ def get_filtered_vcf(wildcards):
 
 def get_bai_file(wildcards):
     bam = get_bam_file(wildcards)
-    if len(bam) == 0:
+    if not isinstance(bam, Path):
         return []
-    return f"{get_bam_file(wildcards)}.bai"
+    return get_bam_file(wildcards).with_suffix(".bam.bai")
 
 def get_bam_file(wildcards):
     sample_row = _get_sample_row(wildcards)
@@ -95,7 +95,7 @@ def get_bam_file(wildcards):
     assert len(bam) == 1
     if pd.isnull(bam[0]):
         return []
-    return bam[0]
+    return Path(bam[0]).resolve()
 
 def get_panel_dict():
     panels = {}
@@ -208,7 +208,7 @@ def get_output_files():
         outfiles.append(f"{outdir}/{s}/{s}.scout-annotated.vcf.gz")
         outfiles.append(f"{outdir}/{s}/{s}.scout-annotated.vcf.gz.tbi")
         outfiles.append(f"{outdir}/{s}/{s}.ped")
-        if len(get_bam_file(snakemake.io.Namedlist(fromdict={"sample": s}))) != 0:
+        if isinstance(get_bam_file(snakemake.io.Namedlist(fromdict={"sample": s})), Path):
             outfiles.append(f"{outdir}/{s}/{s}.bam")
             outfiles.append(f"{outdir}/{s}/{s}.bam.bai")
         load_configs.append(f"{outdir}/{s}/{s}.load_config.yaml")
