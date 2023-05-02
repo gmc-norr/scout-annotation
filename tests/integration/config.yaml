@@ -4,8 +4,9 @@ reference:
   fasta: /storage/userdata/references/homo_sapiens/hg19/fasta/hg19.fa.gz
 
 vcf_filter:
-  rare_disease: ../config/rare_disease_filter.yaml
-  somatic: ../config/somatic_filter.yaml
+  rare_disease: ../../config/rare_disease_filter.yaml
+  somatic: ../../config/somatic_filter.yaml
+  strict: strict_filter.yaml
 
 vcfanno:
   base_path: "/storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37"
