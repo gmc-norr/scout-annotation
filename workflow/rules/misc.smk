@@ -14,8 +14,8 @@ rule link_bam:
             outbam.unlink()
         if outbai.exists():
             outbai.unlink()
-        outbam.symlink_to(input.bam)
-        outbai.symlink_to(input.bai)
+        outbam.symlink_to(Path(input.bam).resolve())
+        outbai.symlink_to(Path(input.bai).resolve())
 
 rule copy_results:
     input:

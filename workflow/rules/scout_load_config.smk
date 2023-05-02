@@ -1,3 +1,5 @@
+from pathlib import Path
+
 rule scout_load_config:
     input:
         vcf=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.scout-annotated.vcf.gz",
@@ -15,5 +17,5 @@ rule scout_load_config:
         rank_model_version=get_rank_model_version,
         vcf_samples=get_vcf_samples,
         panels=get_sample_panels,
-        include_bam=lambda wc: len(get_bam_file(wc)) != 0,
+        include_bam=lambda wc: isinstance(get_bam_file(wc), Path),
     script: "../scripts/scout_load_config.py"
