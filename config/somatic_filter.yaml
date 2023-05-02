@@ -9,14 +9,14 @@ filters:
 
   - name: intronic variants
     description: >
-      Exclude intronic variants that are not annotated as splice variants or
-      have been previously reported in COSMIC.
+      Only include variants that are not intronic, unless they are also
+      annotated as splice variants or have been previously reported in COSMIC.
     expression: >
-        re.search("intron_variant", CSQ["Consequence"])
+        re.search("intron_variant", CSQ["Consequence"]) is None
         or
-        re.search("splice", CSQ["Consequence"])
+        (re.search("splice", CSQ["Consequence"])
         or
-        any(re.search("COSV\d+", x) for x in CSQ["Existing_variation"])
+        any(re.search("COSV\d+", x) for x in CSQ["Existing_variation"]))
 
   - name: allele depth
     description:
