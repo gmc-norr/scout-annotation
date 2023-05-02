@@ -50,36 +50,45 @@ def scout_vcfs(integration):
         dict(
             sample="sample1",
             empty=False,
+            snv_filtering=False,
             path=Path("tests/integration/results/sample1/sample1.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample2",
             empty=True,
+            snv_filtering=False,
             path=Path("tests/integration/results/sample2/sample2.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample3",
             empty=True,
+            snv_filtering=True,
             path=Path("tests/integration/results/sample3/sample3.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample4",
             empty=False,
+            snv_filtering=True,
             path=Path("tests/integration/results/sample4/sample4.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample5",
             empty=False,
+            snv_filtering=True,
             path=Path("tests/integration/results/sample5/sample5.scout-annotated.vcf.gz"),
         ),
         dict(
+            # This sample has SNV filtering enabled, but it should be empty
+            # after the panel filtering.
             sample="sample6",
             empty=True,
+            snv_filtering=False,
             path=Path("tests/integration/results/sample6/sample6.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample7",
             empty=True,
+            snv_filtering=True,
             path=Path("tests/integration/results/sample7/sample7.scout-annotated.vcf.gz"),
         ),
     ]
@@ -98,6 +107,17 @@ def scout_vcfs_no_filtering(integration_no_filtering):
 def test_vcfs_exist(scout_vcfs):
     for vcf in scout_vcfs:
         assert vcf["path"].exists()
+
+def test_vembrane_filtering(scout_vcfs):
+    for vcf in scout_vcfs:
+        with gzip.open(vcf["path"], "rt") as f:
+            vembrane_found = False
+            for line in f:
+                if not line.startswith("#"):
+                    break
+                if line.startswith("##vembraneCmd"):
+                    vembrane_found = True
+        assert vcf["snv_filtering"] == vembrane_found
 
 def test_number_of_variants(scout_vcfs):
     for vcf in scout_vcfs:
