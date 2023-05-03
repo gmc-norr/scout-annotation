@@ -49,46 +49,46 @@ def scout_vcfs(integration):
     return [
         dict(
             sample="sample1",
-            empty=False,
             snv_filtering=False,
+            n_variants=23,
             path=Path("tests/integration/results/sample1/sample1.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample2",
-            empty=True,
             snv_filtering=False,
+            n_variants=0,
             path=Path("tests/integration/results/sample2/sample2.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample3",
-            empty=True,
             snv_filtering=True,
+            n_variants=0,
             path=Path("tests/integration/results/sample3/sample3.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample4",
-            empty=False,
             snv_filtering=True,
+            n_variants=32,
             path=Path("tests/integration/results/sample4/sample4.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample5",
-            empty=False,
             snv_filtering=True,
+            n_variants=24,
             path=Path("tests/integration/results/sample5/sample5.scout-annotated.vcf.gz"),
         ),
         dict(
             # This sample has SNV filtering enabled, but it should be empty
             # after the panel filtering.
             sample="sample6",
-            empty=True,
             snv_filtering=False,
+            n_variants=0,
             path=Path("tests/integration/results/sample6/sample6.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample7",
-            empty=True,
             snv_filtering=True,
+            n_variants=0,
             path=Path("tests/integration/results/sample7/sample7.scout-annotated.vcf.gz"),
         ),
     ]
@@ -98,7 +98,6 @@ def scout_vcfs_no_filtering(integration_no_filtering):
     return [
         dict(
             sample="sample2-1",
-            empty=False,
             n_variants=160,
             path=Path("tests/integration/results_no-filtering/sample2-1/sample2-1.scout-annotated.vcf.gz"),
         ),
@@ -128,7 +127,7 @@ def test_number_of_variants(scout_vcfs):
                     continue
                 if not line.startswith("#"):
                     n_variants += 1
-        assert vcf["empty"] == (n_variants == 0), vcf["sample"]
+        assert vcf["n_variants"] == n_variants, vcf["sample"]
 
 def test_vcfs_no_filtering(scout_vcfs_no_filtering):
     for vcf in scout_vcfs_no_filtering:
