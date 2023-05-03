@@ -12,5 +12,6 @@ decompose/
 mock_ped/
 rank_model/
 results/
+results_no-filtering/
 venv/
 samples.tsv
