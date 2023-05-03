@@ -79,6 +79,12 @@ def cli(ctx, config, resources):
         resolve_path=True,
     ),
 )
+@click.option(
+    "--out-dir",
+    "-o",
+    help="directory to write output files to",
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
+)
 @click.option("-n", "--name", help="sample name")
 @click.option(
     "--profile",
@@ -147,6 +153,7 @@ def cli(ctx, config, resources):
 def single(
     config,
     vcf,
+    out_dir,
     profile,
     dryrun,
     notemp,
@@ -194,6 +201,8 @@ def single(
     ]
     if config.resources is not None:
         args.append(f"resources={config.resources}")
+    if out_dir is not None:
+        args.append(f"output_directory={out_dir}")
     if profile is not None:
         args.append("--profile")
         args.append(profile)
@@ -207,6 +216,12 @@ def single(
 @cli.command()
 @click.argument(
     "vcf-dir", type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
+)
+@click.option(
+    "--out-dir",
+    "-o",
+    help="directory to write output files to",
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
 )
 @click.option(
     "--bam-dir",
@@ -276,6 +291,7 @@ def single(
 def batch(
     config,
     vcf_dir,
+    out_dir,
     bam_dir,
     ped_dir,
     sep,
@@ -377,6 +393,8 @@ def batch(
     ]
     if config.resources is not None:
         args.append(f"resources={config.resources}")
+    if out_dir is not None:
+        args.append(f"output_directory={out_dir}")
     if profile is not None:
         args.append("--profile")
         args.append(profile)
