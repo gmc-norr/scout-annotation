@@ -46,11 +46,11 @@ def write_samples(samples: List[Dict], directory: pathlib.Path):
     )
 
     # Header
-    cols = ("sample", "sex", "type", "track", "vcf", "bam", "ped", "panels")
+    cols = ("sample", "sex", "type", "filtering", "track", "vcf", "bam", "ped", "panels")
     with open(filename, "w") as f:
         print("\t".join(cols), file=f)
         for s in samples:
-            print("\t".join(str(s[c]) for c in cols), file=f)
+            print("\t".join(str(s[c]) if c in s else "" for c in cols), file=f)
 
     return filename
 
@@ -149,6 +149,10 @@ def cli(ctx, config, resources):
     help="gene panel to filter by, can be passed multiple times",
     multiple=True,
 )
+@click.option(
+    "--snv-filter",
+    help="SNV filter to apply",
+)
 @click.pass_obj
 def single(
     config,
@@ -164,6 +168,7 @@ def single(
     sex,
     bam_file,
     panel,
+    snv_filter,
 ):
     """Annotate a single sample."""
 
@@ -180,6 +185,9 @@ def single(
         "panels": ",".join(panel),
         "ped": "",
     }
+
+    if snv_filter is not None:
+        sample["filtering"] = snv_filter
 
     gene_panels = get_panels()
     for p in panel:
@@ -287,6 +295,10 @@ def single(
     help="gene panel to filter by, can be passed multiple times",
     multiple=True,
 )
+@click.option(
+    "--snv-filter",
+    help="SNV filter to apply",
+)
 @click.pass_obj
 def batch(
     config,
@@ -302,6 +314,7 @@ def batch(
     notemp,
     seq_type,
     panel,
+    snv_filter,
 ):
     """Annotate a batch of samples."""
     if bam_dir is None:
@@ -376,6 +389,9 @@ def batch(
             "panels": ",".join(panel),
             "ped": ped_filename,
         }
+
+        if snv_filter is not None:
+            sample["filtering"] = snv_filter
 
         samples.append(sample)
 
