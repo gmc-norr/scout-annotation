@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.6.0](https://github.com/gmc-norr/scout-annotation/compare/v0.5.0...v0.6.0) (2023-05-04)
+
+
+### Features
+
+* remove duplicate variants ([51533d1](https://github.com/gmc-norr/scout-annotation/commit/51533d17752cc75fe831ad99e60857fae7f00e64))
+* specify output directory on command line ([4d9354b](https://github.com/gmc-norr/scout-annotation/commit/4d9354bc3c66790195f66a3189a9cf3eb067cc84))
+* specify SNV filter on command line ([148d46b](https://github.com/gmc-norr/scout-annotation/commit/148d46b519d2c7273e3c9c42135d2d98feb3cbeb))
+
+
+### Bug Fixes
+
+* faulty intronic variant filter ([0b7702a](https://github.com/gmc-norr/scout-annotation/commit/0b7702aebf60b109ec6aae9b7909a640fbeb7079))
+* return correct vcf for final output ([96e4937](https://github.com/gmc-norr/scout-annotation/commit/96e4937a500701d0dbfb1b557f3b1159302328eb))
+* symlink BAM files using absolute paths ([e1d3a6c](https://github.com/gmc-norr/scout-annotation/commit/e1d3a6c1231f0192b7fc08c06d0831a7a5350ba1))
+
 ## [0.5.0](https://github.com/gmc-norr/scout-annotation/compare/v0.4.0...v0.5.0) (2023-05-02)
 
 
