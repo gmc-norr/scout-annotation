@@ -13,14 +13,14 @@ def get_track_name(track):
 def generate_load_config(vcf, ped):
     genome_build = snakemake.config["genome_build"]
     rank_model_version = snakemake.params["rank_model_version"]
-    scout_owner = snakemake.config["scout_owner"]
+    owner = snakemake.params["owner"]
 
     load_config = dict(
         family=snakemake.params["sample_name"],
         genome_build=genome_build,
         rank_model_version=rank_model_version,
         rank_score_threshold=-1000,
-        owner=scout_owner,
+        owner=owner,
         track=get_track_name(snakemake.params["track"]),
         gene_panels=snakemake.params["panels"],
         samples=[

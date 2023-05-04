@@ -97,6 +97,11 @@ def get_bam_file(wildcards):
         return []
     return Path(bam[0]).resolve()
 
+def get_case_owner(wildcards):
+    case_owner = _get_sample_row(wildcards)["owner"].values
+    assert len(case_owner) == 1
+    return case_owner[0]
+
 def get_panel_dict():
     panels = {}
     if not panel_path.exists():

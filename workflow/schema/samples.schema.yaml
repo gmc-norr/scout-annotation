@@ -4,6 +4,9 @@ properties:
   sample:
     type: string
     regex: /[^_]+/
+  owner:
+    type: string
+    description: Scout institute that should own the case
   sex:
     type: string
     description: sex of the individual sequenced
@@ -48,6 +51,7 @@ properties:
     format: uri-reference
 required:
   - filtering
+  - owner
   - sample
   - sex
   - type
