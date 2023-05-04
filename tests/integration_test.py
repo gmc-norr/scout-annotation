@@ -1,3 +1,4 @@
+import cyvcf2
 import gzip
 from pathlib import Path
 import pytest
@@ -140,6 +141,10 @@ def scout_vcfs_no_filtering(integration_no_filtering):
 def test_vcfs_exist(scout_vcfs):
     for vcf in scout_vcfs:
         assert vcf["path"].exists()
+
+def test_vcf_sample_names(scout_vcfs):
+    for vcf in scout_vcfs:
+        assert cyvcf2.VCF(vcf["path"]).samples[0] == vcf["sample"], vcf["sample"]
 
 def test_vembrane_filtering(scout_vcfs):
     for vcf in scout_vcfs:

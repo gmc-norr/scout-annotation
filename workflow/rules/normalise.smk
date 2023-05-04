@@ -1,6 +1,29 @@
+rule sample_name_translation:
+    output:
+        samples=temp("decompose/{sample}/{sample}.samples.txt")
+    params:
+        old_name=get_vcf_samples,
+        new_name=lambda wc: wc.sample,
+    run:
+        with open(output.samples, "w") as f:
+            print(f"{params.old_name} {params.new_name}", file=f)
+
+rule bcftools_reheader:
+    input:
+        vcf=get_vcf_file,
+        samples="decompose/{sample}/{sample}.samples.txt",
+    output:
+        vcf=temp("decompose/{sample}/{sample}.renamed.vcf")
+    log: "decompose/{sample}/{sample}.renamed.log"
+    container: "docker://hydragenetics/common:0.3.0"
+    shell:
+        """
+        bcftools reheader -s {input.samples} -o {output.vcf} {input.vcf} 2> {log}
+        """
+
 rule decompose:
     input:
-        vcf=get_vcf_file
+        vcf=get_reheadered_vcf_file,
     output:
         vcf=temp("decompose/{sample}/{sample}.decomposed.vcf")
     log: "decompose/{sample}/{sample}.decomposed.log"
