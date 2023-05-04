@@ -19,6 +19,7 @@ def generate_load_config(vcf, ped):
         family=snakemake.params["sample_name"],
         genome_build=genome_build,
         rank_model_version=rank_model_version,
+        rank_score_threshold=-1000,
         owner=scout_owner,
         track=get_track_name(snakemake.params["track"]),
         gene_panels=snakemake.params["panels"],
