@@ -1,6 +1,8 @@
+import cyvcf2
 import gzip
 from pathlib import Path
 import pytest
+import re
 import subprocess
 import yaml
 
@@ -141,6 +143,10 @@ def test_vcfs_exist(scout_vcfs):
     for vcf in scout_vcfs:
         assert vcf["path"].exists()
 
+def test_vcf_sample_names(scout_vcfs):
+    for vcf in scout_vcfs:
+        assert cyvcf2.VCF(vcf["path"]).samples[0] == vcf["sample"], vcf["sample"]
+
 def test_vembrane_filtering(scout_vcfs):
     for vcf in scout_vcfs:
         with gzip.open(vcf["path"], "rt") as f:
@@ -187,3 +193,18 @@ def test_rank_score_threshold(load_configs):
         c = yaml.safe_load(config["path"].read_text())
         assert "rank_score_threshold" in c, config["sample"]
         assert c["rank_score_threshold"] == -1000, config["sample"]
+
+def test_rank_score_sample_names(scout_vcfs):
+    rank_score_pattern = re.compile(r"RankScore=(?P<sample>[^:]+):(\d+)")
+    for vcf in scout_vcfs:
+        with gzip.open(vcf["path"], "rt") as f:
+            for line in f:
+                if len(line.strip()) == 0:
+                    continue
+                if line.startswith("#"):
+                    continue
+                rs_match = rank_score_pattern.search(line)
+                assert rs_match is not None, vcf["sample"]
+                assert rs_match.group("sample") == vcf["sample"], vcf["sample"]
+
+

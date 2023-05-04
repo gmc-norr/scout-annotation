@@ -137,6 +137,12 @@ def get_vcf_file(wildcards):
         raise RuntimeError("duplicate sample IDs found in sample file")
     return vcf_filename[0]
 
+def get_reheadered_vcf_file(wildcards):
+    vcf_sample_name = get_vcf_samples(wildcards)
+    if vcf_sample_name != wildcards.sample:
+        return rules.bcftools_reheader.output.vcf
+    return get_vcf_file(wildcards)
+
 def get_ped(wildcards):
     ped = _get_sample_row(wildcards)["ped"].values
     assert len(ped) == 1

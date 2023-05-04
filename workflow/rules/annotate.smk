@@ -149,6 +149,7 @@ rule genmod_score:
     input:
         vcf="annotation/{sample}/{sample}.genmod_models.vcf",
         rank_model=get_rank_model,
+        ped=get_ped,
     output:
         vcf=temp("annotation/{sample}/{sample}.genmod_score.vcf"),
     log: "annotation/{sample}/{sample}.genmod_score.log"
@@ -157,6 +158,7 @@ rule genmod_score:
         """
         genmod score \\
             --rank_results \\
+            --family_file {input.ped} \\
             --score_config {input.rank_model} \\
             {input.vcf} > {output.vcf} 2> {log}
         """
