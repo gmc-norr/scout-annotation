@@ -2,6 +2,7 @@ import cyvcf2
 import gzip
 from pathlib import Path
 import pytest
+import re
 import subprocess
 import yaml
 
@@ -192,3 +193,18 @@ def test_rank_score_threshold(load_configs):
         c = yaml.safe_load(config["path"].read_text())
         assert "rank_score_threshold" in c, config["sample"]
         assert c["rank_score_threshold"] == -1000, config["sample"]
+
+def test_rank_score_sample_names(scout_vcfs):
+    rank_score_pattern = re.compile(r"RankScore=(?P<sample>[^:]+):(\d+)")
+    for vcf in scout_vcfs:
+        with gzip.open(vcf["path"], "rt") as f:
+            for line in f:
+                if len(line.strip()) == 0:
+                    continue
+                if line.startswith("#"):
+                    continue
+                rs_match = rank_score_pattern.search(line)
+                assert rs_match is not None, vcf["sample"]
+                assert rs_match.group("sample") == vcf["sample"], vcf["sample"]
+
+
