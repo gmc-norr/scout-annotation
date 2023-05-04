@@ -46,7 +46,7 @@ def write_samples(samples: List[Dict], directory: pathlib.Path):
     )
 
     # Header
-    cols = ("sample", "sex", "type", "filtering", "track", "vcf", "bam", "ped", "panels")
+    cols = ("sample", "owner", "sex", "type", "filtering", "track", "vcf", "bam", "ped", "panels")
     with open(filename, "w") as f:
         print("\t".join(cols), file=f)
         for s in samples:
@@ -153,6 +153,12 @@ def cli(ctx, config, resources):
     "--snv-filter",
     help="SNV filter to apply",
 )
+@click.option(
+    "--owner",
+    help="Scout institiute ID that should own the case",
+    default="clingen",
+    show_default=True,
+)
 @click.pass_obj
 def single(
     config,
@@ -169,6 +175,7 @@ def single(
     bam_file,
     panel,
     snv_filter,
+    owner,
 ):
     """Annotate a single sample."""
 
@@ -177,6 +184,7 @@ def single(
 
     sample = {
         "sample": name,
+        "owner": owner,
         "sex": sex,
         "type": seq_type,
         "track": track,
@@ -299,6 +307,12 @@ def single(
     "--snv-filter",
     help="SNV filter to apply",
 )
+@click.option(
+    "--owner",
+    help="Scout institiute ID that should own the case",
+    default="clingen",
+    show_default=True,
+)
 @click.pass_obj
 def batch(
     config,
@@ -315,6 +329,7 @@ def batch(
     seq_type,
     panel,
     snv_filter,
+    owner,
 ):
     """Annotate a batch of samples."""
     if bam_dir is None:
@@ -381,6 +396,7 @@ def batch(
 
         sample = {
             "sample": sample_name,
+            "owner": owner,
             "sex": "unknown",
             "type": seq_type,
             "track": track,
