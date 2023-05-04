@@ -52,30 +52,37 @@ def load_configs(integration):
     return [
         dict(
             sample="sample1",
+            owner="clingen-somatic",
             path=Path("tests/integration/results/sample1/sample1.load_config.yaml"),
         ),
         dict(
             sample="sample2",
+            owner="clingen",
             path=Path("tests/integration/results/sample2/sample2.load_config.yaml"),
         ),
         dict(
             sample="sample3",
+            owner="clingen-somatic",
             path=Path("tests/integration/results/sample3/sample3.load_config.yaml"),
         ),
         dict(
             sample="sample4",
+            owner="clingen",
             path=Path("tests/integration/results/sample4/sample4.load_config.yaml"),
         ),
         dict(
             sample="sample5",
+            owner="clingen-somatic",
             path=Path("tests/integration/results/sample5/sample5.load_config.yaml"),
         ),
         dict(
             sample="sample6",
+            owner="clingen",
             path=Path("tests/integration/results/sample6/sample6.load_config.yaml"),
         ),
         dict(
             sample="sample7",
+            owner="clingen",
             path=Path("tests/integration/results/sample7/sample7.load_config.yaml"),
         ),
     ]
@@ -207,4 +214,8 @@ def test_rank_score_sample_names(scout_vcfs):
                 assert rs_match is not None, vcf["sample"]
                 assert rs_match.group("sample") == vcf["sample"], vcf["sample"]
 
-
+def test_case_owner(load_configs):
+    for config in load_configs:
+        c = yaml.safe_load(config["path"].read_text())
+        assert "owner" in c, config["sample"]
+        assert c["owner"] == config["owner"], config["sample"]

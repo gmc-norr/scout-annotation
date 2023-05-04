@@ -10,6 +10,7 @@ rule scout_load_config:
     container: "docker://python:3.10.7-slim"
     params:
         sample_name=lambda wc: wc.sample,
+        owner=get_case_owner,
         sex=get_sex,
         phenotype="affected",
         analysis_type=get_analysis_type,
