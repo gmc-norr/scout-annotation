@@ -46,11 +46,11 @@ def write_samples(samples: List[Dict], directory: pathlib.Path):
     )
 
     # Header
-    cols = ("sample", "sex", "type", "track", "vcf", "bam", "ped", "panels")
+    cols = ("sample", "sex", "type", "filtering", "track", "vcf", "bam", "ped", "panels")
     with open(filename, "w") as f:
         print("\t".join(cols), file=f)
         for s in samples:
-            print("\t".join(str(s[c]) for c in cols), file=f)
+            print("\t".join(str(s[c]) if c in s else "" for c in cols), file=f)
 
     return filename
 
@@ -78,6 +78,12 @@ def cli(ctx, config, resources):
         file_okay=True,
         resolve_path=True,
     ),
+)
+@click.option(
+    "--out-dir",
+    "-o",
+    help="directory to write output files to",
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
 )
 @click.option("-n", "--name", help="sample name")
 @click.option(
@@ -143,10 +149,15 @@ def cli(ctx, config, resources):
     help="gene panel to filter by, can be passed multiple times",
     multiple=True,
 )
+@click.option(
+    "--snv-filter",
+    help="SNV filter to apply",
+)
 @click.pass_obj
 def single(
     config,
     vcf,
+    out_dir,
     profile,
     dryrun,
     notemp,
@@ -157,6 +168,7 @@ def single(
     sex,
     bam_file,
     panel,
+    snv_filter,
 ):
     """Annotate a single sample."""
 
@@ -173,6 +185,9 @@ def single(
         "panels": ",".join(panel),
         "ped": "",
     }
+
+    if snv_filter is not None:
+        sample["filtering"] = snv_filter
 
     gene_panels = get_panels()
     for p in panel:
@@ -194,6 +209,8 @@ def single(
     ]
     if config.resources is not None:
         args.append(f"resources={config.resources}")
+    if out_dir is not None:
+        args.append(f"output_directory={out_dir}")
     if profile is not None:
         args.append("--profile")
         args.append(profile)
@@ -207,6 +224,12 @@ def single(
 @cli.command()
 @click.argument(
     "vcf-dir", type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
+)
+@click.option(
+    "--out-dir",
+    "-o",
+    help="directory to write output files to",
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
 )
 @click.option(
     "--bam-dir",
@@ -272,10 +295,15 @@ def single(
     help="gene panel to filter by, can be passed multiple times",
     multiple=True,
 )
+@click.option(
+    "--snv-filter",
+    help="SNV filter to apply",
+)
 @click.pass_obj
 def batch(
     config,
     vcf_dir,
+    out_dir,
     bam_dir,
     ped_dir,
     sep,
@@ -286,6 +314,7 @@ def batch(
     notemp,
     seq_type,
     panel,
+    snv_filter,
 ):
     """Annotate a batch of samples."""
     if bam_dir is None:
@@ -361,6 +390,9 @@ def batch(
             "ped": ped_filename,
         }
 
+        if snv_filter is not None:
+            sample["filtering"] = snv_filter
+
         samples.append(sample)
 
     samples_file = write_samples(samples, samples_dir)
@@ -377,6 +409,8 @@ def batch(
     ]
     if config.resources is not None:
         args.append(f"resources={config.resources}")
+    if out_dir is not None:
+        args.append(f"output_directory={out_dir}")
     if profile is not None:
         args.append("--profile")
         args.append(profile)
