@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.7.0](https://github.com/gmc-norr/scout-annotation/compare/v0.6.0...v0.7.0) (2023-05-04)
+
+
+### Features
+
+* add case owner to load config ([5c25ba6](https://github.com/gmc-norr/scout-annotation/commit/5c25ba6341e734c50d374c5e06c3a81d5df37aef))
+* add rank score threshold to load config ([b75eaf7](https://github.com/gmc-norr/scout-annotation/commit/b75eaf7b67908596af3953cf005fc311e172f0ff))
+* rename sample in VCF file, close [#33](https://github.com/gmc-norr/scout-annotation/issues/33) ([f7fb493](https://github.com/gmc-norr/scout-annotation/commit/f7fb493bacf2fa20d1b590b09a45325d037e3d30))
+* specify case owner on command line ([99e4a70](https://github.com/gmc-norr/scout-annotation/commit/99e4a703c8583cfc28f24f69df4389f7ff0a8c9d))
+
+
+### Bug Fixes
+
+* correct names for RankScore field ([90756d3](https://github.com/gmc-norr/scout-annotation/commit/90756d3bb5d3d6404dccb03855b2cd5a1788e179))
+
 ## [0.6.0](https://github.com/gmc-norr/scout-annotation/compare/v0.5.0...v0.6.0) (2023-05-04)
 
 
