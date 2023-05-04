@@ -1,0 +1,38 @@
+filters:
+  - name: common variation
+    description: >
+      Exclude variants that have a frequency of >= 5%  within gnomAD or SweGen.
+      If no frequency is reported in any of these populations, the variant is
+      kept.
+    expression: >
+      (CSQ["gnomAD_AF"] is NA or CSQ["gnomAD_AF"] < 0.05)
+      and
+      (CSQ["SweGen_AF"] is NA or float(CSQ["SweGen_AF"]) < 0.05)
+
+  - name: intronic variants
+    description: >
+      Only include variants that are not intronic, unless they are also
+      annotated as splice variants or have been previously reported in COSMIC.
+    expression: >
+        re.search("intron_variant", CSQ["Consequence"]) is None
+        or
+        (re.search("splice", CSQ["Consequence"])
+        or
+        any(re.search("COSV\d+", x) for x in CSQ["Existing_variation"]))
+
+  - name: allele depth
+    description:
+      Only include variants have >= 5 supporting reads for the alternative
+      allele.
+    expression: >
+      FORMAT["AO"][0] is NA or FORMAT["AO"][0] >= 5
+
+  - name: vaf
+    description: >
+      Only include variants with a VAF >= 3%. A missing AF should indicate that
+      it the frequency is uncertain for whatever reason, and a manual assessment
+      has to be performed. Therefore, variants with a missing AF also pass the
+      filter.
+    expression: >
+      FORMAT["AF"][0] is NA or FORMAT["AF"][0] >= 0.03
+
