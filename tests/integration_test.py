@@ -2,6 +2,7 @@ import gzip
 from pathlib import Path
 import pytest
 import subprocess
+import yaml
 
 @pytest.fixture(scope="session")
 def integration():
@@ -43,6 +44,39 @@ def integration_no_filtering():
     ]
 
     subprocess.run(args, cwd=Path(Path(__file__).parent, "integration"))
+
+@pytest.fixture(scope="session")
+def load_configs(integration):
+    return [
+        dict(
+            sample="sample1",
+            path=Path("tests/integration/results/sample1/sample1.load_config.yaml"),
+        ),
+        dict(
+            sample="sample2",
+            path=Path("tests/integration/results/sample2/sample2.load_config.yaml"),
+        ),
+        dict(
+            sample="sample3",
+            path=Path("tests/integration/results/sample3/sample3.load_config.yaml"),
+        ),
+        dict(
+            sample="sample4",
+            path=Path("tests/integration/results/sample4/sample4.load_config.yaml"),
+        ),
+        dict(
+            sample="sample5",
+            path=Path("tests/integration/results/sample5/sample5.load_config.yaml"),
+        ),
+        dict(
+            sample="sample6",
+            path=Path("tests/integration/results/sample6/sample6.load_config.yaml"),
+        ),
+        dict(
+            sample="sample7",
+            path=Path("tests/integration/results/sample7/sample7.load_config.yaml"),
+        ),
+    ]
 
 @pytest.fixture(scope="session")
 def scout_vcfs(integration):
@@ -143,3 +177,13 @@ def test_number_of_variants_no_filtering(scout_vcfs_no_filtering):
             if not line.startswith("#"):
                 n_variants += 1
     assert vcf["n_variants"] == n_variants
+
+def test_load_configs_exist(load_configs):
+    for config in load_configs:
+        assert config["path"].exists()
+
+def test_rank_score_threshold(load_configs):
+    for config in load_configs:
+        c = yaml.safe_load(config["path"].read_text())
+        assert "rank_score_threshold" in c, config["sample"]
+        assert c["rank_score_threshold"] == -1000, config["sample"]
