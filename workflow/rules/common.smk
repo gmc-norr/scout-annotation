@@ -143,14 +143,14 @@ def get_vcf_file(wildcards):
     return vcf_filename[0]
 
 def get_reheadered_vcf_file(wildcards):
-    vcf_sample_name = get_vcf_samples(wildcards)
+    vcf_sample_name = get_vcf_samples(get_vcf_file(wildcards))
     if vcf_sample_name != wildcards.sample:
         return rules.bcftools_reheader.output.vcf
     return get_vcf_file(wildcards)
 
 def get_ped(wildcards):
     ped = _get_sample_row(wildcards)["ped"].values
-    assert len(ped) == 1
+    assert len(ped) == 1, "multiple PED files found for {sample}".format(**wildcards)
     if not ped[0]:
         return ped
     return "mock_ped/{sample}.ped".format(**wildcards)
@@ -170,10 +170,8 @@ def get_track(wildcards):
     assert len(track) == 1
     return track.values[0]
 
-def get_vcf_samples(wildcards):
-    vcf_filename = _get_sample_row(wildcards)["vcf"]
-    assert len(vcf_filename) == 1
-    vcf = cyvcf2.VCF(vcf_filename.values[0])
+def get_vcf_samples(vcf_filename):
+    vcf = cyvcf2.VCF(vcf_filename)
     samples = vcf.samples
     assert len(samples) == 1
     return samples[0]

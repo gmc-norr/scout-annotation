@@ -1,3 +1,4 @@
+import cyvcf2
 import pathlib
 import yaml
 
@@ -15,6 +16,9 @@ def generate_load_config(vcf, ped):
     rank_model_version = snakemake.params["rank_model_version"]
     owner = snakemake.params["owner"]
 
+    sample_ids = cyvcf2.VCF(vcf).samples
+    assert len(sample_ids) == 1, "multiple samples found in VCF"
+
     load_config = dict(
         family=snakemake.params["sample_name"],
         genome_build=genome_build,
@@ -25,7 +29,7 @@ def generate_load_config(vcf, ped):
         gene_panels=snakemake.params["panels"],
         samples=[
             dict(
-                sample_id=snakemake.params["vcf_samples"],
+                sample_id=sample_ids[0],
                 analysis_type=snakemake.params["analysis_type"],
                 phenotype=snakemake.params["phenotype"],
                 sex=snakemake.params["sex"],
