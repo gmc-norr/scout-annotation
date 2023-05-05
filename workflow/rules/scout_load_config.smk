@@ -16,7 +16,6 @@ rule scout_load_config:
         analysis_type=get_analysis_type,
         track=get_track,
         rank_model_version=get_rank_model_version,
-        vcf_samples=get_vcf_samples,
         panels=get_sample_panels,
         include_bam=lambda wc: isinstance(get_bam_file(wc), Path),
     script: "../scripts/scout_load_config.py"
