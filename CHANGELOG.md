@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/gmc-norr/scout-annotation/compare/v0.7.0...v0.7.1) (2023-05-05)
+
+
+### Bug Fixes
+
+* issue where original sample name ended up in load config ([6638bf2](https://github.com/gmc-norr/scout-annotation/commit/6638bf2fe275c3781c0ea402920d11fd9f8de3e1))
+
 ## [0.7.0](https://github.com/gmc-norr/scout-annotation/compare/v0.6.0...v0.7.0) (2023-05-04)
 
 
