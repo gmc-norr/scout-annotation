@@ -1,14 +1,9 @@
-from pysam import VariantFile
+import pathlib
+from typing import List, Union
+from pysam import VariantFile, VariantRecord, VariantHeader
 import sys
 
-
-def main():
-    input_vcf = snakemake.input.vcf
-    output_vcf = snakemake.output.vcf
-    log = snakemake.log
-
-    vcf = VariantFile(input_vcf)
-
+def fix_vcf_af(vcf: VariantFile) -> List[VariantRecord]:
     header = vcf.header
 
     # Check for AF, DP, and AO in the header
@@ -18,7 +13,7 @@ def main():
     if not "AO" in vcf.header.formats:
         header.formats.add("AO", "A", "Integer", "Read depth for each alternative allele")
 
-    ovcf = VariantFile(output_vcf, "w", header=header)
+    modified_variants = []
 
     for v in vcf:
         if "AO" not in v.format:
@@ -41,10 +36,27 @@ def main():
             else:
                 v.samples[0]["AF"] = afs
         
-        ovcf.write(v)
+        modified_variants.append(v)
 
-    ovcf.close()
+    return modified_variants
 
+
+def write_variants(filename: Union[str, pathlib.Path], variants: List[VariantRecord], header: VariantHeader):
+    out_vcf = VariantFile(filename, "w", header=header)
+    for v in variants:
+        out_vcf.write(v)
+    out_vcf.close()
+
+
+def main():
+    input_vcf = snakemake.input.vcf
+    output_vcf = snakemake.output.vcf
+    log = snakemake.log
+
+    vcf = VariantFile(input_vcf)
+
+    variants = fix_vcf_af(vcf)
+    write_variants(output_vcf, variants, vcf.header)
 
 if __name__ == "__main__":
     main()
