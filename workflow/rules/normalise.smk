@@ -36,7 +36,7 @@ rule decompose:
         "docker://hydragenetics/vt:2015.11.10"
     shell:
         """
-        vt decompose {input.vcf} -o {output.vcf} 2> {log}
+        (vt decompose -s {input.vcf} | vt decompose_blocksub -o {output.vcf} -) 2> {log}
         """
 
 
