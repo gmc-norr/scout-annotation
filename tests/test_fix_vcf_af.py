@@ -50,7 +50,7 @@ def test_fix_vcf_af(hd832_vcf, af_ao_vcf):
     assert variants[2].samples[0]["DP"] is None
     assert variants[2].samples[0]["AF"] is None
 
-    assert variants[3].samples[0]["AO"] == (248, 150)
+    assert variants[3].samples[0]["AO"] == None
     assert variants[3].samples[0]["DP"] == 1175
     assert variants[3].samples[0]["AF"] is None
 

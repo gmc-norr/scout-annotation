@@ -59,6 +59,7 @@ def fix_vcf_af(vcf: VariantFile) -> List[VariantRecord]:
                 if isinstance(v.samples[0]["AO"], tuple):
                     # Weird cases where the AO number is supposed to be 1, but
                     # multiple values still occur.
+                    v.samples[0]["AO"] = None
                     afs.append(None)
                 else:
                     afs.append(v.samples[0]["AO"] / v.samples[0]["DP"])
