@@ -10,7 +10,7 @@ def fix_vcf_af(vcf: VariantFile) -> List[VariantRecord]:
     af_ao_number = "A"
 
     # Set the AF/AO headers if they don't exist, and set the
-    # Number parameter accordintly.
+    # Number parameter accordingly.
     if not "AF" in vcf.header.formats and "AO" not in vcf.header.formats:
         header.formats.add(
             "AF", af_ao_number, "Float", "Allele frequency of each alternative allele"
@@ -56,7 +56,12 @@ def fix_vcf_af(vcf: VariantFile) -> List[VariantRecord]:
                 for ao in v.samples[0]["AO"]:
                     afs.append(ao / v.samples[0]["DP"])
             elif af_ao_number == "1":
-                afs.append(v.samples[0]["AO"] / v.samples[0]["DP"])
+                if isinstance(v.samples[0]["AO"], tuple):
+                    # Weird cases where the AO number is supposed to be 1, but
+                    # multiple values still occur.
+                    afs.append(None)
+                else:
+                    afs.append(v.samples[0]["AO"] / v.samples[0]["DP"])
             else:
                 raise TypeError(f"invalid Number for AF/AO: {af_ao_number}")
 

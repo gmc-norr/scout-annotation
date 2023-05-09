@@ -32,13 +32,11 @@ def test_fix_vcf_af(hd832_vcf, af_ao_vcf):
         assert "DP" in v.format
 
     variants = fix_vcf_af(af_ao_vcf)
-    assert len(variants) == 3
+    assert len(variants) == 4
     for v in variants:
         assert "AO" in v.format
         assert "AF" in v.format
         assert "DP" in v.format
-
-    print(variants[0])
 
     assert variants[0].samples[0]["AO"] == 248
     assert variants[0].samples[0]["DP"] == 1175
@@ -51,6 +49,10 @@ def test_fix_vcf_af(hd832_vcf, af_ao_vcf):
     assert variants[2].samples[0]["AO"] is 248
     assert variants[2].samples[0]["DP"] is None
     assert variants[2].samples[0]["AF"] is None
+
+    assert variants[3].samples[0]["AO"] == (248, 150)
+    assert variants[3].samples[0]["DP"] == 1175
+    assert variants[3].samples[0]["AF"] is None
 
 
 def test_write_vcf(hd832_vcf, tmpdir):
