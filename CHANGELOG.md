@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.7.3](https://github.com/gmc-norr/scout-annotation/compare/v0.7.2...v0.7.3) (2023-05-09)
+
+
+### Bug Fixes
+
+* better decomposition ([335c954](https://github.com/gmc-norr/scout-annotation/commit/335c9547b849ae3730669fc78a8b7edb5aaeae57))
+* issue where a defined AF was set to missing ([a295d11](https://github.com/gmc-norr/scout-annotation/commit/a295d118b36212feddcf17f3a516e2c0f3bd055b))
+* sort before uniq ([0206a13](https://github.com/gmc-norr/scout-annotation/commit/0206a130cf5eda4196892c992aa36cfbebf41e72))
+
 ## [0.7.2](https://github.com/gmc-norr/scout-annotation/compare/v0.7.1...v0.7.2) (2023-05-09)
 
 
