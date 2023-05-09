@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.7.2](https://github.com/gmc-norr/scout-annotation/compare/v0.7.1...v0.7.2) (2023-05-09)
+
+
+### Bug Fixes
+
+* add pysam requirement ([54cb7bb](https://github.com/gmc-norr/scout-annotation/commit/54cb7bbde992b1aeceb33ce09b2a5f421e6a578a))
+* address issue with multiple AO but Number=1 ([67049b4](https://github.com/gmc-norr/scout-annotation/commit/67049b42c6cdbda42915869262dc33458778ee74))
+* respect the Number set in the header for AF/AO ([a3364d5](https://github.com/gmc-norr/scout-annotation/commit/a3364d5cdd37eb5d6d1814cb84567dcbeb4c941c))
+* set AO to missing if mismatching Number ([d1dddfc](https://github.com/gmc-norr/scout-annotation/commit/d1dddfc2be891f2d1bc5082f159da432015d82ee))
+
 ## [0.7.1](https://github.com/gmc-norr/scout-annotation/compare/v0.7.0...v0.7.1) (2023-05-05)
 
 
