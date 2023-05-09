@@ -72,8 +72,11 @@ def fix_vcf_af(vcf: VariantFile) -> List[VariantRecord]:
                 v.samples[0]["AF"] = afs[0]
             else:
                 v.samples[0]["AF"] = None
-        else:
+        elif "AF" not in v.format or v.samples[0]["AF"] is None:
             v.samples[0]["AF"] = None
+        else:
+            # AF is already defined, add variant as-is
+            pass
 
         modified_variants.append(v)
 
