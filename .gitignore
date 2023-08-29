@@ -15,3 +15,5 @@ results/
 results_no-filtering/
 venv/
 samples.tsv
+
+dist/
