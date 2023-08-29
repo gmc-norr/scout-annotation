@@ -7,6 +7,9 @@ license = "GPLv3"
 readme = "README.md"
 packages = [{include = "scout_annotation"}]
 
+[tool.poetry.scripts]
+scout-annotation = "scout_annotation.cli:cli"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 snakemake = "^7.13"
