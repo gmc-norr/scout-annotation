@@ -6,6 +6,7 @@ authors = ["Niklas Mähler <niklas.mahler@gmail.com>"]
 license = "GPLv3"
 readme = "README.md"
 packages = [{include = "scout_annotation"}]
+include = ["scout_annotation/data"]
 
 [tool.poetry.scripts]
 scout-annotation = "scout_annotation.cli:cli"
