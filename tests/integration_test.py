@@ -6,19 +6,24 @@ import re
 import subprocess
 import yaml
 
+SNAKEFILE = Path("./scout_annotation/workflow/Snakefile").resolve()
+CONFIG = Path("./config/config.yaml").resolve()
+
 @pytest.fixture(scope="session")
 def integration():
     args = [
         "snakemake",
-        "-s", "../../workflow/Snakefile",
+        "-s",
+        SNAKEFILE,
         "--singularity-args",
         "--bind /storage",
         "--use-singularity",
         "--singularity-prefix",
         "/storage/userdata/singularity_cache",
         "--configfiles",
-        "../../config/config.yaml",
+        CONFIG,
         "config.yaml",
+        "--show-failed-logs",
         "--cores",
         "1",
     ]
@@ -29,18 +34,20 @@ def integration():
 def integration_no_filtering():
     args = [    
         "snakemake",
-        "-s", "../../workflow/Snakefile",
+        "-s",
+        SNAKEFILE,
         "--singularity-args",
         "--bind /storage",
         "--use-singularity",
         "--singularity-prefix",
         "/storage/userdata/singularity_cache",
         "--configfiles",
-        "../../config/config.yaml",
+        CONFIG,
         "config.yaml",
         "--config",
         "samples=samples_no-filtering.tsv",
         "output_directory=results_no-filtering",
+        "--show-failed-logs",
         "--cores",
         "1",
     ]
