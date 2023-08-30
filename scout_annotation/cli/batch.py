@@ -3,6 +3,10 @@ import pathlib
 import subprocess
 import sys
 
+from scout_annotation.resources import snakefile
+from scout_annotation.panels import get_panels
+from scout_annotation.samples import write_samples
+
 
 @click.command()
 @click.argument(
@@ -191,7 +195,7 @@ def batch(
     args = [
         "snakemake",
         "-s",
-        pathlib.Path(pathlib.Path(__file__).parent, "workflow/Snakefile"),
+        snakefile(),
         "--rerun-incomplete",
         "--configfile",
         config.config,
