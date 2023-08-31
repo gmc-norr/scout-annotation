@@ -187,4 +187,6 @@ def single(
     if out_dir is not None:
         args.append(f"output_directory={out_dir}")
 
-    subprocess.Popen(args).communicate()
+    p = subprocess.run(args)
+
+    sys.exit(p.returncode)
