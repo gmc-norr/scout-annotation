@@ -55,6 +55,56 @@ def integration_no_filtering():
     subprocess.run(args, cwd=Path(Path(__file__).parent, "integration"))
 
 @pytest.fixture(scope="session")
+def cli_single():
+    args = [
+        "python",
+        "-m",
+        "scout_annotation",
+        "--use-apptainer",
+        "--apptainer-args",
+        "--bind /storage",
+        "--cores",
+        "1",
+        "single",
+        "-o",
+        "cli_single_results",
+        "data/HD832_chr7_twist-solid-0.1.5-alpha.vcf"
+    ]
+
+    return subprocess.run(args, cwd=Path(__file__).parent / "integration")
+
+def test_cli_single(cli_single):
+    assert cli_single.returncode == 0
+    results_dir = Path("tests/integration/cli_single_results")
+    assert results_dir.exists()
+    assert results_dir.is_dir()
+
+@pytest.fixture(scope="session")
+def cli_batch():
+    args = [
+        "python",
+        "-m",
+        "scout_annotation",
+        "--use-apptainer",
+        "--apptainer-args",
+        "--bind /storage",
+        "--cores",
+        "1",
+        "batch",
+        "-o",
+        "cli_batch_results",
+        "batch_data/"
+    ]
+
+    return subprocess.run(args, cwd=Path(__file__).parent / "integration")
+
+def test_cli_batch(cli_batch):
+    assert cli_batch.returncode == 0
+    results_dir = Path("tests/integration/cli_batch_results")
+    assert results_dir.exists()
+    assert results_dir.is_dir()
+
+@pytest.fixture(scope="session")
 def load_configs(integration):
     return [
         dict(

@@ -197,19 +197,23 @@ def batch(
         "-s",
         snakefile(),
         "--rerun-incomplete",
+        "--cores",
+        str(config.cores),
         "--configfiles",
         default_config(),
-        "--config",
-        f"samples={samples_file}",
     ]
+
     if config.config is not None:
-        args.insert(6, config.config)
-    if config.resources is not None:
-        args.append(f"resources={config.resources}")
-    else:
-        args.append(f"resources={default_resources()}")
-    if out_dir is not None:
-        args.append(f"output_directory={out_dir}")
+        args.append(config.config)
+    if config.use_apptainer:
+        args.append("--use-singularity")
+    if config.apptainer_args is not None:
+        args.append("--singularity-args")
+        args.append(config.apptainer_args)
+    if config.apptainer_prefix is not None:
+        args.append("--singularity-prefix")
+        args.append(config.apptainer_prefix)
+
     if profile is not None:
         args.append("--profile")
         args.append(profile)
@@ -218,5 +222,16 @@ def batch(
     if notemp:
         args.append("--notemp")
 
-    subprocess.Popen(args).communicate()
+    args.extend([
+        "--config",
+        f"samples={samples_file}",
+    ])
 
+    if config.resources is not None:
+        args.append(f"resources={config.resources}")
+    else:
+        args.append(f"resources={default_resources()}")
+    if out_dir is not None:
+        args.append(f"output_directory={out_dir}")
+
+    subprocess.Popen(args).communicate()
