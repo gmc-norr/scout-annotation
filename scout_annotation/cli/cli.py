@@ -14,8 +14,8 @@ class Config:
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
-@click.option("-c", "--config", help="config file", default="config/config.yaml")
-@click.option("-r", "--resources", help="resources file", default=None)
+@click.option("-c", "--config", help="config file used for overwriting defaults")
+@click.option("-r", "--resources", help="resources file for overwriting defaults")
 @click.version_option(prog_name="scout_annotation")
 @click.pass_context
 def cli(ctx, config, resources):

@@ -1,9 +1,22 @@
 import importlib.resources
 import pathlib
 
-def snakefile() -> pathlib.Path:
-    package_dir = importlib.resources.files(__name__.split(".")[0])
-    snakefile_path = package_dir.joinpath("workflow/Snakefile")
-    with importlib.resources.as_file(snakefile_path) as sfp:
-        return pathlib.Path(sfp)
+def _package_dir(path=None):
+    package_path = importlib.resources.files("scout_annotation")._paths[0]
 
+    if path is None:
+        return package_path
+
+    return package_path / path
+
+
+def default_config() -> pathlib.Path:
+    return _package_dir("default_config/config.yaml")
+
+
+def default_resources() -> pathlib.Path:
+    return _package_dir("default_config/resources.yaml")
+
+
+def snakefile() -> pathlib.Path:
+    return _package_dir("workflow/Snakefile")

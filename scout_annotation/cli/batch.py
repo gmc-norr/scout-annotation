@@ -3,7 +3,7 @@ import pathlib
 import subprocess
 import sys
 
-from scout_annotation.resources import snakefile
+from scout_annotation.resources import default_config, default_resources, snakefile
 from scout_annotation.panels import get_panels
 from scout_annotation.samples import write_samples
 
@@ -197,13 +197,17 @@ def batch(
         "-s",
         snakefile(),
         "--rerun-incomplete",
-        "--configfile",
-        config.config,
+        "--configfiles",
+        default_config(),
         "--config",
         f"samples={samples_file}",
     ]
+    if config.config is not None:
+        args.insert(6, config.config)
     if config.resources is not None:
         args.append(f"resources={config.resources}")
+    else:
+        args.append(f"resources={default_resources()}")
     if out_dir is not None:
         args.append(f"output_directory={out_dir}")
     if profile is not None:

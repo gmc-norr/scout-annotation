@@ -7,7 +7,7 @@ import subprocess
 import yaml
 
 SNAKEFILE = Path("./scout_annotation/workflow/Snakefile").resolve()
-CONFIG = Path("./config/config.yaml").resolve()
+CONFIG = Path("./scout_annotation/default_config/config.yaml").resolve()
 
 @pytest.fixture(scope="session")
 def integration():
