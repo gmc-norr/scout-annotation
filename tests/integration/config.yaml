@@ -8,6 +8,9 @@ vcf_filter:
   somatic: filters/somatic_filter.yaml
   strict: filters/strict_filter.yaml
 
+panel_filtering:
+  panel_directory: panels
+
 vcfanno:
   base_path: "/storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37"
 

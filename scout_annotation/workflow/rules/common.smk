@@ -13,21 +13,36 @@ if not workflow.overwrite_configfiles:
 
 validate(config, "../schema/config.schema.yaml")
 
-# Check that filter files exist
-for key, filepath in config.get("vcf_filter", {}).items():
+# Resolve relative paths to other config files
+paths_to_check = zip([
+    config.get("panel_filtering", {}).get("panel_directory"),
+    *config.get("vcf_filter", {}).values(),
+    config.get("resources"),
+], [
+    ("panel_filtering", "panel_directory"),
+    *[("vcf_filter", x) for x in config.get("vcf_filter", {}).keys()],
+    ("resources",)
+])
+
+for filepath, config_key in paths_to_check:
     filepath = Path(filepath)
-    if not filepath.is_absolute() and not filepath.exists():
-        # Try to resolve relative to the location of any of the config files,
-        # starting from the last one supplied
-        path_found = False
-        for config_path in workflow.configfiles[::-1]:
-            new_path = Path(config_path).parent / filepath
-            if new_path.exists():
-                path_found = True
-                config["vcf_filter"][key] = str(new_path)
-                break
-        if not path_found:
-            raise IOError(f"file or directory not found for filter '{key}': {filepath}")
+    if filepath.is_absolute() or filepath.exists():
+        continue
+
+    # Try to resolve relative to the location of any of the config files,
+    # starting from the last one supplied
+    path_found = False
+    for config_path in workflow.configfiles[::-1]:
+        new_path = (Path(config_path).parent / filepath).resolve()
+        if new_path.exists():
+            path_found = True
+            config_item = config
+            for ck in config_key[:-1]:
+                config_item = config_item.get(ck, {})
+            config_item[config_key[-1]] = str(new_path)
+            break
+    if not path_found:
+        raise IOError(f"file or directory not found for filter '{key}': {filepath}")
 
 with open(config["resources"]) as f:
     resources = yaml.load(f, Loader=yaml.FullLoader)
@@ -35,10 +50,6 @@ validate(resources, "../schema/resources.schema.yaml")
 
 samples = pd.read_csv(config["samples"], sep="\t", comment="#")
 validate(samples, "../schema/samples.schema.yaml")
-
-panel_path = Path(config["panel_filtering"]["panel_directory"])
-if not panel_path.exists() and not panel_path.is_absolute():
-    panel_path = Path(snakemake.workflow.srcdir("../.."), panel_path).resolve()
 
 wildcard_constraints:
     ext=r"vcf(\.gz)?$",
@@ -120,6 +131,7 @@ def get_case_owner(wildcards):
 
 def get_panel_dict():
     panels = {}
+    panel_path = Path(config.get("panel_filtering", {}).get("panel_directory"))
     if not panel_path.exists():
         raise FileNotFoundError(f"directory not found: {panel_path}")
     for p in panel_path.glob("*.tsv"):

@@ -75,11 +75,11 @@ def cli_single_from_outside(tmp_path_factory):
 
     wd = tmp_path_factory.mktemp("cli_workdir")
 
-    return subprocess.run(args, cwd=wd)
+    return subprocess.run(args, cwd=wd), wd
 
 def test_cli_single_from_outside(cli_single_from_outside):
-    assert cli_single_from_outside.returncode == 0
-    results_dir = Path("tests/integration/cli_single_results_from_outside")
+    assert cli_single_from_outside[0].returncode == 0
+    results_dir = Path(cli_single_from_outside[1])
     assert results_dir.exists()
     assert results_dir.is_dir()
 
