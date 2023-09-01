@@ -1,3 +1,0 @@
-pytest>=7.3
-black>=23
-pre-commit>=3.3

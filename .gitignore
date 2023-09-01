@@ -15,3 +15,8 @@ results/
 results_no-filtering/
 venv/
 samples.tsv
+
+tests/integration/cli_*_results/
+tests/integration/sample_files/
+
+dist/
