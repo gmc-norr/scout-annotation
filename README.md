@@ -25,7 +25,7 @@ scout-annotation --help
 
 ## Testing
 
-This package is managed by poetry, and tests are implemented using pytest.
+This package is best managed by poetry, and tests are implemented using pytest.
 
 ```bash
 poetry install
