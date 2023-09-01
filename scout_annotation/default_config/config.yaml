@@ -1,5 +1,5 @@
 samples: "samples.tsv"
-resources: "config/resources.yaml"
+resources: "resources.yaml"
 
 genome_build: "37"
 scout_owner: "clingen"
@@ -12,8 +12,8 @@ panel_filtering:
   panel_directory: panels
 
 vcf_filter:
-  rare_disease: config/rare_disease_filter.yaml
-  somatic: config/somatic_filter.yaml
+  rare_disease: rare_disease_filter.yaml
+  somatic: somatic_filter.yaml
 
 reference:
   fasta: /storage/userdata/references/homo_sapiens/hg19/fasta/hg19.fa.gz

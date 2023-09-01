@@ -13,6 +13,22 @@ if not workflow.overwrite_configfiles:
 
 validate(config, "../schema/config.schema.yaml")
 
+# Check that filter files exist
+for key, filepath in config.get("vcf_filter", {}).items():
+    filepath = Path(filepath)
+    if not filepath.is_absolute() and not filepath.exists():
+        # Try to resolve relative to the location of any of the config files,
+        # starting from the last one supplied
+        path_found = False
+        for config_path in workflow.configfiles[::-1]:
+            new_path = Path(config_path).parent / filepath
+            if new_path.exists():
+                path_found = True
+                config["vcf_filter"][key] = str(new_path)
+                break
+        if not path_found:
+            raise IOError(f"file or directory not found for filter '{key}': {filepath}")
+
 with open(config["resources"]) as f:
     resources = yaml.load(f, Loader=yaml.FullLoader)
 validate(resources, "../schema/resources.schema.yaml")

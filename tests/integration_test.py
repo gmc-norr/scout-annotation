@@ -55,6 +55,35 @@ def integration_no_filtering():
     subprocess.run(args, cwd=Path(Path(__file__).parent, "integration"))
 
 @pytest.fixture(scope="session")
+def cli_single_from_outside(tmp_path_factory):
+    args = [
+        "python",
+        "-m",
+        "scout_annotation",
+        "--use-apptainer",
+        "--apptainer-args",
+        "--bind /storage",
+        "--cores",
+        "1",
+        "single",
+        "--snv-filter",
+        "rare_disease",
+        "-o",
+        "cli_single_results_from_outside",
+        Path("tests/integration/data/HD832_chr7_twist-solid-0.1.5-alpha.vcf").resolve()
+    ]
+
+    wd = tmp_path_factory.mktemp("cli_workdir")
+
+    return subprocess.run(args, cwd=wd)
+
+def test_cli_single_from_outside(cli_single_from_outside):
+    assert cli_single_from_outside.returncode == 0
+    results_dir = Path("tests/integration/cli_single_results_from_outside")
+    assert results_dir.exists()
+    assert results_dir.is_dir()
+
+@pytest.fixture(scope="session")
 def cli_single():
     args = [
         "python",
