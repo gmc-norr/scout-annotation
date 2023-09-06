@@ -8,15 +8,17 @@
 annotation/
 /data/
 /sample_files
+cli_*_results/
 decompose/
+load_config/
+merge_trio/
 mock_ped/
 rank_model/
 results/
 results_no-filtering/
+results_trio/
 venv/
 samples.tsv
-
-tests/integration/cli_*_results/
-tests/integration/sample_files/
+sample_files/
 
 dist/

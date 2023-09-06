@@ -1,0 +1,8 @@
+sample	family	owner	sex	type	filtering	track	vcf	ped	panels
+mother	f1234	clingen	female	panel		rare_disease	../data/mother_chr7.vcf	../data/trio.ped
+father	f1234	clingen	male	panel		rare_disease	../data/father_chr7.vcf	../data/trio.ped
+child	f1234	clingen	unknown	panel		rare_disease	../data/child_chr7.vcf	../data/trio.ped
+mother2	f4567	clingen	female	panel		rare_disease	../data/mother_chr7.vcf	../data/trio2.ped
+father2	f4567	clingen	male	panel		rare_disease	../data/father_chr7.vcf	../data/trio2.ped
+child2	f4567	clingen	unknown	panel		rare_disease	../data/child_chr7.vcf	../data/trio2.ped
+sample1		clingen-somatic	unknown	panel		cancer	../data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel1

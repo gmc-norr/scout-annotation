@@ -5,9 +5,11 @@ rule link_bam:
     output:
         bam=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.bam",
         bai=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.bam.bai",
-    log: f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.link_bam.log",
+    log:
+        f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.link_bam.log",
     run:
         from pathlib import Path
+
         outbam = Path(output.bam)
         outbai = Path(output.bai)
         if outbam.exists():
@@ -17,16 +19,18 @@ rule link_bam:
         outbam.symlink_to(Path(input.bam).resolve())
         outbai.symlink_to(Path(input.bai).resolve())
 
+
 rule copy_results:
     input:
         vcf=get_annotated_vcf,
         tbi=get_annotated_vcf_index,
-        ped=get_ped,
+        ped=get_family_ped,
     output:
-        vcf=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.scout-annotated.vcf.gz",
-        tbi=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.scout-annotated.vcf.gz.tbi",
-        ped=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.ped",
-    log: f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.copy_results.log"
+        vcf=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.scout-annotated.vcf.gz",
+        tbi=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.scout-annotated.vcf.gz.tbi",
+        ped=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.ped",
+    log:
+        f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.copy_results.log",
     run:
         import logging
         import pathlib
@@ -43,29 +47,33 @@ rule copy_results:
 
         for infile, outfile in zip(input, output):
             logging.info("%s --> %s", infile, pathlib.Path(outfile).resolve())
-            subprocess.run([
-                "cp", infile, outfile
-            ], shell=False, check=True)
+            subprocess.run(["cp", infile, outfile], shell=False, check=True)
+
 
 rule tabix:
     input:
-        vcf="{filepath}.vcf.gz"
+        vcf="{filepath}.vcf.gz",
     output:
-        tabix=temp("{filepath}.vcf.gz.tbi")
-    log: "{filepath}.tabix.log"
-    container: "docker://hydragenetics/common:0.1.1"
+        tabix=temp("{filepath}.vcf.gz.tbi"),
+    log:
+        "{filepath}.tabix.log",
+    container:
+        "docker://hydragenetics/common:0.1.1"
     shell:
         """
         tabix {input.vcf}
         """
 
+
 rule bgzip:
     input:
-        vcf="{filepath}.vcf"
+        vcf="{filepath}.vcf",
     output:
-        vcfgz=temp("{filepath}.vcf.gz")
-    log: "{filepath}.bgzip.log"
-    container: "docker://hydragenetics/common:0.1.1"
+        vcfgz=temp("{filepath}.vcf.gz"),
+    log:
+        "{filepath}.bgzip.log",
+    container:
+        "docker://hydragenetics/common:0.1.1"
     shell:
         """
         bgzip -c {input.vcf} > {output.vcfgz}

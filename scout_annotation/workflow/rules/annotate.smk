@@ -1,21 +1,23 @@
 rule vep:
     input:
-        vcf="decompose/{sample}/{sample}.decomposed.normalized.uniq.fix-af.vcf.gz",
-        tabix="decompose/{sample}/{sample}.decomposed.normalized.uniq.fix-af.vcf.gz.tbi",
+        vcf=get_preprocessed_vcf,
+        tabix=get_preprocessed_vcf_index,
         fasta=config["reference"]["fasta"],
         cache=config["vep"]["cache"],
         plugin=config["vep"]["plugin"],
         plugin_data=config["vep"]["plugin-data"],
         swegen=config["vep"]["swegen"],
-        clinvar=config["vep"]["clinvar"]
+        clinvar=config["vep"]["clinvar"],
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.vcf")
-    log: "annotation/{sample}/{sample}.decomposed.vep.log"
+        vcf=temp("annotation/{family}/{family}.decomposed.vep.vcf"),
+    log:
+        "annotation/{family}/{family}.decomposed.vep.log",
     params:
         mode=config.get("vep", {}).get("mode", ""),
-        cache_type=config.get("vep", {}).get("cache_type", "merged")
+        cache_type=config.get("vep", {}).get("cache_type", "merged"),
     threads: resources.get("vep", {}).get("threads", resources["default_resources"]["threads"])
-    container: "docker://hydragenetics/vep:105"
+    container:
+        "docker://hydragenetics/vep:105"
     shell:
         """
         vep {params.mode} \\
@@ -68,26 +70,31 @@ rule vep:
         """
 
 
-
 rule most_severe_consequence:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.vcfanno.vcf",
+        vcf="annotation/{family}/{family}.decomposed.vep.vcfanno.vcf",
     output:
-        vcf=temp("annotation/{sample}/{sample}.annotated.vcf")
-    log: "annotation/{sample}/{sample}.most_severe_consequence.log"
-    conda: "../env/most_severe_consequence.yaml"
-    script: "../scripts/most_severe_consequence.py"
+        vcf=temp("annotation/{family}/{family}.annotated.vcf"),
+    log:
+        "annotation/{family}/{family}.most_severe_consequence.log",
+    conda:
+        "../env/most_severe_consequence.yaml"
+    script:
+        "../scripts/most_severe_consequence.py"
+
 
 rule vcfanno:
     input:
-        vcf="annotation/{sample}/{sample}.decomposed.vep.vcf",
-        toml=get_vcfanno_config
+        vcf="annotation/{family}/{family}.decomposed.vep.vcf",
+        toml=get_vcfanno_config,
     output:
-        vcf=temp("annotation/{sample}/{sample}.decomposed.vep.vcfanno.vcf")
-    log: "annotation/{sample}/{sample}.vcfanno.log"
+        vcf=temp("annotation/{family}/{family}.decomposed.vep.vcfanno.vcf"),
+    log:
+        "annotation/{family}/{family}.vcfanno.log",
     params:
-        base_path=config.get("vcfanno", {}).get("base_path", "")
-    container: "docker://clinicalgenomics/vcfanno:0.3.2"
+        base_path=config.get("vcfanno", {}).get("base_path", ""),
+    container:
+        "docker://clinicalgenomics/vcfanno:0.3.2"
     shell:
         """
         vcfanno \\
@@ -98,14 +105,19 @@ rule vcfanno:
             2> {log}
         """
 
+
 rule vcfanno_config:
     output:
-        toml="rank_model/grch{build}_{track}_vcfanno_config_{version}.toml"
-    log: "rank_model/grch{build}_{track}_vcfanno_config_{version}.log"
+        toml="rank_model/grch{build}_{track}_vcfanno_config_{version}.toml",
+    log:
+        "rank_model/grch{build}_{track}_vcfanno_config_{version}.log",
     params:
-        uri=lambda wc: config["vcfanno"]["config_uri"].format(track=wc.track, version=wc.version),
-        extra=config.get("vcfanno_config", {}).get("extra", "")
-    container: "docker://bschiffthaler/curl:7.72.0"
+        uri=lambda wc: config["vcfanno"]["config_uri"].format(
+            track=wc.track, version=wc.version
+        ),
+        extra=config.get("vcfanno_config", {}).get("extra", ""),
+    container:
+        "docker://bschiffthaler/curl:7.72.0"
     shell:
         """
         echo "fetching {params.uri}" > {log}
@@ -117,9 +129,11 @@ rule genmod_annotate:
     input:
         vcf=get_filtered_vcf,
     output:
-        vcf=temp("annotation/{sample}/{sample}.genmod_annotate.vcf"),
-    log: "annotation/{sample}/{sample}.genmod_annotate.log"
-    container: "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
+        vcf=temp("annotation/{family}/{family}.genmod_annotate.vcf"),
+    log:
+        "annotation/{family}/{family}.genmod_annotate.log",
+    container:
+        "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
     shell:
         """
         genmod annotate \\
@@ -130,12 +144,14 @@ rule genmod_annotate:
 
 rule genmod_models:
     input:
-        vcf="annotation/{sample}/{sample}.genmod_annotate.vcf",
-        ped=get_ped,
+        vcf="annotation/{family}/{family}.genmod_annotate.vcf",
+        ped=get_family_ped,
     output:
-        vcf=temp("annotation/{sample}/{sample}.genmod_models.vcf"),
-    log: "annotation/{sample}/{sample}.genmod_models.log"
-    container: "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
+        vcf=temp("annotation/{family}/{family}.genmod_models.vcf"),
+    log:
+        "annotation/{family}/{family}.genmod_models.log",
+    container:
+        "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
     shell:
         """
         genmod models \\
@@ -147,13 +163,15 @@ rule genmod_models:
 
 rule genmod_score:
     input:
-        vcf="annotation/{sample}/{sample}.genmod_models.vcf",
-        rank_model=get_rank_model,
-        ped=get_ped,
+        vcf="annotation/{family}/{family}.genmod_models.vcf",
+        rank_model=get_rankmodel,
+        ped=get_family_ped,
     output:
-        vcf=temp("annotation/{sample}/{sample}.genmod_score.vcf"),
-    log: "annotation/{sample}/{sample}.genmod_score.log"
-    container: "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
+        vcf=temp("annotation/{family}/{family}.genmod_score.vcf"),
+    log:
+        "annotation/{family}/{family}.genmod_score.log",
+    container:
+        "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
     shell:
         """
         genmod score \\
@@ -166,11 +184,13 @@ rule genmod_score:
 
 rule genmod_compound:
     input:
-        vcf="annotation/{sample}/{sample}.genmod_score.vcf",
+        vcf="annotation/{family}/{family}.genmod_score.vcf",
     output:
-        vcf=temp("annotation/{sample}/{sample}.annotated.genmod.vcf"),
-    log: "annotation/{sample}/{sample}.genmod_compound.log"
-    container: "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
+        vcf=temp("annotation/{family}/{family}.annotated.genmod.vcf"),
+    log:
+        "annotation/{family}/{family}.genmod_compound.log",
+    container:
+        "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
     shell:
         """
         genmod compound \\
@@ -181,12 +201,16 @@ rule genmod_compound:
 
 rule genmod_rankmodel:
     output:
-        rank_model="rank_model/{track}_rank_model_{version}.ini"
+        rank_model="rank_model/{track}_rank_model_{version}.ini",
     params:
-        uri=lambda wc: config["genmod"]["rank_model_uri"].format(track=wc.track, version=wc.version),
-        extra=config.get("genmod_rankmodel", {}).get("extra", "")
-    log: "rank_model/{track}_rank_model_{version}.log"
-    container: 'docker://bschiffthaler/curl:7.72.0'
+        uri=lambda wc: config["genmod"]["rank_model_uri"].format(
+            track=wc.track, version=wc.version
+        ),
+        extra=config.get("genmod_rankmodel", {}).get("extra", ""),
+    log:
+        "rank_model/{track}_rank_model_{version}.log",
+    container:
+        "docker://bschiffthaler/curl:7.72.0"
     shell:
         """
         echo "fetching {params.uri}" > {log}

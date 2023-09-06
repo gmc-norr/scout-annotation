@@ -1,5 +1,6 @@
 include: "rules/common.smk"
 include: "rules/normalise.smk"
+include: "rules/trios.smk"
 include: "rules/annotate.smk"
 include: "rules/ped.smk"
 include: "rules/panel_filtering.smk"
@@ -7,5 +8,12 @@ include: "rules/filtering.smk"
 include: "rules/scout_load_config.smk"
 include: "rules/misc.smk"
 
+
+ruleorder: copy_results > tabix
+ruleorder: copy_results > bgzip
+
+
 rule all:
-    input: outfiles, load_configs
+    input:
+        outfiles,
+        load_configs,

@@ -11,57 +11,99 @@ def get_track_name(track):
             return "rare"
 
 
-def generate_load_config(vcf, ped):
-    genome_build = snakemake.config["genome_build"]
-    rank_model_version = snakemake.params["rank_model_version"]
-    owner = snakemake.params["owner"]
-
-    sample_ids = cyvcf2.VCF(vcf).samples
-    assert len(sample_ids) == 1, "multiple samples found in VCF"
-
-    load_config = dict(
-        family=snakemake.params["sample_name"],
-        genome_build=genome_build,
-        rank_model_version=rank_model_version,
-        rank_score_threshold=-1000,
-        owner=owner,
-        track=get_track_name(snakemake.params["track"]),
-        gene_panels=snakemake.params["panels"],
-        samples=[
-            dict(
-                sample_id=sample_ids[0],
-                analysis_type=snakemake.params["analysis_type"],
-                phenotype=snakemake.params["phenotype"],
-                sex=snakemake.params["sex"],
-            ),
-        ],
-    )
-
-    if snakemake.params["track"] == "cancer":
-        load_config["vcf_cancer"] = vcf.name
-    else:
-        load_config["vcf_snv"] = vcf.name
-
-    if snakemake.params["include_bam"]:
-        bam = f"{snakemake.params['sample_name']}.bam"
-        load_config["samples"][0]["alignment_path"] = bam
-
-    return load_config
-
-
 def save_config(config, path):
     with open(path, "wt") as f:
         f.write(yaml.dump(config))
 
 
+def phenotype(ped_path, sample):
+    phenotypes = {
+        -9: "missing",
+        0: "missing",
+        1: "unaffected",
+        2: "affected",
+    }
+
+    with open(ped_path) as ped:
+        for line in ped:
+            _, s, _, _, _, p = line.strip().split()
+            if s == sample:
+                return phenotypes[int(p)]
+
+    raise KeyError(f"no phenotype information found for sample: {sample}")
+
+
+def generate_sample_config(sample):
+    ped_file = snakemake.input.ped
+    bam = snakemake.params.bam
+    sex = snakemake.params.sex
+    analysis_type = snakemake.params.analysis_type
+
+    sample_config = {
+        "sample_id": sample,
+        "phenotype": phenotype(ped_file, sample),
+        "sex": sex,
+        "analysis_type": analysis_type,
+    }
+
+    if len(bam) > 0:
+        sample_config["alignment_path"] = bam
+
+    return sample_config
+
+
+def generate_family_config(family, sample_config_files):
+    track = get_track_name(snakemake.params.track)
+    owner = snakemake.params.owner
+    vcf = snakemake.input.vcf
+    gene_panels = snakemake.params.panels
+    rankmodel_version = snakemake.params.rankmodel_version
+    rank_score_threshold = snakemake.params.rank_score_threshold
+
+    sample_configs = []
+    for fn in sample_config_files:
+        with open(fn) as f:
+            sample_configs.append(yaml.safe_load(f))
+
+    family_config = {
+        "family": family,
+        "track": track,
+        "owner": owner,
+        "human_genome_build": "37",
+        "gene_panels": gene_panels,
+        "samples": sample_configs,
+        "rankmodel_version": rankmodel_version,
+        "rank_score_threshold": rank_score_threshold,
+    }
+
+    match track:
+        case "rare":
+            family_config["vcf_snv"] = vcf
+        case "cancer":
+            family_config["vcf_cancer"] = vcf
+
+    return family_config
+
+
 def main():
-    vcf_filename = pathlib.Path(snakemake.input["vcf"])
-    ped_filename = pathlib.Path(snakemake.input["ped"])
-    yaml_filename = pathlib.Path(snakemake.output["yaml"])
+    config_type = snakemake.params.type
 
-    load_config = generate_load_config(vcf_filename, ped_filename)
+    output_filename = snakemake.output.yaml
 
-    save_config(load_config, yaml_filename)
+    match config_type:
+        case "sample":
+            sample = snakemake.wildcards.sample
+            config = generate_sample_config(sample)
+        case "family":
+            family = snakemake.wildcards.family
+            sample_configs = snakemake.input.sample_configs
+            vcf_filename = pathlib.Path(snakemake.input["vcf"])
+            ped_filename = pathlib.Path(snakemake.input["ped"])
+            config = generate_family_config(family, sample_configs)
+        case _:
+            raise Exception(f"invalid config type: {config_type}")
+
+    save_config(config, output_filename)
 
 
 if __name__ == "__main__":

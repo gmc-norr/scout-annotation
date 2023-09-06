@@ -3,7 +3,14 @@ description: a row in the sample table
 properties:
   sample:
     type: string
-    regex: /[^_]+/
+    pattern: "^[a-zA-Z][-a-zA-Z0-9]+[^-]$"
+    description: Sample ID
+  family:
+    type: string
+    pattern: "^[a-zA-Z][-a-zA-Z0-9]+[^-]$"
+    description: >
+      ID of the family that the sample belongs to. If a PED file
+      is given, the family ID in the PED filem must match this value
   owner:
     type: string
     description: Scout institute that should own the case
@@ -31,7 +38,7 @@ properties:
     type: string
     description: >
       What SNV filter to apply to the sample. Should be a filter that is
-      defined in the config file under vcf_filtering. 
+      defined in the config file under vcf_filtering.
     default: ""
   vcf:
     type: string
