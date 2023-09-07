@@ -34,6 +34,11 @@ poetry run pytest
 
 Running the above will run both unit tests and an integration test.
 Currently, the integration test is only expected to run properly on vs478.
+All other tests can be run with
+
+```bash
+poetry run pytest --ignore tests/integration_test.py
+```
 
 ## Rule graph
 
