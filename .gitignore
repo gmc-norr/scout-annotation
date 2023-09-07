@@ -18,7 +18,6 @@ results/
 results_no-filtering/
 results_trio/
 venv/
-samples.tsv
 sample_files/
 
 dist/
