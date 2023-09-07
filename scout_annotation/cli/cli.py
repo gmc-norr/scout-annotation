@@ -1,4 +1,5 @@
 import click
+import logging
 
 from scout_annotation.cli.batch import batch
 from scout_annotation.cli.panels import panels
@@ -8,7 +9,16 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 
 class Config:
-    def __init__(self, config, resources, cores, use_apptainer, apptainer_args, apptainer_prefix):
+    def __init__(
+        self,
+        config,
+        resources,
+        cores,
+        use_apptainer,
+        apptainer_args,
+        apptainer_prefix,
+        loglevel,
+    ):
         self.config = config
         self.resources = resources
         self.cores = cores
@@ -16,28 +26,61 @@ class Config:
         self.apptainer_args = apptainer_args
         self.apptainer_prefix = apptainer_prefix
 
+        self.logger = logging.getLogger()
+        self.logger.setLevel(loglevel)
+        ch = logging.StreamHandler()
+        logformatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+        ch.setFormatter(logformatter)
+        self.logger.addHandler(ch)
+
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.option("-c", "--config", help="config file used for overwriting defaults")
 @click.option("-r", "--resources", help="resources file for overwriting defaults")
-@click.option("--cores", help="number of cores available for snakemake", type=click.INT, default=1)
 @click.option(
-    "--use-apptainer", "--use-singularity",
+    "--cores", help="number of cores available for snakemake", type=click.INT, default=1
+)
+@click.option(
+    "--use-apptainer",
+    "--use-singularity",
     help="use apptainer as executor",
-    is_flag=True
+    is_flag=True,
+)
+@click.option("--apptainer-args", "--singularity-args", help="arguments for apptainer")
+@click.option(
+    "--apptainer-prefix",
+    "--singularity-prefix",
+    help="path to store cached apptainer containers",
 )
 @click.option(
-    "--apptainer-args", "--singularity-args",
-    help="arguments for apptainer"
-)
-@click.option(
-    "--apptainer-prefix", "--singularity-prefix",
-    help="path to store cached apptainer containers"
+    "--loglevel",
+    help="set logging level",
+    default="WARNING",
+    type=click.Choice(["INFO", "WARNING", "ERROR", "DEBUG"]),
 )
 @click.version_option(prog_name="scout_annotation")
 @click.pass_context
-def cli(ctx, config, resources, cores, use_apptainer, apptainer_args, apptainer_prefix):
-    ctx.obj = Config(config, resources, cores, use_apptainer, apptainer_args, apptainer_prefix)
+def cli(
+    ctx,
+    config,
+    resources,
+    cores,
+    use_apptainer,
+    apptainer_args,
+    apptainer_prefix,
+    loglevel,
+):
+    ctx.obj = Config(
+        config,
+        resources,
+        cores,
+        use_apptainer,
+        apptainer_args,
+        apptainer_prefix,
+        loglevel,
+    )
+    ctx.obj.logger.info("starting annotation")
+
 
 cli.add_command(batch)
 cli.add_command(panels)

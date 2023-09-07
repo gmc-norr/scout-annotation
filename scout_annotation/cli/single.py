@@ -23,7 +23,7 @@ from scout_annotation.samples import write_samples
     "--out-dir",
     "-o",
     help="directory to write output files to",
-    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False),
 )
 @click.option("-n", "--name", help="sample name")
 @click.option(
@@ -140,8 +140,8 @@ def single(
     gene_panels = get_panels()
     for p in panel:
         if p not in gene_panels:
-            print(f"error: panel not found: {p}", file=sys.stderr)
-            exit(1)
+            config.logger.error(f"panel not found: {p}")
+            raise click.Abort()
 
     samples_file = write_samples([sample], samples_dir)
 
@@ -175,10 +175,12 @@ def single(
     if notemp:
         args.append("--notemp")
 
-    args.extend([
-        "--config",
-        f"samples={samples_file}",
-    ])
+    args.extend(
+        [
+            "--config",
+            f"samples={samples_file}",
+        ]
+    )
 
     if config.resources is not None:
         args.append(f"resources={config.resources}")
