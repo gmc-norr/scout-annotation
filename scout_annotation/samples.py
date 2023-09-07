@@ -16,7 +16,19 @@ def write_samples(samples: List[Dict], directory: pathlib.Path):
     )
 
     # Header
-    cols = ("sample", "owner", "sex", "type", "filtering", "track", "vcf", "bam", "ped", "panels")
+    cols = (
+        "sample",
+        "family",
+        "owner",
+        "sex",
+        "type",
+        "filtering",
+        "track",
+        "vcf",
+        "bam",
+        "ped",
+        "panels",
+    )
     with open(filename, "w") as f:
         print("\t".join(cols), file=f)
         for s in samples:

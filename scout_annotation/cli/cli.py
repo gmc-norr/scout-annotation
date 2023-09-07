@@ -4,6 +4,7 @@ import logging
 from scout_annotation.cli.batch import batch
 from scout_annotation.cli.panels import panels
 from scout_annotation.cli.single import single
+from scout_annotation.cli.trio import trio
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
@@ -85,3 +86,4 @@ def cli(
 cli.add_command(batch)
 cli.add_command(panels)
 cli.add_command(single)
+cli.add_command(trio)

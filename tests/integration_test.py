@@ -89,6 +89,32 @@ def snakemake_trio():
 
 
 @pytest.fixture(scope="session")
+def cli_trio():
+    args = [
+        "scout-annotation",
+        "--use-apptainer",
+        "--apptainer-prefix",
+        "/storage/userdata/singularity_cache",
+        "--apptainer-args",
+        "--bind /storage",
+        "trio",
+        "--seq-type",
+        "wes",
+        "../data/mother_chr7.vcf",
+        "../data/father_chr7.vcf",
+        "../data/child_chr7.vcf",
+        "../data/trio.ped",
+    ]
+
+    wd = Path(Path(__file__).parent, "integration", "cli_trio")
+    return subprocess.run(args, cwd=wd), wd
+
+
+def test_cli_trio(cli_trio):
+    assert cli_trio[0].returncode == 0
+
+
+@pytest.fixture(scope="session")
 def cli_single_from_outside(tmp_path_factory):
     args = [
         "python",
