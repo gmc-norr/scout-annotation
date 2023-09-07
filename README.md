@@ -58,10 +58,11 @@ flowchart TB
     30 -- no --> 9
 
     9[bgzip] -->
-        10[tabix] -->
         11[vep] -->
         12[vcfanno] -->
         14[most_severe_consequence]
+
+    9 --> 10[tabix] --> 11[vep]
 
     2 -->
         29{PED file given?} -- no -->
@@ -69,7 +70,7 @@ flowchart TB
 
     8 --> 11
     8 --> 21
-    8 --> 22
+    8 --> 23
 
     13[vcfanno_config] --> 12
     14[most_severe_consequence] -->
@@ -91,11 +92,12 @@ flowchart TB
         23[genmod_score] -->
         24[genmod_compound] -->
         26[bgzip] -->
-        27[tabix] -->
         21 -->
         40[sample_config] -->
         41[family_config] -->
         28[all]
+
+    26 --> 27[tabix] --> 21
 
     50{BAM files given?} -- yes -->
         51[link_bam] -->
@@ -103,5 +105,5 @@ flowchart TB
 
     51 --> 40
 
-    24[genmod_rankmodel] --> 22
+    60[genmod_rankmodel] --> 23
 ```
