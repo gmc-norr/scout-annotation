@@ -3,7 +3,7 @@ checkpoint vcf_filtering:
         vcf="{file}.vcf",
         filter_definition=get_vcf_filter,
     output:
-        vcf=temp("{file}.filter-{tag}.vcf"),
+        vcf="{file}.filter-{tag}.vcf",
     log:
         "{file}.filter-{tag}.log",
     params:
