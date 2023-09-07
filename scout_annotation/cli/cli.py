@@ -51,13 +51,13 @@ class Config:
 @click.option(
     "--apptainer-prefix",
     "--singularity-prefix",
-    help="path to store cached apptainer containers",
+    help="path to cached apptainer containers",
 )
 @click.option(
     "--loglevel",
     help="set logging level",
     default="WARNING",
-    type=click.Choice(["INFO", "WARNING", "ERROR", "DEBUG"]),
+    type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR"]),
 )
 @click.version_option(prog_name="scout_annotation")
 @click.pass_context

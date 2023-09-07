@@ -12,15 +12,25 @@ scout-annotation --help
 # Usage: scout-annotation [OPTIONS] COMMAND [ARGS]...
 #
 # Options:
-#   -c, --config TEXT     config file
-#   -r, --resources TEXT  resources file
-#   --version             Show the version and exit.
-#   -h, --help            Show this message and exit.
+#   -c, --config TEXT               config file used for overwriting defaults
+#   -r, --resources TEXT            resources file for overwriting defaults
+#   --cores INTEGER                 number of cores available for snakemake
+#   --use-apptainer, --use-singularity
+#                                   use apptainer as executor
+#   --apptainer-args, --singularity-args TEXT
+#                                   arguments for apptainer
+#   --apptainer-prefix, --singularity-prefix TEXT
+#                                   path to cached apptainer containers
+#   --loglevel [DEBUG|INFO|WARNING|ERROR]
+#                                   set logging level
+#   --version                       Show the version and exit.
+#   -h, --help                      Show this message and exit.
 #
 # Commands:
 #   batch   Annotate a batch of samples.
 #   panels  List available gene panels
 #   single  Annotate a single sample.
+#   trio    Annotate a trio of samples
 ```
 
 ## Testing
