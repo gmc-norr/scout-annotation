@@ -3,11 +3,13 @@ checkpoint vcf_filtering:
         vcf="{file}.vcf",
         filter_definition=get_vcf_filter,
     output:
-        vcf="{file}.filter-{tag}.vcf",
-    log: "{file}.filter-{tag}.log",
+        vcf=temp("{file}.filter-{tag}.vcf"),
+    log:
+        "{file}.filter-{tag}.log",
     params:
         filter_expression=get_vembrane_expression,
-    container: "docker://quay.io/biocontainers/vembrane:0.14.0--pyhdfd78af_0"
+    container:
+        "docker://quay.io/biocontainers/vembrane:0.14.0--pyhdfd78af_0"
     shell:
         """
         vembrane \\

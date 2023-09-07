@@ -28,7 +28,7 @@ rule scout_load_config_sample:
     input:
         ped=get_family_ped,
     output:
-        yaml="load_config/{family}_{sample}.load_config.yaml",
+        yaml=temp("load_config/{family}_{sample}.load_config.yaml"),
     params:
         type="sample",
         bam=get_bam_file,
