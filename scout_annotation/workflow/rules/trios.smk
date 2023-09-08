@@ -7,4 +7,4 @@ rule merge_trio:
     container:
         "docker://hydragenetics/common:0.3.0"
     shell:
-        "bcftools merge -o {output.vcf} {input.vcf}"
+        "bcftools merge --merge none -o {output.vcf} {input.vcf}"
