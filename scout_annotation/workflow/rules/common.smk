@@ -192,14 +192,15 @@ def get_panel_dict():
 
 def get_peddy_file(wildcards, filetype):
     samples = get_family_samples(wildcards)
+    outdir = config.get("output_directory")
     if len(samples) < 2:
         return []
     peddy_files = {
-        "ped": "peddy/{family}/{family}.peddy.ped",
-        "het_check": "peddy/{family}/{family}.het_check.csv",
-        "ped_check": "peddy/{family}/{family}.ped_check.csv",
-        "sex_check": "peddy/{family}/{family}.sex_check.csv",
-        "html": "peddy/{family}/{family}.peddy.ped",
+        "ped": f"{outdir}/{{family}}/{{family}}.peddy.ped",
+        "het_check": f"{outdir}/{{family}}/{{family}}.peddy.het_check.csv",
+        "ped_check": f"{outdir}/{{family}}/{{family}}.peddy.ped_check.csv",
+        "sex_check": f"{outdir}/{{family}}/{{family}}.peddy.sex_check.csv",
+        "html": f"{outdir}/{{family}}/{{family}}.peddy.html",
     }
     return peddy_files[filetype]
 

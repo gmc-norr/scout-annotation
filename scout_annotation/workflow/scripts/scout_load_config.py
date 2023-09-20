@@ -1,5 +1,4 @@
-import cyvcf2
-import pathlib
+from pathlib import Path
 import yaml
 
 
@@ -58,7 +57,7 @@ def generate_family_config(family, sample_config_files):
     peddy_ped = snakemake.input.peddy_ped
     peddy_ped_check = snakemake.input.peddy_ped_check
     peddy_sex_check = snakemake.input.peddy_sex_check
-    vcf = snakemake.input.vcf
+    vcf = Path(snakemake.input.vcf)
     gene_panels = snakemake.params.panels
     rank_model_version = snakemake.params.rank_model_version
     rank_score_threshold = snakemake.params.rank_score_threshold
@@ -81,16 +80,16 @@ def generate_family_config(family, sample_config_files):
 
     match track:
         case "rare":
-            family_config["vcf_snv"] = vcf
+            family_config["vcf_snv"] = vcf.name
         case "cancer":
-            family_config["vcf_cancer"] = vcf
+            family_config["vcf_cancer"] = vcf.name
 
     if len(peddy_ped) > 0:
-        family_config["peddy_ped"] = peddy_ped
+        family_config["peddy_ped"] = Path(peddy_ped).name
     if len(peddy_ped_check) > 0:
-        family_config["peddy_check"] = peddy_ped_check
+        family_config["peddy_check"] = Path(peddy_ped_check).name
     if len(peddy_sex_check) > 0:
-        family_config["peddy_sex"] = peddy_sex_check
+        family_config["peddy_sex"] = Path(peddy_sex_check).name
 
     return family_config
 
