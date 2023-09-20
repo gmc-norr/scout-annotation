@@ -9,6 +9,9 @@ rule scout_load_config_family:
             "load_config/{{family}}_{sample}.load_config.yaml",
             sample=get_family_samples(wc),
         ),
+        peddy_ped=lambda wc: get_peddy_file(wc, "ped"),
+        peddy_ped_check=lambda wc: get_peddy_file(wc, "ped_check"),
+        peddy_sex_check=lambda wc: get_peddy_file(wc, "sex_check"),
     output:
         yaml=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.load_config.yaml",
     params:

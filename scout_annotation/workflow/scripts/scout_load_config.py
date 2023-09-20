@@ -55,6 +55,9 @@ def generate_sample_config(sample):
 def generate_family_config(family, sample_config_files):
     track = get_track_name(snakemake.params.track)
     owner = snakemake.params.owner
+    peddy_ped = snakemake.input.peddy_ped
+    peddy_ped_check = snakemake.input.peddy_ped_check
+    peddy_sex_check = snakemake.input.peddy_sex_check
     vcf = snakemake.input.vcf
     gene_panels = snakemake.params.panels
     rank_model_version = snakemake.params.rank_model_version
@@ -82,6 +85,13 @@ def generate_family_config(family, sample_config_files):
         case "cancer":
             family_config["vcf_cancer"] = vcf
 
+    if len(peddy_ped) > 0:
+        family_config["peddy_ped"] = peddy_ped
+    if len(peddy_ped_check) > 0:
+        family_config["peddy_check"] = peddy_ped_check
+    if len(peddy_sex_check) > 0:
+        family_config["peddy_sex"] = peddy_sex_check
+
     return family_config
 
 
@@ -97,8 +107,6 @@ def main():
         case "family":
             family = snakemake.wildcards.family
             sample_configs = snakemake.input.sample_configs
-            vcf_filename = pathlib.Path(snakemake.input["vcf"])
-            ped_filename = pathlib.Path(snakemake.input["ped"])
             config = generate_family_config(family, sample_configs)
         case _:
             raise Exception(f"invalid config type: {config_type}")
