@@ -153,6 +153,23 @@ properties:
       - swegen
       - clinvar
       - mode
+  peddy:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+      plot:
+        type: boolean
+        description: whether or not to generate plots of the results
+        default: false
+      sites:
+        type: string
+        description: >
+          Either a path to a file containing sites that should be taken
+          into account, or the string "hg38" if the hg38 assembly should
+          be used instead of hg19 (the default).
   genmod:
     type: object
     properties:

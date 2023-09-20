@@ -16,16 +16,21 @@ paths_to_check = zip(
     [
         config.get("panel_filtering", {}).get("panel_directory"),
         *config.get("vcf_filter", {}).values(),
+        config.get("peddy", {}).get("sites"),
         config.get("resources"),
     ],
     [
         ("panel_filtering", "panel_directory"),
         *[("vcf_filter", x) for x in config.get("vcf_filter", {}).keys()],
+        ("peddy", "sites"),
         ("resources",),
     ],
 )
 
 for filepath, config_key in paths_to_check:
+    if filepath is None:
+        continue
+
     filepath = Path(filepath)
     if filepath.is_absolute() or filepath.exists():
         continue
@@ -378,6 +383,8 @@ def get_output_files():
             if isinstance(get_bam_file(sample_wildcard), Path):
                 outfiles.append(f"{outdir}/{s}/{s}.bam")
                 outfiles.append(f"{outdir}/{s}/{s}.bam.bai")
+        if len(family_samples) == 3:
+            outfiles.append(f"{outdir}/{f}/{f}.peddy.ped")
         load_configs.append(f"{outdir}/{f}/{f}.load_config.yaml")
     return outfiles, load_configs
 

@@ -20,6 +20,40 @@ rule link_bam:
         outbai.symlink_to(Path(input.bai).resolve())
 
 
+rule copy_peddy_files:
+    input:
+        het_check="peddy/{family}/{family}.het_check.csv",
+        ped_check="peddy/{family}/{family}.ped_check.csv",
+        sex_check="peddy/{family}/{family}.sex_check.csv",
+        html="peddy/{family}/{family}.html",
+        ped="peddy/{family}/{family}.peddy.ped",
+    output:
+        het_check=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.peddy.het_check.csv",
+        ped_check=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.peddy.ped_check.csv",
+        sex_check=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.peddy.sex_check.csv",
+        html=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.peddy.html",
+        ped=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.peddy.ped",
+    log:
+        f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.copy_peddy_files.log",
+    run:
+        import logging
+        import pathlib
+        import subprocess
+
+        logging.basicConfig(
+            filename=log[0],
+            filemode="a",
+            format="%(asctime)s:%(levelname)s: %(message)s",
+            datefmt="%Y-%m-%dT%H:%M:%S",
+            level=0,
+        )
+        logging.info("copying peddy files")
+
+        for infile, outfile in zip(input, output):
+            logging.info("%s --> %s", infile, pathlib.Path(outfile).resolve())
+            subprocess.run(["cp", infile, outfile], shell=False, check=True)
+
+
 rule copy_results:
     input:
         vcf=get_annotated_vcf,
