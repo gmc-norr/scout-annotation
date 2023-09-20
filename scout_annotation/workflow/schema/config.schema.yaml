@@ -196,7 +196,7 @@ properties:
     required:
       - rank_model_uri
       - rank_model_version
-  genmod_rankmodel:
+  genmod_rank_model:
     properties:
       container:
         type: string

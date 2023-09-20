@@ -164,7 +164,7 @@ rule genmod_models:
 rule genmod_score:
     input:
         vcf="annotation/{family}/{family}.genmod_models.vcf",
-        rank_model=get_rankmodel,
+        rank_model=get_rank_model,
         ped=get_family_ped,
     output:
         vcf=temp("annotation/{family}/{family}.genmod_score.vcf"),
@@ -199,14 +199,14 @@ rule genmod_compound:
         """
 
 
-rule genmod_rankmodel:
+rule genmod_rank_model:
     output:
         rank_model="rank_model/{track}_rank_model_{version}.ini",
     params:
         uri=lambda wc: config["genmod"]["rank_model_uri"].format(
             track=wc.track, version=wc.version
         ),
-        extra=config.get("genmod_rankmodel", {}).get("extra", ""),
+        extra=config.get("genmod_rank_model", {}).get("extra", ""),
     log:
         "rank_model/{track}_rank_model_{version}.log",
     container:

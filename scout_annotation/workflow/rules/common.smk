@@ -327,16 +327,16 @@ def get_vcf_samples(vcf_filename):
     return vcf.samples
 
 
-def get_rankmodel_version(wildcards):
+def get_rank_model_version(wildcards):
     sample_track = get_track(wildcards)
     # TODO: set this up for structural variants
     return config["genmod"]["rank_model_version"][sample_track]
 
 
-def get_rankmodel(wildcards):
+def get_rank_model(wildcards):
     sample_track = get_track(wildcards)
     # TODO: set this up for structural variants
-    version = get_rankmodel_version(wildcards)
+    version = get_rank_model_version(wildcards)
     return f"rank_model/{sample_track}_rank_model_{version}.ini"
 
 

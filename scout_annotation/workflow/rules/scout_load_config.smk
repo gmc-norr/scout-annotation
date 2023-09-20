@@ -16,7 +16,7 @@ rule scout_load_config_family:
         track=get_track,
         owner=get_case_owner,
         panels=get_family_panels,
-        rankmodel_version=get_rankmodel_version,
+        rank_model_version=get_rank_model_version,
         rank_score_threshold=-1000,
     container:
         "docker://python:3.10.7-slim"

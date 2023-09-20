@@ -57,7 +57,7 @@ def generate_family_config(family, sample_config_files):
     owner = snakemake.params.owner
     vcf = snakemake.input.vcf
     gene_panels = snakemake.params.panels
-    rankmodel_version = snakemake.params.rankmodel_version
+    rank_model_version = snakemake.params.rank_model_version
     rank_score_threshold = snakemake.params.rank_score_threshold
 
     sample_configs = []
@@ -72,7 +72,7 @@ def generate_family_config(family, sample_config_files):
         "human_genome_build": "37",
         "gene_panels": gene_panels,
         "samples": sample_configs,
-        "rankmodel_version": rankmodel_version,
+        "rank_model_version": rank_model_version,
         "rank_score_threshold": rank_score_threshold,
     }
 

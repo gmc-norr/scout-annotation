@@ -120,5 +120,5 @@ flowchart TB
     51 --> 40
     70 --> 21
 
-    60[genmod_rankmodel] --> 23
+    60[genmod_rank_model] --> 23
 ```
