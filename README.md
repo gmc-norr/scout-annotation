@@ -63,7 +63,11 @@ flowchart TB
         7[fix_vcf_af] --> 30{Part of trio?}
 
     30 -- yes -->
-        31[merge_trio] --> 9
+        31[merge_trio] -->  9
+
+    31 --> 70[peddy]
+    9 --> 70
+    10 --> 70
 
     30 -- no --> 9
 
@@ -114,6 +118,7 @@ flowchart TB
         28
 
     51 --> 40
+    70 --> 21
 
     60[genmod_rankmodel] --> 23
 ```

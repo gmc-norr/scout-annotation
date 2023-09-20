@@ -13,6 +13,7 @@ decompose/
 load_config/
 merge_trio/
 mock_ped/
+peddy/
 rank_model/
 results/
 results_no-filtering/

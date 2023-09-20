@@ -100,10 +100,10 @@ def cli_trio():
         "trio",
         "--seq-type",
         "wes",
-        "../data/mother_chr7.vcf",
-        "../data/father_chr7.vcf",
-        "../data/child_chr7.vcf",
-        "../data/trio.ped",
+        "../data/NA12877.vcf",
+        "../data/NA12878.vcf",
+        "../data/NA12879.vcf",
+        "../data/ceph1463_trio.ped",
     ]
 
     wd = Path(Path(__file__).parent, "integration", "cli_trio")
@@ -399,23 +399,42 @@ def test_trio_exit_code(snakemake_trio):
 
 
 def test_trio_vcf_samples(snakemake_trio):
-    vcf = Path(snakemake_trio[1], "results_trio/f1234/f1234.scout-annotated.vcf.gz")
+    vcf = Path(
+        snakemake_trio[1], "results_trio/ceph1463/ceph1463.scout-annotated.vcf.gz"
+    )
     assert vcf.exists()
     vcf_samples = cyvcf2.VCF(vcf).samples
     assert len(vcf_samples) == 3
-    assert "mother" in vcf_samples
-    assert "father" in vcf_samples
-    assert "child" in vcf_samples
+    assert "NA12877" in vcf_samples
+    assert "NA12878" in vcf_samples
+    assert "NA12879" in vcf_samples
 
 
 def test_trio_config_samples(snakemake_trio):
-    config_file = Path(snakemake_trio[1], "results_trio/f1234/f1234.load_config.yaml")
+    config_file = Path(
+        snakemake_trio[1], "results_trio/ceph1463/ceph1463.load_config.yaml"
+    )
     assert config_file.exists()
     with open(config_file) as f:
         load_config = yaml.safe_load(f)
     assert "samples" in load_config
     assert len(load_config["samples"]) == 3
     load_config_sample_ids = [s["sample_id"] for s in load_config["samples"]]
-    assert "mother" in load_config_sample_ids
-    assert "father" in load_config_sample_ids
-    assert "child" in load_config_sample_ids
+    assert "NA12877" in load_config_sample_ids
+    assert "NA12878" in load_config_sample_ids
+    assert "NA12879" in load_config_sample_ids
+
+
+def test_trio_peddy(snakemake_trio):
+    results_dir = Path(snakemake_trio[1], "results_trio/ceph1463")
+    peddy_het_check = results_dir / "ceph1463.peddy.het_check.csv"
+    peddy_ped_check = results_dir / "ceph1463.peddy.ped_check.csv"
+    peddy_sex_check = results_dir / "ceph1463.peddy.sex_check.csv"
+    peddy_html = results_dir / "ceph1463.peddy.html"
+    peddy_ped = results_dir / "ceph1463.peddy.ped"
+
+    assert peddy_het_check.exists()
+    assert peddy_ped_check.exists()
+    assert peddy_sex_check.exists()
+    assert peddy_html.exists()
+    assert peddy_ped.exists()
