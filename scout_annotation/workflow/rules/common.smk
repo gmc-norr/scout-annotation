@@ -261,14 +261,6 @@ def get_reheadered_vcf_file(wildcards):
     return get_vcf_file(wildcards)
 
 
-# def get_ped(wildcards):
-#     ped = _get_sample_row(wildcards)["ped"].values
-#     assert len(ped) == 1, "multiple PED files found for {sample}".format(**wildcards)
-#     if not ped[0]:
-#         return ped
-#     return "mock_ped/{sample}.ped".format(**wildcards)
-
-
 def get_family_ped(wildcards):
     peds = _get_family_rows(wildcards)["ped"].unique()
     assert len(peds) == 1, "samples within a family must have the same ped file"
@@ -301,23 +293,6 @@ def get_sample_sex(wildcards):
     sex = _get_sample_row(wildcards)["sex"]
     assert len(sex) == 1
     return sex.values[0]
-
-
-# def get_sample_phenotype(wildcards):
-#     phenotypes = {
-#         -9: "missing",
-#         0: "missing",
-#         1: "unaffected",
-#         2: "affected",
-#     }
-#     ped = get_family_ped(wildcards)
-#     with open(ped) as f:
-#         for line in f:
-#             family, sample, _, _, _, p = line.strip().split()
-#             if sample == wildcards.sample:
-#                 return phenotypes[int(p)]
-#
-#     raise KeyError(f"no phenotype information found for sample: {wildcards.sample}")
 
 
 def get_analysis_type(wildcards):
