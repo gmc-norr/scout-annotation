@@ -1,4 +1,5 @@
 import click
+import cyvcf2
 import pathlib
 import subprocess
 import sys
@@ -168,9 +169,24 @@ def trio(
             config.logger.error(f"panel not found: {p}")
             raise click.Abort()
 
+    sample_vcf = {}
+    for vcf_path in vcf:
+        vcf_samples = cyvcf2.VCF(vcf_path).samples
+        if len(vcf_samples) != 1:
+            config.logger.error(
+                f"expected 1 sample in vcf, found {len(vcf_samples)}: {vcf_path}"
+            )
+            raise click.Abort()
+        sample_vcf[vcf_samples[0]] = vcf_path
+
     sample_rows = []
-    for svcf, sname, ssex, sbam in zip(vcf, samples, sexes, bam_files):
+    for sname, ssex, sbam in zip(samples, sexes, bam_files):
         config.logger.debug(f"generating sample row for {sname}")
+        try:
+            svcf = sample_vcf[sname]
+        except KeyError:
+            config.logger.error(f"sample {sname} not found in any VCF")
+            raise click.Abort()
         sample_rows.append(
             {
                 "sample": sname,
