@@ -4,11 +4,11 @@ rule peddy:
         tbi="merge_trio/{family}_trio.vcf.gz.tbi",
         ped=get_family_ped,
     output:
-        het_check="peddy/{family}/{family}.het_check.csv",
-        html="peddy/{family}/{family}.html",
-        ped="peddy/{family}/{family}.peddy.ped",
-        ped_check="peddy/{family}/{family}.ped_check.csv",
-        sex_check="peddy/{family}/{family}.sex_check.csv",
+        het_check=temp("peddy/{family}/{family}.het_check.csv"),
+        html=temp("peddy/{family}/{family}.html"),
+        ped=temp("peddy/{family}/{family}.peddy.ped"),
+        ped_check=temp("peddy/{family}/{family}.ped_check.csv"),
+        sex_check=temp("peddy/{family}/{family}.sex_check.csv"),
     log:
         "peddy/{family}/{family}.peddy.log",
     params:
