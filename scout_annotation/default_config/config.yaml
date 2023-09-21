@@ -45,5 +45,5 @@ genmod:
     rare_disease: "0.1"
     cancer: "0.1"
 
-genmod_rankmodel:
+genmod_rank_model:
   extra: --insecure

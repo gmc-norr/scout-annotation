@@ -16,7 +16,7 @@ from scout_annotation.samples import write_samples
     "--out-dir",
     "-o",
     help="directory to write output files to",
-    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False),
 )
 @click.option(
     "--bam-dir",
@@ -120,8 +120,8 @@ def batch(
     gene_panels = get_panels()
     for p in panel:
         if p not in gene_panels:
-            print(f"error: panel not found: {p}", file=sys.stderr)
-            exit(1)
+            config.logger.error(f"panel not found: {p}", file=sys.stderr)
+            raise click.Abort()
 
     vcf_files = list(vcf_dir.glob("*.vcf"))
     vcf_files.extend(vcf_dir.glob("*.vcf.gz"))
@@ -132,32 +132,27 @@ def batch(
         try:
             sample_split = vf.name.split(sep)
         except ValueError as ve:
-            print(f"error: {ve}", file=sys.stderr)
-            exit(1)
+            config.logger.error(f"{ve}", file=sys.stderr)
+            raise click.Abort()
         if len(sample_split) < 2:
-            print(
-                f'error: separator "{sep}" not found in filename: {vf.name}',
-                file=sys.stderr,
-            )
-            exit(1)
+            config.logger.error(f'separator "{sep}" not found in filename: {vf.name}')
+            raise click.Abort()
         sample_name = sample_split[0]
         if sample_name in sample_names:
-            print(
-                f"error: duplicated sample name found, check input files: {sample_name}",
-                file=sys.stderr,
+            config.logger.error(
+                f"duplicated sample name found, check input files: {sample_name}"
             )
-            exit(1)
+            raise click.Abort()
         sample_names.add(sample_name)
 
         bam_filename = list(bam_dir.glob(f"{sample_name}*.bam"))
         if len(bam_filename) == 0:
             bam_filename = ""
         elif len(bam_filename) > 1:
-            print(
-                f"error: found more than one possible bam file for {sample_name}",
-                file=sys.stderr,
+            config.logger.error(
+                f"found more than one possible bam file for {sample_name}"
             )
-            exit(1)
+            raise click.Abort()
         else:
             bam_filename = bam_filename[0]
 
@@ -165,11 +160,10 @@ def batch(
         if len(ped_filename) == 0:
             ped_filename = ""
         elif len(ped_filename) > 1:
-            print(
-                f"error: found more than one possible ped file for {sample_name}",
-                file=sys.stderr,
+            config.logger.error(
+                f"found more than one possible ped file for {sample_name}"
             )
-            exit(1)
+            raise click.Abort()
         else:
             ped_filename = ped_filename[0]
 
@@ -222,10 +216,12 @@ def batch(
     if notemp:
         args.append("--notemp")
 
-    args.extend([
-        "--config",
-        f"samples={samples_file}",
-    ])
+    args.extend(
+        [
+            "--config",
+            f"samples={samples_file}",
+        ]
+    )
 
     if config.resources is not None:
         args.append(f"resources={config.resources}")

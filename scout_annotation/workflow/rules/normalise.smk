@@ -2,7 +2,7 @@ rule sample_name_translation:
     output:
         samples=temp("decompose/{sample}/{sample}.samples.txt"),
     params:
-        old_name=lambda wc: get_vcf_samples(get_vcf_file(wc)),
+        old_name=lambda wc: get_vcf_samples(get_vcf_file(wc))[0],
         new_name=lambda wc: wc.sample,
     run:
         with open(output.samples, "w") as f:

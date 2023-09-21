@@ -1,4 +1,5 @@
 import click
+import cyvcf2
 import pathlib
 import subprocess
 import sys
@@ -8,9 +9,30 @@ from scout_annotation.panels import get_panels
 from scout_annotation.samples import write_samples
 
 
+def get_ped_sex(s):
+    match s:
+        case 1 | "1":
+            return "male"
+        case 2 | "2":
+            return "female"
+        case _:
+            return "unknown"
+
+
 @click.command()
 @click.argument(
     "vcf",
+    type=click.Path(
+        path_type=pathlib.Path,
+        exists=True,
+        dir_okay=False,
+        file_okay=True,
+        resolve_path=True,
+    ),
+    nargs=3,
+)
+@click.argument(
+    "ped",
     type=click.Path(
         path_type=pathlib.Path,
         exists=True,
@@ -25,7 +47,6 @@ from scout_annotation.samples import write_samples
     help="directory to write output files to",
     type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False),
 )
-@click.option("-n", "--name", help="sample name")
 @click.option(
     "--profile",
     help="snakemake profile to use",
@@ -70,18 +91,14 @@ from scout_annotation.samples import write_samples
     default="panel",
 )
 @click.option(
-    "--sex",
-    help="sex of the patient",
-    type=click.Choice(["unknown", "male", "female"]),
-    default="unknown",
-)
-@click.option(
     "-b",
-    "--bam-file",
-    help="path to alignment BAM file",
+    "--bam-files",
+    help="path to alignment BAM files, one for each sample",
     type=click.Path(
         path_type=pathlib.Path, dir_okay=False, file_okay=True, resolve_path=True
     ),
+    default=[None, None, None],
+    nargs=3,
 )
 @click.option(
     "-p",
@@ -100,42 +117,51 @@ from scout_annotation.samples import write_samples
     show_default=True,
 )
 @click.pass_obj
-def single(
+def trio(
     config,
     vcf,
+    ped,
     out_dir,
     profile,
     dryrun,
     notemp,
-    name,
     track,
     samples_dir,
     seq_type,
-    sex,
-    bam_file,
+    bam_files,
     panel,
     snv_filter,
     owner,
 ):
-    """Annotate a single sample."""
+    """Annotate a trio of samples
 
-    if name is None:
-        name = vcf.stem.split("_")[0]
+    Supply three VCF files, one each for the mother, father and child."""
+    config.logger.info(f"annotating trio")
+    config.logger.info(f"fetching sample information from PED file: {ped}")
 
-    sample = {
-        "sample": name,
-        "owner": owner,
-        "sex": sex,
-        "type": seq_type,
-        "track": track,
-        "vcf": vcf,
-        "bam": bam_file if bam_file is not None else "",
-        "panels": ",".join(panel),
-        "ped": "",
-    }
+    family = None
+    samples = []
+    sexes = []
 
-    if snv_filter is not None:
-        sample["filtering"] = snv_filter
+    with open(ped) as f:
+        for line in f:
+            try:
+                f, s, _, _, sex, _ = line.strip().split()
+            except ValueError:
+                config.logger.error(f"invalid PED file: {ped}")
+                raise click.Abort()
+            if family is not None and f != family:
+                config.logger.error(f"more than one family in PED file: {ped}")
+                raise click.Abort()
+            family = f
+            samples.append(s)
+            sexes.append(get_ped_sex(sex))
+    if len(samples) != 3:
+        config.logger.error(f"expected 3 samples in PED, found {len(samples)}")
+        raise click.Abort()
+
+    for s, sex, vcf_path in zip(samples, sexes, vcf):
+        config.logger.debug(f"{s} ({sex}): {vcf_path}")
 
     gene_panels = get_panels()
     for p in panel:
@@ -143,7 +169,43 @@ def single(
             config.logger.error(f"panel not found: {p}")
             raise click.Abort()
 
-    samples_file = write_samples([sample], samples_dir)
+    sample_vcf = {}
+    for vcf_path in vcf:
+        vcf_samples = cyvcf2.VCF(vcf_path).samples
+        if len(vcf_samples) != 1:
+            config.logger.error(
+                f"expected 1 sample in vcf, found {len(vcf_samples)}: {vcf_path}"
+            )
+            raise click.Abort()
+        sample_vcf[vcf_samples[0]] = vcf_path
+
+    sample_rows = []
+    for sname, ssex, sbam in zip(samples, sexes, bam_files):
+        config.logger.debug(f"generating sample row for {sname}")
+        try:
+            svcf = sample_vcf[sname]
+        except KeyError:
+            config.logger.error(f"sample {sname} not found in any VCF")
+            raise click.Abort()
+        sample_rows.append(
+            {
+                "sample": sname,
+                "family": family,
+                "owner": owner,
+                "sex": ssex,
+                "type": seq_type,
+                "track": track,
+                "filtering": snv_filter if snv_filter is not None else "",
+                "panels": ",".join(panel),
+                "vcf": svcf,
+                "ped": ped,
+                "bam": sbam if sbam is not None else "",
+            }
+        )
+
+    config.logger.debug(f"generated sample rows for {len(sample_rows)} samples")
+
+    samples_file = write_samples(sample_rows, samples_dir)
 
     args = [
         "snakemake",
@@ -188,6 +250,8 @@ def single(
         args.append(f"resources={default_resources()}")
     if out_dir is not None:
         args.append(f"output_directory={out_dir}")
+
+    config.logger.info("starting snakemake")
 
     p = subprocess.run(args)
 

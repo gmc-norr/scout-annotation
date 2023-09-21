@@ -20,3 +20,7 @@ vep:
   plugin-data: /storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37
   swegen: /storage/userdata/references/homo_sapiens/hg19/index/swegen_20180409/anon-SweGen_STR_NSPHS_1000samples_SNV_hg19.vcf.gz
   clinvar: /storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37/clinvar_20220730/clinvar_20220730.vcf.gz
+
+peddy:
+  sites: data/ceph1463.sites.txt
+  plot: false

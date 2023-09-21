@@ -1,21 +1,43 @@
 from pathlib import Path
 
-rule scout_load_config:
+
+rule scout_load_config_family:
     input:
-        vcf=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.scout-annotated.vcf.gz",
-        ped=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.ped",
+        vcf=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.scout-annotated.vcf.gz",
+        ped=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.ped",
+        sample_configs=lambda wc: expand(
+            "load_config/{{family}}_{sample}.load_config.yaml",
+            sample=get_family_samples(wc),
+        ),
+        peddy_ped=lambda wc: get_peddy_file(wc, "ped"),
+        peddy_ped_check=lambda wc: get_peddy_file(wc, "ped_check"),
+        peddy_sex_check=lambda wc: get_peddy_file(wc, "sex_check"),
     output:
-        yaml=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.load_config.yaml",
-    log: f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.load_config.log"
-    container: "docker://python:3.10.7-slim"
+        yaml=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.load_config.yaml",
     params:
-        sample_name=lambda wc: wc.sample,
-        owner=get_case_owner,
-        sex=get_sex,
-        phenotype="affected",
-        analysis_type=get_analysis_type,
+        type="family",
         track=get_track,
+        owner=get_case_owner,
+        panels=get_family_panels,
         rank_model_version=get_rank_model_version,
-        panels=get_sample_panels,
-        include_bam=lambda wc: isinstance(get_bam_file(wc), Path),
-    script: "../scripts/scout_load_config.py"
+        rank_score_threshold=-1000,
+    container:
+        "docker://python:3.10.7-slim"
+    script:
+        "../scripts/scout_load_config.py"
+
+
+rule scout_load_config_sample:
+    input:
+        ped=get_family_ped,
+    output:
+        yaml=temp("load_config/{family}_{sample}.load_config.yaml"),
+    params:
+        type="sample",
+        bam=get_bam_file,
+        sex=get_sample_sex,
+        analysis_type=get_analysis_type,
+    container:
+        "docker://python:3.10.7-slim"
+    script:
+        "../scripts/scout_load_config.py"
