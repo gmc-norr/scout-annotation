@@ -25,6 +25,7 @@ def integration():
         CONFIG,
         "../config.yaml",
         "--show-failed-logs",
+        "--notemp",
         "--cores",
         "1",
     ]
@@ -52,6 +53,7 @@ def integration_no_filtering():
         "samples=samples_no-filtering.tsv",
         "output_directory=results_no-filtering",
         "--show-failed-logs",
+        "--notemp",
         "--cores",
         "1",
     ]
@@ -79,6 +81,7 @@ def snakemake_trio():
         "samples=samples_trio.tsv",
         "output_directory=results_trio",
         "--show-failed-logs",
+        "--notemp",
         "--cores",
         "1",
     ]
@@ -159,6 +162,7 @@ def cli_single():
         "--cores",
         "1",
         "single",
+        "--notemp",
         "-o",
         "cli_single_results",
         "../data/HD832_chr7_twist-solid-0.1.5-alpha.vcf",
@@ -188,6 +192,7 @@ def cli_batch():
         "--cores",
         "1",
         "batch",
+        "--notemp",
         "-o",
         "cli_batch_results",
         "../batch_data/",
