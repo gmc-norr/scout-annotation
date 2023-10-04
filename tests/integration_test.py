@@ -437,9 +437,11 @@ def test_trio_peddy(snakemake_trio):
     peddy_sex_check = results_dir / "ceph1463.peddy.sex_check.csv"
     peddy_html = results_dir / "ceph1463.peddy.html"
     peddy_ped = results_dir / "ceph1463.peddy.ped"
+    madeline2_pedigree = results_dir / "ceph1463.pedigree.svg"
 
     assert peddy_het_check.exists()
     assert peddy_ped_check.exists()
     assert peddy_sex_check.exists()
     assert peddy_html.exists()
     assert peddy_ped.exists()
+    assert madeline2_pedigree.exists()

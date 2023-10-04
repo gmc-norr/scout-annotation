@@ -373,8 +373,9 @@ def get_output_files():
             if isinstance(get_bam_file(sample_wildcard), Path):
                 outfiles.append(f"{outdir}/{s}/{s}.bam")
                 outfiles.append(f"{outdir}/{s}/{s}.bam.bai")
-        if len(family_samples) == 3:
+        if len(family_samples) > 1:
             outfiles.append(f"{outdir}/{f}/{f}.peddy.ped")
+            outfiles.append(f"{outdir}/{f}/{f}.pedigree.svg")
         load_configs.append(f"{outdir}/{f}/{f}.load_config.yaml")
     return outfiles, load_configs
 

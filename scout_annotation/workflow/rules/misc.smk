@@ -27,12 +27,14 @@ rule copy_peddy_files:
         sex_check="peddy/{family}/{family}.sex_check.csv",
         html="peddy/{family}/{family}.html",
         ped="peddy/{family}/{family}.peddy.ped",
+        pedigree="madeline2/{family}/{family}.pedigree.svg",
     output:
         het_check=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.peddy.het_check.csv",
         ped_check=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.peddy.ped_check.csv",
         sex_check=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.peddy.sex_check.csv",
         html=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.peddy.html",
         ped=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.peddy.ped",
+        pedigree=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.pedigree.svg",
     log:
         f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.copy_peddy_files.log",
     run:
