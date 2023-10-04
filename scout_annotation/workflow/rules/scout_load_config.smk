@@ -12,6 +12,7 @@ rule scout_load_config_family:
         peddy_ped=lambda wc: get_peddy_file(wc, "ped"),
         peddy_ped_check=lambda wc: get_peddy_file(wc, "ped_check"),
         peddy_sex_check=lambda wc: get_peddy_file(wc, "sex_check"),
+        madeline2_svg=lambda wc: get_madeline2_svg(wc),
     output:
         yaml=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.load_config.yaml",
     params:

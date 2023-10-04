@@ -205,6 +205,14 @@ def get_peddy_file(wildcards, filetype):
     return peddy_files[filetype]
 
 
+def get_madeline2_svg(wildcards):
+    samples = get_family_samples(wildcards)
+    outdir = config.get("output_directory")
+    if len(samples) < 2:
+        return []
+    return f"{outdir}/{{family}}/{{family}}.pedigree.svg"
+
+
 def get_preprocessed_vcf(wildcards):
     # if trio, get merged vcf, otherwise get sample vcf
     family_samples = samples[samples["family"] == wildcards["family"]]["sample"].values

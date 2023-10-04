@@ -92,6 +92,16 @@ def snakemake_trio():
 
 
 @pytest.fixture(scope="session")
+def snakemake_trio_config(snakemake_trio):
+    config_file = Path(
+        snakemake_trio[1], "results_trio/ceph1463/ceph1463.load_config.yaml"
+    )
+    assert config_file.exists()
+    with open(config_file) as f:
+        return yaml.safe_load(f)
+
+
+@pytest.fixture(scope="session")
 def cli_trio():
     args = [
         "scout-annotation",
@@ -445,3 +455,8 @@ def test_trio_peddy(snakemake_trio):
     assert peddy_html.exists()
     assert peddy_ped.exists()
     assert madeline2_pedigree.exists()
+
+
+def test_trio_config_pedigree(snakemake_trio_config):
+    assert "madeline" in snakemake_trio_config
+    assert snakemake_trio_config["madeline"] == "ceph1463.pedigree.svg"
