@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "scout-annotation"
-version = "0.7.3"
+version = "0.8.0"
 description = "Snakemake pipeline with utilities for annotating VCFs for loading into Scout"
 authors = ["Niklas Mähler <niklas.mahler@gmail.com>"]
 license = "GPLv3"
