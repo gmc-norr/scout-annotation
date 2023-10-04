@@ -11,6 +11,7 @@ annotation/
 cli_*_results/
 decompose/
 load_config/
+madeline2/
 merge_trio/
 mock_ped/
 peddy/

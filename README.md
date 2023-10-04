@@ -120,5 +120,11 @@ flowchart TB
     51 --> 40
     70 --> 21
 
+    30 -- yes -->
+        80[madeline2_data] -->
+        81[madeline2_svg] -->
+        21
+    29 -- yes --> 80
+
     60[genmod_rank_model] --> 23
 ```

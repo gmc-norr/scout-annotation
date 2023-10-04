@@ -53,6 +53,7 @@ def generate_sample_config(sample):
 
 def generate_family_config(family, sample_config_files):
     track = get_track_name(snakemake.params.track)
+    madeline2_svg = snakemake.input.madeline2_svg
     owner = snakemake.params.owner
     peddy_ped = snakemake.input.peddy_ped
     peddy_ped_check = snakemake.input.peddy_ped_check
@@ -90,6 +91,8 @@ def generate_family_config(family, sample_config_files):
         family_config["peddy_check"] = Path(peddy_ped_check).name
     if len(peddy_sex_check) > 0:
         family_config["peddy_sex"] = Path(peddy_sex_check).name
+    if len(madeline2_svg) > 0:
+        family_config["madeline"] = Path(madeline2_svg).name
 
     return family_config
 
