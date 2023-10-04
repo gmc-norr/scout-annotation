@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.8.0](https://github.com/gmc-norr/scout-annotation/compare/v0.7.3...v0.8.0) (2023-10-04)
+
+
+### Features
+
+* ability to set apptainer arguments from the CLI ([89a379c](https://github.com/gmc-norr/scout-annotation/commit/89a379c58b47bd0107928220feb8445deb196b56))
+* trio annotation ([#56](https://github.com/gmc-norr/scout-annotation/issues/56)) ([e442b25](https://github.com/gmc-norr/scout-annotation/commit/e442b252723d884e9ccb90d9d0bf7d3e9c29035b))
+* trio annotation functionality ([#49](https://github.com/gmc-norr/scout-annotation/issues/49)) ([22622eb](https://github.com/gmc-norr/scout-annotation/commit/22622eb81ed8b1bfebe4af21fd7b5ad6eaa0e5ba))
+* wrap pipeline in a proper package ([#47](https://github.com/gmc-norr/scout-annotation/issues/47)) ([89a379c](https://github.com/gmc-norr/scout-annotation/commit/89a379c58b47bd0107928220feb8445deb196b56))
+
 ## [0.7.3](https://github.com/gmc-norr/scout-annotation/compare/v0.7.2...v0.7.3) (2023-05-09)
 
 
