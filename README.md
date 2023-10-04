@@ -126,6 +126,5 @@ flowchart TB
         21
     29 -- yes --> 80
 
-
     60[genmod_rank_model] --> 23
 ```
