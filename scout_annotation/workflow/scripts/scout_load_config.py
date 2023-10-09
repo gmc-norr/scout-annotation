@@ -45,8 +45,8 @@ def generate_sample_config(sample):
         "analysis_type": analysis_type,
     }
 
-    if len(bam) > 0:
-        sample_config["alignment_path"] = bam
+    if isinstance(bam, Path):
+        sample_config["alignment_path"] = "{}.bam".format(snakemake.wildcards.sample)
 
     return sample_config
 
