@@ -224,10 +224,12 @@ def test_cli_batch(cli_batch):
 
 def test_cli_batch_load_config(cli_batch):
     config_path = Path(cli_batch[1], "cli_batch_results/HD832/HD832.load_config.yaml")
+    bam_path = Path(cli_batch[1], "cli_batch_results/HD832/HD832.bam")
     with open(config_path) as f:
         load_config = yaml.safe_load(f)
 
     assert load_config["samples"][0]["alignment_path"] == "HD832.bam"
+    assert bam_path.exists()
 
 
 @pytest.fixture(scope="session")

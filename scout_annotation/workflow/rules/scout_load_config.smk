@@ -35,7 +35,7 @@ rule scout_load_config_sample:
         yaml=temp("load_config/{family}_{sample}.load_config.yaml"),
     params:
         type="sample",
-        bam=get_bam_file,
+        include_bam=lambda wc: isinstance(get_bam_file(wc), Path),
         sex=get_sample_sex,
         analysis_type=get_analysis_type,
     container:
