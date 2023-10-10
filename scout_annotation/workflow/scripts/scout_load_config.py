@@ -34,7 +34,7 @@ def phenotype(ped_path, sample):
 
 def generate_sample_config(sample):
     ped_file = snakemake.input.ped
-    bam = snakemake.params.bam
+    include_bam = snakemake.params.include_bam
     sex = snakemake.params.sex
     analysis_type = snakemake.params.analysis_type
 
@@ -45,8 +45,8 @@ def generate_sample_config(sample):
         "analysis_type": analysis_type,
     }
 
-    if len(bam) > 0:
-        sample_config["alignment_path"] = bam
+    if include_bam:
+        sample_config["alignment_path"] = "{}.bam".format(snakemake.wildcards.sample)
 
     return sample_config
 

@@ -202,6 +202,8 @@ def cli_batch():
         "--cores",
         "1",
         "batch",
+        "--bam-dir",
+        "../batch_data/bam",
         "--notemp",
         "-o",
         "cli_batch_results",
@@ -218,6 +220,16 @@ def test_cli_batch(cli_batch):
     results_dir = cli_batch[1]
     assert results_dir.exists()
     assert results_dir.is_dir()
+
+
+def test_cli_batch_load_config(cli_batch):
+    config_path = Path(cli_batch[1], "cli_batch_results/HD832/HD832.load_config.yaml")
+    bam_path = Path(cli_batch[1], "cli_batch_results/HD832/HD832.bam")
+    with open(config_path) as f:
+        load_config = yaml.safe_load(f)
+
+    assert load_config["samples"][0]["alignment_path"] == "HD832.bam"
+    assert bam_path.exists()
 
 
 @pytest.fixture(scope="session")
