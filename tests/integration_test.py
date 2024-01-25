@@ -13,6 +13,10 @@ SNAKEFILE = snakefile()
 DEFAULT_CONFIG = default_config()
 
 
+if not Path("/storage").exists():
+    pytest.skip("requires /storage", allow_module_level=True)
+
+
 @pytest.fixture(scope="session")
 def integration():
     args = [
