@@ -1,0 +1,2 @@
+sample	owner	sex	type	track	vcf	ped
+sample2-1	clingen-somatic	unknown	panel	cancer	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf

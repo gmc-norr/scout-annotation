@@ -3,15 +3,22 @@ import gzip
 from pathlib import Path
 import pytest
 import re
+import shutil
 import subprocess
 import yaml
 
-SNAKEFILE = Path("./scout_annotation/workflow/Snakefile").resolve()
-CONFIG = Path("./scout_annotation/default_config/config.yaml").resolve()
+from scout_annotation.resources import default_config, snakefile
+
+SNAKEFILE = snakefile()
+DEFAULT_CONFIG = default_config()
+
+
+if not Path("/storage").exists():
+    pytest.skip("requires /storage", allow_module_level=True)
 
 
 @pytest.fixture(scope="session")
-def integration():
+def integration(tmp_path_factory):
     args = [
         "snakemake",
         "-s",
@@ -22,21 +29,26 @@ def integration():
         "--singularity-prefix",
         "/storage/userdata/singularity_cache",
         "--configfiles",
-        CONFIG,
-        "../config.yaml",
+        DEFAULT_CONFIG,
+        "config.yaml",
         "--show-failed-logs",
         "--notemp",
         "--cores",
         "1",
     ]
 
-    wd = Path(Path(__file__).parent, "integration", "test")
+    wd = tmp_path_factory.mktemp("integration")
+    shutil.copy("tests/integration/config.yaml", wd)
+    shutil.copy("tests/integration/data/samples.tsv", wd)
+    shutil.copytree("tests/integration/data", wd / "data")
+    shutil.copytree("tests/integration/filters", wd / "filters")
+    shutil.copytree("tests/integration/panels", wd / "panels")
 
     return subprocess.run(args, cwd=wd), wd
 
 
 @pytest.fixture(scope="session")
-def integration_no_filtering():
+def integration_no_filtering(tmp_path_factory):
     args = [
         "snakemake",
         "-s",
@@ -47,8 +59,8 @@ def integration_no_filtering():
         "--singularity-prefix",
         "/storage/userdata/singularity_cache",
         "--configfiles",
-        CONFIG,
-        "../config.yaml",
+        DEFAULT_CONFIG,
+        "config.yaml",
         "--config",
         "samples=samples_no-filtering.tsv",
         "output_directory=results_no-filtering",
@@ -58,13 +70,18 @@ def integration_no_filtering():
         "1",
     ]
 
-    wd = Path(Path(__file__).parent, "integration", "no_filtering")
+    wd = tmp_path_factory.mktemp("integration_no_filtering")
+    shutil.copy("tests/integration/config.yaml", wd)
+    shutil.copy("tests/integration/data/samples_no-filtering.tsv", wd)
+    shutil.copytree("tests/integration/data", wd / "data")
+    shutil.copytree("tests/integration/filters", wd / "filters")
+    shutil.copytree("tests/integration/panels", wd / "panels")
 
     return subprocess.run(args, cwd=wd), wd
 
 
 @pytest.fixture(scope="session")
-def snakemake_trio():
+def snakemake_trio(tmp_path_factory):
     args = [
         "snakemake",
         "-s",
@@ -75,8 +92,8 @@ def snakemake_trio():
         "--singularity-prefix",
         "/storage/userdata/singularity_cache",
         "--configfiles",
-        CONFIG,
-        "../config.yaml",
+        DEFAULT_CONFIG,
+        "config.yaml",
         "--config",
         "samples=samples_trio.tsv",
         "output_directory=results_trio",
@@ -86,7 +103,12 @@ def snakemake_trio():
         "1",
     ]
 
-    wd = Path(Path(__file__).parent, "integration", "trio")
+    wd = tmp_path_factory.mktemp("snakemake_trio")
+    shutil.copy("tests/integration/config.yaml", wd)
+    shutil.copy("tests/integration/data/samples_trio.tsv", wd)
+    shutil.copytree("tests/integration/panels", wd / "panels")
+    shutil.copytree("tests/integration/filters", wd / "filters")
+    shutil.copytree("tests/integration/data", wd / "data")
 
     return subprocess.run(args, cwd=wd), wd
 
@@ -102,7 +124,7 @@ def snakemake_trio_config(snakemake_trio):
 
 
 @pytest.fixture(scope="session")
-def cli_trio():
+def cli_trio(tmp_path_factory):
     args = [
         "scout-annotation",
         "--use-apptainer",
@@ -113,13 +135,15 @@ def cli_trio():
         "trio",
         "--seq-type",
         "wes",
-        "../data/NA12877.vcf",
-        "../data/NA12878.vcf",
-        "../data/NA12879.vcf",
-        "../data/ceph1463_trio.ped",
+        "data/NA12877.vcf",
+        "data/NA12878.vcf",
+        "data/NA12879.vcf",
+        "data/ceph1463_trio.ped",
     ]
 
-    wd = Path(Path(__file__).parent, "integration", "cli_trio")
+    wd = tmp_path_factory.mktemp("cli_trio")
+    shutil.copytree("tests/integration/data", wd / "data")
+
     return subprocess.run(args, cwd=wd), wd
 
 
@@ -128,7 +152,8 @@ def test_cli_trio(cli_trio):
 
 
 @pytest.fixture(scope="session")
-def cli_single_from_outside(tmp_path_factory):
+def cli_single(tmp_path_factory):
+    vcf = Path("tests/integration/data/HD832_chr7_twist-solid-0.1.5-alpha.vcf")
     args = [
         "python",
         "-m",
@@ -143,55 +168,24 @@ def cli_single_from_outside(tmp_path_factory):
         "single",
         "--snv-filter",
         "rare_disease",
-        "-o",
-        "cli_single_results_from_outside",
-        Path("tests/integration/data/HD832_chr7_twist-solid-0.1.5-alpha.vcf").resolve(),
+        str(vcf.name),
     ]
 
-    wd = tmp_path_factory.mktemp("cli_workdir")
-
-    return subprocess.run(args, cwd=wd), wd
-
-
-def test_cli_single_from_outside(cli_single_from_outside):
-    assert cli_single_from_outside[0].returncode == 0
-    results_dir = Path(cli_single_from_outside[1])
-    assert results_dir.exists()
-    assert results_dir.is_dir()
-
-
-@pytest.fixture(scope="session")
-def cli_single():
-    args = [
-        "python",
-        "-m",
-        "scout_annotation",
-        "--use-apptainer",
-        "--apptainer-args",
-        "--bind /storage",
-        "--cores",
-        "1",
-        "single",
-        "--notemp",
-        "-o",
-        "cli_single_results",
-        "../data/HD832_chr7_twist-solid-0.1.5-alpha.vcf",
-    ]
-
-    wd = Path(Path(__file__).parent, "integration", "cli_single")
+    wd = tmp_path_factory.mktemp("cli_single")
+    shutil.copy(str(vcf), wd)
 
     return subprocess.run(args, cwd=wd), wd
 
 
 def test_cli_single(cli_single):
     assert cli_single[0].returncode == 0
-    results_dir = cli_single[1]
+    results_dir = Path(cli_single[1])
     assert results_dir.exists()
     assert results_dir.is_dir()
 
 
 @pytest.fixture(scope="session")
-def cli_batch():
+def cli_batch(tmp_path_factory):
     args = [
         "python",
         "-m",
@@ -203,14 +197,15 @@ def cli_batch():
         "1",
         "batch",
         "--bam-dir",
-        "../batch_data/bam",
-        "--notemp",
+        "batch_data/bam",
         "-o",
         "cli_batch_results",
-        "../batch_data/",
+        "batch_data/",
     ]
 
-    wd = Path(Path(__file__).parent, "integration", "cli_batch")
+    wd = tmp_path_factory.mktemp("cli_batch")
+    shutil.copytree("tests/integration/data", wd / "data")
+    shutil.copytree("tests/integration/batch_data", wd / "batch_data")
 
     return subprocess.run(args, cwd=wd), wd
 

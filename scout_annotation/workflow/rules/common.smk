@@ -48,7 +48,7 @@ for filepath, config_key in paths_to_check:
             config_item[config_key[-1]] = str(new_path)
             break
     if not path_found:
-        raise IOError(f"file or directory not found for filter '{key}': {filepath}")
+        raise IOError(f"file or directory not found for {config_key}: {filepath}")
 
 with open(config["resources"]) as f:
     resources = yaml.load(f, Loader=yaml.FullLoader)
