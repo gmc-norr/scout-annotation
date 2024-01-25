@@ -69,8 +69,8 @@ samples["family"] = np.where(
 
 wildcard_constraints:
     ext=r"vcf(\.gz)?$",
-    family=r"[a-zA-Z][-a-zA-Z0-9]+",
-    sample=r"[a-zA-Z][-a-zA-Z0-9]+",
+    family=r"[a-zA-Z0-9][-a-zA-Z0-9]+[^-]",
+    sample=r"[a-zA-Z0-9][-a-zA-Z0-9]+[^-]",
     track=r"(rare_disease|cancer)",
 
 

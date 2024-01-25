@@ -6,3 +6,4 @@ sample4	clingen	unknown	panel	rare_disease	rare_disease	data/HD832_chr7_twist-so
 sample5	clingen-somatic	unknown	panel	somatic	cancer	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel1,test_panel2
 sample6	clingen	unknown	panel	rare_disease	rare_disease	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel3
 sample7	clingen	unknown	panel	strict	rare_disease	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel2
+8-sample	clingen	unknown	panel	strict	rare_disease	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel2

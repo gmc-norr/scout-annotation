@@ -3,11 +3,11 @@ description: a row in the sample table
 properties:
   sample:
     type: string
-    pattern: "^[a-zA-Z][-a-zA-Z0-9]+[^-]$"
+    pattern: "^[a-zA-Z0-9][-a-zA-Z0-9]+[^-]$"
     description: Sample ID
   family:
     type: string
-    pattern: "^[a-zA-Z][-a-zA-Z0-9]+[^-]$"
+    pattern: "^[a-zA-Z0-9][-a-zA-Z0-9]+[^-]$"
     description: >
       ID of the family that the sample belongs to. If a PED file
       is given, the family ID in the PED filem must match this value
