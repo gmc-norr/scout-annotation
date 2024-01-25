@@ -3,6 +3,7 @@ import gzip
 from pathlib import Path
 import pytest
 import re
+import shutil
 import subprocess
 import yaml
 
@@ -128,7 +129,8 @@ def test_cli_trio(cli_trio):
 
 
 @pytest.fixture(scope="session")
-def cli_single_from_outside(tmp_path_factory):
+def cli_single(tmp_path_factory):
+    vcf = Path("tests/integration/data/HD832_chr7_twist-solid-0.1.5-alpha.vcf")
     args = [
         "python",
         "-m",
@@ -143,49 +145,18 @@ def cli_single_from_outside(tmp_path_factory):
         "single",
         "--snv-filter",
         "rare_disease",
-        "-o",
-        "cli_single_results_from_outside",
-        Path("tests/integration/data/HD832_chr7_twist-solid-0.1.5-alpha.vcf").resolve(),
+        str(vcf.name),
     ]
 
-    wd = tmp_path_factory.mktemp("cli_workdir")
-
-    return subprocess.run(args, cwd=wd), wd
-
-
-def test_cli_single_from_outside(cli_single_from_outside):
-    assert cli_single_from_outside[0].returncode == 0
-    results_dir = Path(cli_single_from_outside[1])
-    assert results_dir.exists()
-    assert results_dir.is_dir()
-
-
-@pytest.fixture(scope="session")
-def cli_single():
-    args = [
-        "python",
-        "-m",
-        "scout_annotation",
-        "--use-apptainer",
-        "--apptainer-args",
-        "--bind /storage",
-        "--cores",
-        "1",
-        "single",
-        "--notemp",
-        "-o",
-        "cli_single_results",
-        "../data/HD832_chr7_twist-solid-0.1.5-alpha.vcf",
-    ]
-
-    wd = Path(Path(__file__).parent, "integration", "cli_single")
+    wd = tmp_path_factory.mktemp("cli_single")
+    shutil.copy(str(vcf), wd)
 
     return subprocess.run(args, cwd=wd), wd
 
 
 def test_cli_single(cli_single):
     assert cli_single[0].returncode == 0
-    results_dir = cli_single[1]
+    results_dir = Path(cli_single[1])
     assert results_dir.exists()
     assert results_dir.is_dir()
 
