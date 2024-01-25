@@ -18,7 +18,7 @@ if not Path("/storage").exists():
 
 
 @pytest.fixture(scope="session")
-def integration():
+def integration(tmp_path_factory):
     args = [
         "snakemake",
         "-s",
@@ -30,20 +30,25 @@ def integration():
         "/storage/userdata/singularity_cache",
         "--configfiles",
         DEFAULT_CONFIG,
-        "../config.yaml",
+        "config.yaml",
         "--show-failed-logs",
         "--notemp",
         "--cores",
         "1",
     ]
 
-    wd = Path(Path(__file__).parent, "integration", "test")
+    wd = tmp_path_factory.mktemp("integration")
+    shutil.copy("tests/integration/config.yaml", wd)
+    shutil.copy("tests/integration/test/samples.tsv", wd)
+    shutil.copytree("tests/integration/data", wd / "data")
+    shutil.copytree("tests/integration/filters", wd / "filters")
+    shutil.copytree("tests/integration/panels", wd / "panels")
 
     return subprocess.run(args, cwd=wd), wd
 
 
 @pytest.fixture(scope="session")
-def integration_no_filtering():
+def integration_no_filtering(tmp_path_factory):
     args = [
         "snakemake",
         "-s",
@@ -55,7 +60,7 @@ def integration_no_filtering():
         "/storage/userdata/singularity_cache",
         "--configfiles",
         DEFAULT_CONFIG,
-        "../config.yaml",
+        "config.yaml",
         "--config",
         "samples=samples_no-filtering.tsv",
         "output_directory=results_no-filtering",
@@ -65,7 +70,12 @@ def integration_no_filtering():
         "1",
     ]
 
-    wd = Path(Path(__file__).parent, "integration", "no_filtering")
+    wd = tmp_path_factory.mktemp("integration_no_filtering")
+    shutil.copy("tests/integration/config.yaml", wd)
+    shutil.copy("tests/integration/no_filtering/samples_no-filtering.tsv", wd)
+    shutil.copytree("tests/integration/data", wd / "data")
+    shutil.copytree("tests/integration/filters", wd / "filters")
+    shutil.copytree("tests/integration/panels", wd / "panels")
 
     return subprocess.run(args, cwd=wd), wd
 
