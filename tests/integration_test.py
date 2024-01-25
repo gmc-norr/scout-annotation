@@ -71,7 +71,7 @@ def integration_no_filtering():
 
 
 @pytest.fixture(scope="session")
-def snakemake_trio():
+def snakemake_trio(tmp_path_factory):
     args = [
         "snakemake",
         "-s",
@@ -82,7 +82,8 @@ def snakemake_trio():
         "--singularity-prefix",
         "/storage/userdata/singularity_cache",
         "--configfiles",
-        "../config.yaml",
+        DEFAULT_CONFIG,
+        "config.yaml",
         "--config",
         "samples=samples_trio.tsv",
         "output_directory=results_trio",
@@ -92,7 +93,12 @@ def snakemake_trio():
         "1",
     ]
 
-    wd = Path(Path(__file__).parent, "integration", "trio")
+    wd = tmp_path_factory.mktemp("snakemake_trio")
+    shutil.copy("tests/integration/config.yaml", wd)
+    shutil.copy("tests/integration/trio/samples_trio.tsv", wd)
+    shutil.copytree("tests/integration/panels", wd / "panels")
+    shutil.copytree("tests/integration/filters", wd / "filters")
+    shutil.copytree("tests/integration/data", wd / "data")
 
     return subprocess.run(args, cwd=wd), wd
 
@@ -108,7 +114,7 @@ def snakemake_trio_config(snakemake_trio):
 
 
 @pytest.fixture(scope="session")
-def cli_trio():
+def cli_trio(tmp_path_factory):
     args = [
         "scout-annotation",
         "--use-apptainer",
@@ -119,13 +125,15 @@ def cli_trio():
         "trio",
         "--seq-type",
         "wes",
-        "../data/NA12877.vcf",
-        "../data/NA12878.vcf",
-        "../data/NA12879.vcf",
-        "../data/ceph1463_trio.ped",
+        "data/NA12877.vcf",
+        "data/NA12878.vcf",
+        "data/NA12879.vcf",
+        "data/ceph1463_trio.ped",
     ]
 
-    wd = Path(Path(__file__).parent, "integration", "cli_trio")
+    wd = tmp_path_factory.mktemp("cli_trio")
+    shutil.copytree("tests/integration/data", wd / "data")
+
     return subprocess.run(args, cwd=wd), wd
 
 
