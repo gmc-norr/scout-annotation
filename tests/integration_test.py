@@ -175,7 +175,7 @@ def test_cli_single(cli_single):
 
 
 @pytest.fixture(scope="session")
-def cli_batch():
+def cli_batch(tmp_path_factory):
     args = [
         "python",
         "-m",
@@ -187,14 +187,15 @@ def cli_batch():
         "1",
         "batch",
         "--bam-dir",
-        "../batch_data/bam",
-        "--notemp",
+        "batch_data/bam",
         "-o",
         "cli_batch_results",
-        "../batch_data/",
+        "batch_data/",
     ]
 
-    wd = Path(Path(__file__).parent, "integration", "cli_batch")
+    wd = tmp_path_factory.mktemp("cli_batch")
+    shutil.copytree("tests/integration/data", wd / "data")
+    shutil.copytree("tests/integration/batch_data", wd / "batch_data")
 
     return subprocess.run(args, cwd=wd), wd
 
