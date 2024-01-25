@@ -1,5 +1,5 @@
 sample	family	owner	sex	type	filtering	track	vcf	ped	panels
-NA12878	ceph1463	clingen	female	wes		rare_disease	../data/NA12878.vcf	../data/ceph1463_trio.ped
-NA12877	ceph1463	clingen	male	wes		rare_disease	../data/NA12877.vcf	../data/ceph1463_trio.ped
-NA12879	ceph1463	clingen	female	wes		rare_disease	../data/NA12879.vcf	../data/ceph1463_trio.ped
-sample1		clingen-somatic	unknown	panel		cancer	../data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel1
+NA12878	ceph1463	clingen	female	wes		rare_disease	data/NA12878.vcf	data/ceph1463_trio.ped
+NA12877	ceph1463	clingen	male	wes		rare_disease	data/NA12877.vcf	data/ceph1463_trio.ped
+NA12879	ceph1463	clingen	female	wes		rare_disease	data/NA12879.vcf	data/ceph1463_trio.ped
+sample1		clingen-somatic	unknown	panel		cancer	data/HD832_chr7_twist-solid-0.1.5-alpha.vcf		test_panel1

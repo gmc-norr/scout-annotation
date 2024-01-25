@@ -7,8 +7,10 @@ import shutil
 import subprocess
 import yaml
 
-SNAKEFILE = Path("./scout_annotation/workflow/Snakefile").resolve()
-CONFIG = Path("./scout_annotation/default_config/config.yaml").resolve()
+from scout_annotation.resources import default_config, snakefile
+
+SNAKEFILE = snakefile()
+DEFAULT_CONFIG = default_config()
 
 
 @pytest.fixture(scope="session")
@@ -23,7 +25,7 @@ def integration():
         "--singularity-prefix",
         "/storage/userdata/singularity_cache",
         "--configfiles",
-        CONFIG,
+        DEFAULT_CONFIG,
         "../config.yaml",
         "--show-failed-logs",
         "--notemp",
@@ -48,7 +50,7 @@ def integration_no_filtering():
         "--singularity-prefix",
         "/storage/userdata/singularity_cache",
         "--configfiles",
-        CONFIG,
+        DEFAULT_CONFIG,
         "../config.yaml",
         "--config",
         "samples=samples_no-filtering.tsv",
@@ -76,7 +78,6 @@ def snakemake_trio():
         "--singularity-prefix",
         "/storage/userdata/singularity_cache",
         "--configfiles",
-        CONFIG,
         "../config.yaml",
         "--config",
         "samples=samples_trio.tsv",
