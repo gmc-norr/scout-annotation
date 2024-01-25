@@ -39,7 +39,7 @@ def integration(tmp_path_factory):
 
     wd = tmp_path_factory.mktemp("integration")
     shutil.copy("tests/integration/config.yaml", wd)
-    shutil.copy("tests/integration/test/samples.tsv", wd)
+    shutil.copy("tests/integration/data/samples.tsv", wd)
     shutil.copytree("tests/integration/data", wd / "data")
     shutil.copytree("tests/integration/filters", wd / "filters")
     shutil.copytree("tests/integration/panels", wd / "panels")
@@ -72,7 +72,7 @@ def integration_no_filtering(tmp_path_factory):
 
     wd = tmp_path_factory.mktemp("integration_no_filtering")
     shutil.copy("tests/integration/config.yaml", wd)
-    shutil.copy("tests/integration/no_filtering/samples_no-filtering.tsv", wd)
+    shutil.copy("tests/integration/data/samples_no-filtering.tsv", wd)
     shutil.copytree("tests/integration/data", wd / "data")
     shutil.copytree("tests/integration/filters", wd / "filters")
     shutil.copytree("tests/integration/panels", wd / "panels")
@@ -105,7 +105,7 @@ def snakemake_trio(tmp_path_factory):
 
     wd = tmp_path_factory.mktemp("snakemake_trio")
     shutil.copy("tests/integration/config.yaml", wd)
-    shutil.copy("tests/integration/trio/samples_trio.tsv", wd)
+    shutil.copy("tests/integration/data/samples_trio.tsv", wd)
     shutil.copytree("tests/integration/panels", wd / "panels")
     shutil.copytree("tests/integration/filters", wd / "filters")
     shutil.copytree("tests/integration/data", wd / "data")
