@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.8.1](https://github.com/gmc-norr/scout-annotation/compare/v0.8.0...v0.8.1) (2024-01-26)
+
+
+### Bug Fixes
+
+* allow for numbers at the beginning of a sample name ([#64](https://github.com/gmc-norr/scout-annotation/issues/64)) ([2a6a012](https://github.com/gmc-norr/scout-annotation/commit/2a6a012e43c8886cf426a239b5683d9380cad64b))
+* **deps:** pin pulp to &lt;2.8.0 ([#66](https://github.com/gmc-norr/scout-annotation/issues/66)) ([035f3d3](https://github.com/gmc-norr/scout-annotation/commit/035f3d39775a8a9e8ef8f00592be2596fa808055))
+* issue with bam path in load config ([#58](https://github.com/gmc-norr/scout-annotation/issues/58)) ([9201c5f](https://github.com/gmc-norr/scout-annotation/commit/9201c5f9a545a0764fabe7512a0f045e64205049))
+* wrong key in path validation error message ([6f73576](https://github.com/gmc-norr/scout-annotation/commit/6f73576019800a642ac415a2314f018973c17cb1))
+
 ## [0.8.0](https://github.com/gmc-norr/scout-annotation/compare/v0.7.3...v0.8.0) (2023-10-04)
 
 
