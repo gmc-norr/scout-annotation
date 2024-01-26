@@ -16,6 +16,7 @@ scout-annotation = "scout_annotation.cli:cli"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+pulp = "<2.8.0"
 snakemake = "^7.13"
 click = "^8.1.7"
 cyvcf2 = "^0.30"
