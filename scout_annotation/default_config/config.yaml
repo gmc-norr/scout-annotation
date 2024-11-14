@@ -18,6 +18,14 @@ vcf_filter:
 reference:
   fasta: /storage/userdata/references/homo_sapiens/hg19/fasta/hg19.fa.gz
 
+annotation_references:
+  civic:
+    version: "01-Nov-2024" 
+    # file_path: 
+  cgi:
+    version: "20221017"
+    # file_path: 
+
 vcfanno:
   base_path: "/storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37"
   # config_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/scout-annotation/{track}/vcfanno/grch37_vcfanno_config_{version}.toml"
@@ -47,3 +55,10 @@ genmod:
 
 genmod_rank_model:
   extra: --insecure
+
+downloads_dir: "downloads"
+
+mode: "annotate"
+
+
+  

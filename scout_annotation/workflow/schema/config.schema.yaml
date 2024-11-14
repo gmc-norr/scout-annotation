@@ -205,6 +205,30 @@ properties:
       extra:
         type: string
         description: arguments to pass to curl
+  annotation_references:
+    type: object
+    properties:
+      civic:
+        type: object
+        properties:
+          version:
+            type: string
+            description: Version of civic variants to use
+          file_path:
+            type: string 
+            description: path to civic file. If not given, this will be downloaded automatically if not specified.
+      cgi:
+        type: object
+        properties:
+          version:
+            type: string
+            description: Version of CGI Cancer Biomarkers Database to use
+          file_path:
+            type: string 
+            description: path to CGI file. If not given, this will be downloaded automatically if not specified.
+  downloads_dir:
+    type: string
+    description: path to directory where downloaded resources are placed
 
 required:
   - samples
@@ -217,3 +241,4 @@ required:
   - vcfanno
   - vep
   - genmod
+
