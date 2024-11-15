@@ -20,3 +20,6 @@ def default_resources() -> pathlib.Path:
 
 def snakefile() -> pathlib.Path:
     return _package_dir("workflow/Snakefile")
+
+def snakefile_download() -> pathlib.Path:
+    return _package_dir("workflow/Snakefile_download")

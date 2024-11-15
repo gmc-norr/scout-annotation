@@ -216,3 +216,13 @@ rule genmod_rank_model:
         echo "fetching {params.uri}" > {log}
         curl {params.extra} -fsSL {params.uri} > {output.rank_model} 2>> {log}
         """
+
+rule civic:
+    input:
+        civic_variants_tsv = f"{reference_files["civic"]}",
+        vcf = "annotation/{family}/{family}.annotated.genmod.vcf"
+    
+    output:
+        vcf = "annotation/{family}/{family}.annotated.genmod.civic.vcf"
+
+    script: "../scripts/civic_annotate.py"

@@ -54,17 +54,18 @@ with open(config["resources"]) as f:
     resources = yaml.load(f, Loader=yaml.FullLoader)
 validate(resources, "../schema/resources.schema.yaml")
 
-samples = pd.read_csv(config["samples"], sep="\t", comment="#")
-validate(samples, "../schema/samples.schema.yaml")
+if config.get('mode') != "download":
+    samples = pd.read_csv(config["samples"], sep="\t", comment="#")
+    validate(samples, "../schema/samples.schema.yaml")
 
-# add empty family column if it doesn't exist
-if samples.get("family", pd.Series(dtype="str")).empty:
-    samples["family"] = None
+    # add empty family column if it doesn't exist
+    if samples.get("family", pd.Series(dtype="str")).empty:
+        samples["family"] = None
 
-# if family ID is missing, set it to the same as the sample ID
-samples["family"] = np.where(
-    samples["family"].isnull(), samples["sample"], samples["family"]
-)
+    # if family ID is missing, set it to the same as the sample ID
+    samples["family"] = np.where(
+        samples["family"].isnull(), samples["sample"], samples["family"]
+    )
 
 
 wildcard_constraints:
@@ -387,5 +388,37 @@ def get_output_files():
         load_configs.append(f"{outdir}/{f}/{f}.load_config.yaml")
     return outfiles, load_configs
 
+if config.get('mode') != 'download':
+    outfiles, load_configs = get_output_files()
 
-outfiles, load_configs = get_output_files()
+def get_reference_files():
+    reference_files = dict()
+    for reference_name, reference in config["annotation_references"].items():
+        reference_files[reference_name] = reference.get('file_path')
+    return reference_files
+
+# Function to get the CIVIC filename based on the configuration version
+def get_resource_filename(resource_name):
+    if resource_name == "civic":
+        return f"{config['annotation_references']['civic']['version']}-VariantSummaries.tsv"
+    if resource_name == "cgi":
+        return f"cgi_biomarkers_{config['annotation_references']['cgi']['version']}.tsv"
+    return None
+
+# Get files to download by looking for references without a file_path in the config
+# and update reference_dict to point to where they are downloaded
+def get_files_to_download(reference_files):
+    updated_reference_files = reference_files.copy()
+    files_to_download = list()
+    downloads_dir = config['downloads_dir']
+    for reference_name, reference_path in reference_files.items():
+        if reference_path is None:
+            downloaded_filename = get_resource_filename(reference_name)
+            path_to_downloaded =  f"{downloads_dir}/{downloaded_filename}"
+            updated_reference_files[reference_name] = path_to_downloaded
+            files_to_download.append(path_to_downloaded)
+    return files_to_download, updated_reference_files
+
+
+reference_files = get_reference_files()
+files_to_download, reference_files = get_files_to_download(reference_files)

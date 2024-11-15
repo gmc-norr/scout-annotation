@@ -5,6 +5,7 @@ from scout_annotation.cli.batch import batch
 from scout_annotation.cli.panels import panels
 from scout_annotation.cli.single import single
 from scout_annotation.cli.trio import trio
+from scout_annotation.cli.download import download
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
@@ -87,3 +88,4 @@ cli.add_command(batch)
 cli.add_command(panels)
 cli.add_command(single)
 cli.add_command(trio)
+cli.add_command(download)
