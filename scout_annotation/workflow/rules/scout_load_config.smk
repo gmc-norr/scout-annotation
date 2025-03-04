@@ -36,6 +36,7 @@ rule scout_load_config_sample:
     params:
         type="sample",
         include_bam=lambda wc: isinstance(get_bam_file(wc), Path),
+        include_d4=lambda wc: isinstance(get_bam_file(wc), Path),
         sex=get_sample_sex,
         analysis_type=get_analysis_type,
     container:
