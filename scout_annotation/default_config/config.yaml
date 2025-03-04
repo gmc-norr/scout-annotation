@@ -47,3 +47,6 @@ genmod:
 
 genmod_rank_model:
   extra: --insecure
+
+coverage:
+  d4: no
