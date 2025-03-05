@@ -6,6 +6,7 @@ import sys
 from scout_annotation.resources import default_config, default_resources, snakefile
 from scout_annotation.panels import get_panels
 from scout_annotation.samples import write_samples
+from scout_annotation.utils import msi_parser, hrd_parser, tmb_parser
 
 
 @click.command()
@@ -84,6 +85,21 @@ from scout_annotation.samples import write_samples
     ),
 )
 @click.option(
+    "--msi-file",
+    help="path to msi file",
+    type=click.Path(path_type=pathlib.Path, dir_okay=False, file_okay=True, resolve_path=True),
+)
+@click.option(
+    "--tmb-file",
+    help="path to tmb file",
+    type=click.Path(path_type=pathlib.Path, dir_okay=False, file_okay=True, resolve_path=True),
+)
+@click.option(
+    "--hrd-file",
+    help="path to hrd file",
+    type=click.Path(path_type=pathlib.Path, dir_okay=False, file_okay=True, resolve_path=True),
+)
+@click.option(
     "-p",
     "--panel",
     help="gene panel to filter by, can be passed multiple times",
@@ -113,6 +129,9 @@ def single(
     seq_type,
     sex,
     bam_file,
+    msi_file,
+    tmb_file,
+    hrd_file,
     panel,
     snv_filter,
     owner,
@@ -122,6 +141,16 @@ def single(
     if name is None:
         name = vcf.stem.split("_")[0]
 
+    msi_score = ""
+    hrd_score = ""
+    tmb_score = ""
+    if msi_file is not None:
+        msi_score = msi_parser(msi_file)
+    if hrd_file is not None:
+        hrd_score = hrd_parser(hrd_file)
+    if tmb_file is not None:
+        tmb_score = tmb_parser(tmb_file)
+    
     sample = {
         "sample": name,
         "owner": owner,
@@ -132,6 +161,9 @@ def single(
         "bam": bam_file if bam_file is not None else "",
         "panels": ",".join(panel),
         "ped": "",
+        "msi_score": msi_score,
+        "hrd_score": hrd_score,
+        "tmb_score": tmb_score,
     }
 
     if snv_filter is not None:

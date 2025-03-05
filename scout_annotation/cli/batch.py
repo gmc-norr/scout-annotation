@@ -188,7 +188,7 @@ def batch(
         if len(msi_filename) == 0:
             msi_filename = ""
             msi_score = ""
-        elif len(bam_filename) > 1:
+        elif len(msi_filename) > 1:
             config.logger.error(
                 f"found more than one possible msi file for {sample_name}"
             )

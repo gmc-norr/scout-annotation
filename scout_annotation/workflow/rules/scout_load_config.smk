@@ -18,9 +18,6 @@ rule scout_load_config_family:
     params:
         type="family",
         track=get_track,
-        msi_score=get_msi(),
-        hrd_score=get_hrd(),
-        tmb_score=get_tmb(),
         owner=get_case_owner,
         panels=get_family_panels,
         rank_model_version=get_rank_model_version,
@@ -40,6 +37,9 @@ rule scout_load_config_sample:
         type="sample",
         include_bam=lambda wc: isinstance(get_bam_file(wc), Path),
         sex=get_sample_sex,
+        msi_score=get_msi,
+        hrd_score=get_hrd,
+        tmb_score=get_tmb,
         analysis_type=get_analysis_type,
     container:
         "docker://python:3.10.7-slim"
