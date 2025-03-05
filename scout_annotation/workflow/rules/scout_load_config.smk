@@ -18,6 +18,9 @@ rule scout_load_config_family:
     params:
         type="family",
         track=get_track,
+        msi_score=get_msi(),
+        hrd_score=get_hrd(),
+        tmb_score=get_tmb(),
         owner=get_case_owner,
         panels=get_family_panels,
         rank_model_version=get_rank_model_version,

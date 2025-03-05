@@ -28,6 +28,9 @@ def write_samples(samples: List[Dict], directory: pathlib.Path):
         "bam",
         "ped",
         "panels",
+        "msi_score",
+        "hrd_score",
+        "tmb_score"
     )
     with open(filename, "w") as f:
         print("\t".join(cols), file=f)

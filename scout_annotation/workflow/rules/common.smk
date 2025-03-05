@@ -318,6 +318,23 @@ def get_track(wildcards):
     assert len(tracks) == 1, "all samples in a family need to belong to the same track"
     return tracks[0]
 
+def get_msi(wildcards):
+    msi_score = samples[samples["sample"] == wildcards.sample]["msi_score"]
+    if msi_score == "":
+        return None
+    return msi_score
+
+def get_hrd(wildcards):
+    hrd_score = samples[samples["sample"] == wildcards.sample]["hrd_score"]
+    if hrd_score == "":
+        return None
+    return hrd_score
+
+def get_tmb(wildcards):
+    hrd_score = samples[samples["sample"] == wildcards.sample]["tmb_score"]
+    if tmb_score == "":
+        return None
+    return tmb_score
 
 def get_vcf_samples(vcf_filename):
     vcf = cyvcf2.VCF(vcf_filename)

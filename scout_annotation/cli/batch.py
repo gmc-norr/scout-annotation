@@ -6,6 +6,7 @@ import sys
 from scout_annotation.resources import default_config, default_resources, snakefile
 from scout_annotation.panels import get_panels
 from scout_annotation.samples import write_samples
+from scout_annotation.utils import msi_parser, hrd_parser, tmb_parser
 
 
 @click.command()
@@ -21,6 +22,21 @@ from scout_annotation.samples import write_samples
 @click.option(
     "--bam-dir",
     help="directory to look for BAM files in (default: vcf-dir)",
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False),
+)
+@click.option(
+    "--msi-dir",
+    help="directory to look for MSI files in",
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False),
+)
+@click.option(
+    "--tmb-dir",
+    help="directory to look for TMB files in",
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False),
+)
+@click.option(
+    "--hrd-dir",
+    help="directory to look for HRD files in",
     type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False),
 )
 @click.option(
@@ -98,6 +114,9 @@ def batch(
     vcf_dir,
     out_dir,
     bam_dir,
+    msi_dir,
+    hrd_dir,
+    tmb_dir,
     ped_dir,
     sep,
     track,
@@ -113,6 +132,15 @@ def batch(
     """Annotate a batch of samples."""
     if bam_dir is None:
         bam_dir = vcf_dir
+
+    if msi_dir is None:
+        msi_dir = vcf_dir
+
+    if hrd_dir is None:
+        hrd_dir = vcf_dir
+
+    if tmb_dir is None:
+        tmb_dir = vcf_dir
 
     if ped_dir is None:
         ped_dir = vcf_dir
@@ -156,6 +184,46 @@ def batch(
         else:
             bam_filename = bam_filename[0]
 
+        msi_filename = list(msi_dir.glob(f"{sample_name}*.msisensor_pro.score.tsv"))
+        if len(msi_filename) == 0:
+            msi_filename = ""
+            msi_score = ""
+        elif len(bam_filename) > 1:
+            config.logger.error(
+                f"found more than one possible msi file for {sample_name}"
+            )
+            raise click.Abort()
+        else:
+            msi_filename = msi_filename[0]
+            msi_score = msi_parser(msi_filename)
+
+        hrd_filename = list(hrd_dir.glob(f"{sample_name}*.hrd_score.txt"))
+        if len(hrd_filename) == 0:
+            hrd_filename = ""
+            hrd_score = ""
+        elif len(hrd_filename) > 1:
+            config.logger.error(
+                f"found more than one possible hrd file for {sample_name}"
+            )
+            raise click.Abort()
+        else:
+            hrd_filename = hrd_filename[0]
+            hrd_score = hrd_parser(hrd_filename)
+
+        tmb_filename = list(tmb_dir.glob(f"{sample_name}*.TMB.txt"))
+        if len(tmb_filename) == 0:
+            tmb_filename = ""
+            tmb_score = ""
+        elif len(tmb_filename) > 1:
+            config.logger.error(
+                f"found more than one possible tmb file for {sample_name}"
+            )
+            raise click.Abort()
+        else:
+            tmb_filename = tmb_filename[0]
+            tmb_score = tmb_parser(tmb_filename)
+            
+
         ped_filename = list(bam_dir.glob(f"{sample_name}*.ped"))
         if len(ped_filename) == 0:
             ped_filename = ""
@@ -177,6 +245,9 @@ def batch(
             "bam": bam_filename,
             "panels": ",".join(panel),
             "ped": ped_filename,
+            "msi_score": msi_score,
+            "hrd_score": hrd_score,
+            "tmb_score": tmb_score,
         }
 
         if snv_filter is not None:
