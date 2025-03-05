@@ -381,7 +381,7 @@ def get_output_files():
             if isinstance(get_bam_file(sample_wildcard), Path):
                 outfiles.append(f"{outdir}/{s}/{s}.bam")
                 outfiles.append(f"{outdir}/{s}/{s}.bam.bai")
-                if config.get(coverage, {}).get("d4", "no") == "yes":
+                if config.get("coverage", {}).get("d4", "no") == "yes":
                     outfiles.append(f"{outdir}/{s}/{s}.d4")
         if len(family_samples) > 1:
             outfiles.append(f"{outdir}/{f}/{f}.peddy.ped")
