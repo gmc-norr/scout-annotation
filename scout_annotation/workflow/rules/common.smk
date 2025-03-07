@@ -59,7 +59,6 @@ validate(samples, "../schema/samples.schema.yaml")
 
 # add empty family column if it doesn't exist
 if samples.get("family", pd.Series(dtype="str")).empty:
-    print("FAMILY EMPTY") # DEBUG
     samples["family"] = None
 
 # if family ID is missing, set it to the same as the sample ID
@@ -67,7 +66,6 @@ samples["family"] = np.where(
     samples["family"].isnull(), samples["sample"], samples["family"]
 )
 
-print(samples) # DEBUG
 
 wildcard_constraints:
     ext=r"vcf(\.gz)?$",
@@ -324,19 +322,19 @@ def get_msi(wildcards):
     msi_score = samples[samples["sample"] == wildcards.sample]["msi_score"][0]
     if msi_score == "":
         return None
-    return msi_score
+    return int(msi_score)
 
 def get_hrd(wildcards):
     hrd_score = samples[samples["sample"] == wildcards.sample]["hrd_score"][0]
     if hrd_score == "":
         return None
-    return hrd_score
+    return int(hrd_score)
 
 def get_tmb(wildcards):
     tmb_score = samples[samples["sample"] == wildcards.sample]["tmb_score"][0]
     if tmb_score == "":
         return None
-    return tmb_score
+    return int(tmb_score)
 
 def get_vcf_samples(vcf_filename):
     vcf = cyvcf2.VCF(vcf_filename)
@@ -404,8 +402,6 @@ def get_output_files():
             outfiles.append(f"{outdir}/{f}/{f}.peddy.ped")
             outfiles.append(f"{outdir}/{f}/{f}.pedigree.svg")
         load_configs.append(f"{outdir}/{f}/{f}.load_config.yaml")
-    print(outfiles) # DEBUG
-    print(load_configs) # DEBUG 
     return outfiles, load_configs
 
 

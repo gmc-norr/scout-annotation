@@ -49,11 +49,11 @@ def generate_sample_config(sample):
     }
 
     if msi_score is not None:
-        sample_config["msi"] = msi_score
+        sample_config["msi"] = int(msi_score)
     if hrd_score is not None:
-        sample_config["hrd"] = hrd_score
+        sample_config["hrd"] = int(hrd_score)
     if tmb_score is not None:
-        sample_config["tmb"] = tmb_score
+        sample_config["tmb"] = int(tmb_score)
 
     if include_bam:
         sample_config["alignment_path"] = "{}.bam".format(snakemake.wildcards.sample)
@@ -87,7 +87,7 @@ def generate_family_config(family, sample_config_files):
         "samples": sample_configs,
         "rank_model_version": rank_model_version,
         "rank_score_threshold": rank_score_threshold,
-    }  
+    }
 
     match track:
         case "rare":

@@ -6,7 +6,7 @@ import sys
 from scout_annotation.resources import default_config, default_resources, snakefile
 from scout_annotation.panels import get_panels
 from scout_annotation.samples import write_samples
-from scout_annotation.utils import msi_parser, hrd_parser, tmb_parser
+from scout_annotation.parsers import parsers
 
 
 @click.command()
@@ -108,6 +108,24 @@ from scout_annotation.utils import msi_parser, hrd_parser, tmb_parser
     default="clingen",
     show_default=True,
 )
+@click.option(
+    "--msi-suffix",
+    help="suffix used to search MSI files",
+    default=".msisensor_pro.score.tsv",
+    show_default=True,
+)
+@click.option(
+    "--tmb-suffix",
+    help="suffix used to search TMB files",
+    default=".TMB.txt",
+    show_default=True,
+)
+@click.option(
+    "--hrd-suffix",
+    help="suffix used to search HRD files",
+    default=".hrd_score.txt",
+    show_default=True,
+)
 @click.pass_obj
 def batch(
     config,
@@ -128,6 +146,9 @@ def batch(
     panel,
     snv_filter,
     owner,
+    msi_suffix,
+    tmb_suffix,
+    hrd_suffix,
 ):
     """Annotate a batch of samples."""
     if bam_dir is None:
@@ -184,7 +205,7 @@ def batch(
         else:
             bam_filename = bam_filename[0]
 
-        msi_filename = list(msi_dir.glob(f"{sample_name}*.msisensor_pro.score.tsv"))
+        msi_filename = list(msi_dir.glob(f"{sample_name}*{msi_suffix}"))
         if len(msi_filename) == 0:
             msi_filename = ""
             msi_score = ""
@@ -195,9 +216,9 @@ def batch(
             raise click.Abort()
         else:
             msi_filename = msi_filename[0]
-            msi_score = msi_parser(msi_filename)
+            msi_score = parsers.msi(msi_filename)
 
-        hrd_filename = list(hrd_dir.glob(f"{sample_name}*.hrd_score.txt"))
+        hrd_filename = list(hrd_dir.glob(f"{sample_name}*{hrd_suffix}"))
         if len(hrd_filename) == 0:
             hrd_filename = ""
             hrd_score = ""
@@ -208,9 +229,9 @@ def batch(
             raise click.Abort()
         else:
             hrd_filename = hrd_filename[0]
-            hrd_score = hrd_parser(hrd_filename)
+            hrd_score = parsers.hrd(hrd_filename)
 
-        tmb_filename = list(tmb_dir.glob(f"{sample_name}*.TMB.txt"))
+        tmb_filename = list(tmb_dir.glob(f"{sample_name}*{tmb_suffix}"))
         if len(tmb_filename) == 0:
             tmb_filename = ""
             tmb_score = ""
@@ -221,7 +242,7 @@ def batch(
             raise click.Abort()
         else:
             tmb_filename = tmb_filename[0]
-            tmb_score = tmb_parser(tmb_filename)
+            tmb_score = parsers.tmb(tmb_filename)
             
 
         ped_filename = list(bam_dir.glob(f"{sample_name}*.ped"))
