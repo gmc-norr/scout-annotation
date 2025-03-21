@@ -47,3 +47,4 @@ genmod:
 
 genmod_rank_model:
   extra: --insecure
+  

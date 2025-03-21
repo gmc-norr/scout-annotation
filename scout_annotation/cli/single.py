@@ -6,7 +6,7 @@ import sys
 from scout_annotation.resources import default_config, default_resources, snakefile
 from scout_annotation.panels import get_panels
 from scout_annotation.samples import write_samples
-from scout_annotation.utils import msi_parser, hrd_parser, tmb_parser
+import scout_annotation.parsers as parsers
 
 
 @click.command()
@@ -145,11 +145,11 @@ def single(
     hrd_score = ""
     tmb_score = ""
     if msi_file is not None:
-        msi_score = msi_parser(msi_file)
+        msi_score = parsers.msi(msi_file)
     if hrd_file is not None:
-        hrd_score = hrd_parser(hrd_file)
+        hrd_score = parsers.hrd(hrd_file)
     if tmb_file is not None:
-        tmb_score = tmb_parser(tmb_file)
+        tmb_score = parsers.tmb(tmb_file)
     
     sample = {
         "sample": name,

@@ -6,7 +6,7 @@ import sys
 from scout_annotation.resources import default_config, default_resources, snakefile
 from scout_annotation.panels import get_panels
 from scout_annotation.samples import write_samples
-from scout_annotation.parsers import parsers
+import scout_annotation.parsers as parsers
 
 
 @click.command()
