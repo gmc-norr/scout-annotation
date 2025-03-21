@@ -209,11 +209,9 @@ properties:
     type: object
     properties:
       d4:
-        type: string
+        type: boolean
         description: generate .d4 files from alignment using d4tools
-        enum:
-          - "yes"
-          - "no"
+        default: true
 
 required:
   - samples

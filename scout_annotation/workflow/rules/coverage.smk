@@ -1,7 +1,7 @@
 rule generate_d4:
     input: 
         alignment=get_bam_file,
-        fasta=config["reference"]["fasta"],
+        fasta_fai=f"{config['reference']['fasta']}.fai",
     output:
         d4_file=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.d4",
     log: f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.d4tools.log"
@@ -10,6 +10,5 @@ rule generate_d4:
         "docker://clinicalgenomics/d4tools:2.0"
     shell:
         """
-        d4tools create -Azr {input.fasta} {input.alignment} {output.d4_file} > {log} 2>&1
+        d4tools create -Azr {input.fasta_fai} {input.alignment} {output.d4_file} > {log} 2>&1
         """
-
