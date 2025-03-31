@@ -56,6 +56,15 @@ properties:
     type: string
     description: path to BAM file for the sample
     format: uri-reference
+  msi_score:
+    type: number
+    description: MSI score for the sample
+  hrd_score:
+    type: number
+    description: HRD score for the sample
+  tmb_score:
+    type: number
+    description: TMB score for the sample
 required:
   - filtering
   - owner

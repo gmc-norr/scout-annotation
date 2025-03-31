@@ -1,5 +1,12 @@
 # Changelog
 
+## [unreleased]
+
+
+### Features
+
+* Added feature of parsing MSI, TMB, and HRD, and passing relevant values down to scout load config
+
 ## [0.8.0](https://github.com/gmc-norr/scout-annotation/compare/v0.7.3...v0.8.0) (2023-10-04)
 
 
