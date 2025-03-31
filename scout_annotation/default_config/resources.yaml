@@ -3,3 +3,6 @@ default_resources:
 
 vep:
   threads: 4
+
+d4tools:
+  threads: 4
