@@ -38,6 +38,9 @@ def generate_sample_config(sample):
     include_d4 = snakemake.params.include_d4
     sex = snakemake.params.sex
     analysis_type = snakemake.params.analysis_type
+    msi_score = snakemake.params.msi_score
+    hrd_score = snakemake.params.hrd_score
+    tmb_score = snakemake.params.tmb_score
 
     sample_config = {
         "sample_id": sample,
@@ -45,6 +48,13 @@ def generate_sample_config(sample):
         "sex": sex,
         "analysis_type": analysis_type,
     }
+
+    if msi_score is not None:
+        sample_config["msi"] = int(msi_score)
+    if hrd_score is not None:
+        sample_config["hrd"] = int(hrd_score)
+    if tmb_score is not None:
+        sample_config["tmb"] = int(tmb_score)
 
     if include_bam:
         sample_config["alignment_path"] = "{}.bam".format(snakemake.wildcards.sample)
