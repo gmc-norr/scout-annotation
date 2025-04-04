@@ -59,7 +59,7 @@ def generate_sample_config(sample):
     if include_bam:
         sample_config["alignment_path"] = "{}.bam".format(snakemake.wildcards.sample)
     if include_d4:
-        sample_config["d4_path"] = "{}.d4".format(snakemake.wildcards.sample)
+        sample_config["d4_file"] = "{}.d4".format(snakemake.wildcards.sample)
 
     return sample_config
 
