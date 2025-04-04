@@ -22,6 +22,7 @@ rule scout_load_config_family:
         panels=get_family_panels,
         rank_model_version=get_rank_model_version,
         rank_score_threshold=-1000,
+        out_dir=f"{config.get('output_directory', 'results')}/{{family}}",
     container:
         "docker://python:3.10.7-slim"
     script:
@@ -42,6 +43,7 @@ rule scout_load_config_sample:
         hrd_score=get_hrd,
         tmb_score=get_tmb,
         analysis_type=get_analysis_type,
+        out_dir=f"{config.get('output_directory', 'results')}/{{family}}",
     container:
         "docker://python:3.10.7-slim"
     script:

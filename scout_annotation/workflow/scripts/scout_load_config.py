@@ -41,6 +41,7 @@ def generate_sample_config(sample):
     msi_score = snakemake.params.msi_score
     hrd_score = snakemake.params.hrd_score
     tmb_score = snakemake.params.tmb_score
+    out_dir = snakemake.params.out_dir
 
     sample_config = {
         "sample_id": sample,
@@ -57,9 +58,9 @@ def generate_sample_config(sample):
         sample_config["tmb"] = int(tmb_score)
 
     if include_bam:
-        sample_config["alignment_path"] = "{}.bam".format(snakemake.wildcards.sample)
+        sample_config["alignment_path"] = "{}/{}.bam".format(out_dir,snakemake.wildcards.sample)
     if include_d4:
-        sample_config["d4_file"] = "{}.d4".format(snakemake.wildcards.sample)
+        sample_config["d4_file"] = "{}/{}.d4".format(out_dir,snakemake.wildcards.sample)
 
     return sample_config
 
@@ -75,6 +76,7 @@ def generate_family_config(family, sample_config_files):
     gene_panels = snakemake.params.panels
     rank_model_version = snakemake.params.rank_model_version
     rank_score_threshold = snakemake.params.rank_score_threshold
+    out_dir = snakemake.params.out_dir
 
     sample_configs = []
     for fn in sample_config_files:
@@ -94,18 +96,18 @@ def generate_family_config(family, sample_config_files):
 
     match track:
         case "rare":
-            family_config["vcf_snv"] = vcf.name
+            family_config["vcf_snv"] = str(vcf.resolve())
         case "cancer":
-            family_config["vcf_cancer"] = vcf.name
+            family_config["vcf_cancer"] = str(vcf.resolve())
 
     if len(peddy_ped) > 0:
-        family_config["peddy_ped"] = Path(peddy_ped).name
+        family_config["peddy_ped"] = str(Path(peddy_ped).resolve())
     if len(peddy_ped_check) > 0:
-        family_config["peddy_check"] = Path(peddy_ped_check).name
+        family_config["peddy_check"] = str(Path(peddy_ped_check).resolve())
     if len(peddy_sex_check) > 0:
-        family_config["peddy_sex"] = Path(peddy_sex_check).name
+        family_config["peddy_sex"] = str(Path(peddy_sex_check).resolve())
     if len(madeline2_svg) > 0:
-        family_config["madeline"] = Path(madeline2_svg).name
+        family_config["madeline"] = str(Path(madeline2_svg).resolve())
 
     return family_config
 
