@@ -8,7 +8,14 @@ def msi(msi_file: str) -> str:
 def hrd(hrd_file: str) -> str:
     """Parse HRD file and return the HRD score."""
     hrd = pd.read_csv(hrd_file, sep="\t")
-    hrd_score = hrd["HRD_score"].values[0]
+
+    if "HRD_score" in hrd.columns:
+        hrd_score = hrd["HRD_score"].values[0]
+    elif "HRD-score" in hrd.columns:
+        hrd_score = hrd["HRD-score"].values[0]
+    else:
+        hrd_score = None
+        
     return hrd_score
 
 def tmb(tmb_file: str) -> str:
