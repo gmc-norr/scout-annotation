@@ -35,6 +35,7 @@ def phenotype(ped_path, sample):
 def generate_sample_config(sample):
     ped_file = snakemake.input.ped
     include_bam = snakemake.params.include_bam
+    include_d4 = snakemake.params.include_d4
     sex = snakemake.params.sex
     analysis_type = snakemake.params.analysis_type
     msi_score = snakemake.params.msi_score
@@ -57,6 +58,8 @@ def generate_sample_config(sample):
 
     if include_bam:
         sample_config["alignment_path"] = "{}.bam".format(snakemake.wildcards.sample)
+    if include_d4:
+        sample_config["d4_file"] = "{}.d4".format(snakemake.wildcards.sample)
 
     return sample_config
 

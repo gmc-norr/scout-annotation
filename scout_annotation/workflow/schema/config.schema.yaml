@@ -205,6 +205,13 @@ properties:
       extra:
         type: string
         description: arguments to pass to curl
+  coverage:
+    type: object
+    properties:
+      d4:
+        type: boolean
+        description: generate .d4 files from alignment using d4tools
+        default: true
 
 required:
   - samples

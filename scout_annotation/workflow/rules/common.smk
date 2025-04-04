@@ -320,19 +320,19 @@ def get_track(wildcards):
 
 def get_msi(wildcards):
     msi_score = samples[samples["sample"] == wildcards.sample]["msi_score"][0]
-    if msi_score == "":
+    if pd.isnull(msi_score):
         return None
     return int(msi_score)
 
 def get_hrd(wildcards):
     hrd_score = samples[samples["sample"] == wildcards.sample]["hrd_score"][0]
-    if hrd_score == "":
+    if pd.isnull(hrd_score):
         return None
     return int(hrd_score)
 
 def get_tmb(wildcards):
     tmb_score = samples[samples["sample"] == wildcards.sample]["tmb_score"][0]
-    if tmb_score == "":
+    if pd.isnull(tmb_score):
         return None
     return int(tmb_score)
 
@@ -398,6 +398,8 @@ def get_output_files():
             if isinstance(get_bam_file(sample_wildcard), Path):
                 outfiles.append(f"{outdir}/{s}/{s}.bam")
                 outfiles.append(f"{outdir}/{s}/{s}.bam.bai")
+                if config.get("coverage", {}).get("d4", False):
+                    outfiles.append(f"{outdir}/{s}/{s}.d4")
         if len(family_samples) > 1:
             outfiles.append(f"{outdir}/{f}/{f}.peddy.ped")
             outfiles.append(f"{outdir}/{f}/{f}.pedigree.svg")

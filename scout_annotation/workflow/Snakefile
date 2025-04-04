@@ -9,6 +9,7 @@ include: "rules/panel_filtering.smk"
 include: "rules/filtering.smk"
 include: "rules/scout_load_config.smk"
 include: "rules/misc.smk"
+include: "rules/coverage.smk"
 
 
 ruleorder: copy_results > tabix
