@@ -10,5 +10,5 @@ rule generate_d4:
         "docker://clinicalgenomics/d4tools:2.0"
     shell:
         """
-        d4tools create -Azr {input.fasta_fai} -t {threads} {input.alignment} {output.d4_file} > {log} 2>&1
+        d4tools create -F '~1024' -Azr {input.fasta_fai} -t {threads} {input.alignment} {output.d4_file} > {log} 2>&1
         """
