@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.9.0](https://github.com/gmc-norr/scout-annotation/compare/v0.8.0...v0.9.0) (2025-04-17)
+
+
+### Features
+
+* d4 (WIP) ([#73](https://github.com/gmc-norr/scout-annotation/issues/73)) ([c93d425](https://github.com/gmc-norr/scout-annotation/commit/c93d4256688ce2aa7f0c82fd40205b22b01159f8))
+* TMB, HRD, MSI ([#72](https://github.com/gmc-norr/scout-annotation/issues/72)) ([9ca59e6](https://github.com/gmc-norr/scout-annotation/commit/9ca59e6c9cba212b469d41a5a895cf30bc4df1df))
+
+
+### Bug Fixes
+
+* allow for numbers at the beginning of a sample name ([#64](https://github.com/gmc-norr/scout-annotation/issues/64)) ([2a6a012](https://github.com/gmc-norr/scout-annotation/commit/2a6a012e43c8886cf426a239b5683d9380cad64b))
+* **deps:** pin pulp to &lt;2.8.0 ([#66](https://github.com/gmc-norr/scout-annotation/issues/66)) ([035f3d3](https://github.com/gmc-norr/scout-annotation/commit/035f3d39775a8a9e8ef8f00592be2596fa808055))
+* Exclude duplicates from d4 calculation ([#76](https://github.com/gmc-norr/scout-annotation/issues/76)) ([2f5bdc5](https://github.com/gmc-norr/scout-annotation/commit/2f5bdc5a01d38f91b2b8713d6083ddd854f90834))
+* issue with bam path in load config ([#58](https://github.com/gmc-norr/scout-annotation/issues/58)) ([9201c5f](https://github.com/gmc-norr/scout-annotation/commit/9201c5f9a545a0764fabe7512a0f045e64205049))
+* wrong key in path validation error message ([6f73576](https://github.com/gmc-norr/scout-annotation/commit/6f73576019800a642ac415a2314f018973c17cb1))
+
 ## [0.8.0](https://github.com/gmc-norr/scout-annotation/compare/v0.7.3...v0.8.0) (2023-10-04)
 
 
