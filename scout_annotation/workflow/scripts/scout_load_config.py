@@ -51,11 +51,11 @@ def generate_sample_config(sample):
     }
 
     if msi_score is not None:
-        sample_config["msi"] = int(msi_score)
+        sample_config["msi"] = str(msi_score)
     if hrd_score is not None:
-        sample_config["hrd"] = int(hrd_score)
+        sample_config["hrd"] = str(hrd_score)
     if tmb_score is not None:
-        sample_config["tmb"] = int(tmb_score)
+        sample_config["tmb"] = str(tmb_score)
 
     if include_bam:
         sample_config["alignment_path"] = "{}/{}.bam".format(out_dir,snakemake.wildcards.sample)

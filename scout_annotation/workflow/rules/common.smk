@@ -322,19 +322,19 @@ def get_msi(wildcards):
     msi_score = samples[samples["sample"] == wildcards.sample]["msi_score"][0]
     if pd.isnull(msi_score):
         return None
-    return int(msi_score)
+    return msi_score
 
 def get_hrd(wildcards):
     hrd_score = samples[samples["sample"] == wildcards.sample]["hrd_score"][0]
     if pd.isnull(hrd_score):
         return None
-    return int(hrd_score)
+    return hrd_score
 
 def get_tmb(wildcards):
     tmb_score = samples[samples["sample"] == wildcards.sample]["tmb_score"][0]
     if pd.isnull(tmb_score):
         return None
-    return int(tmb_score)
+    return tmb_score
 
 def get_vcf_samples(vcf_filename):
     vcf = cyvcf2.VCF(vcf_filename)
