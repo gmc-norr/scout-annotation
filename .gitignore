@@ -3,7 +3,6 @@
 
 *.pyc
 .snakemake/
-.python-version
 
 annotation/
 /data/
