@@ -2,7 +2,7 @@ import importlib.resources
 import pathlib
 
 def _package_dir(path=None):
-    package_path = importlib.resources.files("scout_annotation")._paths[0]
+    package_path = importlib.resources.files("scout_annotation")
 
     if path is None:
         return package_path
