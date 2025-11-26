@@ -4,10 +4,26 @@ Snakemake workflow for annotating VCFs prior loading into Scout.
 
 ## Setup
 
-I recommend installing the package in a dedicated virtual environment.
+The package is managed using uv, and this can be used to install it as a tool, or just run it directly in the project directory:
+
+```bash
+uv sync
+uv run scout-annotation
+# or
+uv tool install --python 3.10 .
+```
+
+It can also be installed using pip. Just activate the environment you want to use and run:
 
 ```bash
 python -m pip install .
+```
+
+Currently only Python 3.10 is supported.
+
+## Running 
+
+```bash
 scout-annotation --help
 # Usage: scout-annotation [OPTIONS] COMMAND [ARGS]...
 #
@@ -35,11 +51,10 @@ scout-annotation --help
 
 ## Testing
 
-This package is best managed by poetry, and tests are implemented using pytest.
+This package is managed by uv, and tests are implemented using pytest.
 
 ```bash
-poetry install
-poetry run pytest
+uv run pytest
 ```
 
 Running the above will run both unit tests and an integration test.
