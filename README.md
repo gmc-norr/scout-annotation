@@ -13,6 +13,10 @@ uv run scout-annotation
 uv tool install --python 3.10 .
 ```
 
+> [!NOTE]
+> Due to a [current limitation in uv](https://github.com/astral-sh/uv/issues/11624), the Python version restriction in `pyproject.toml` isn't fully respected.
+> Therefore the version must be passed in when installing using `uv tool install`.
+
 It can also be installed using pip. Just activate the environment you want to use and run:
 
 ```bash
