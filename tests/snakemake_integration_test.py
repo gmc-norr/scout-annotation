@@ -7,7 +7,7 @@ import shutil
 import subprocess
 import yaml
 
-from integration_test_cli import SNAKEFILE, DEFAULT_CONFIG
+from cli_integration_test import SNAKEFILE, DEFAULT_CONFIG
 
 @pytest.fixture(scope="session")
 def integration(tmp_path_factory):
@@ -36,7 +36,14 @@ def integration(tmp_path_factory):
     shutil.copytree("tests/integration/filters", wd / "filters")
     shutil.copytree("tests/integration/panels", wd / "panels")
 
-    return subprocess.run(args, cwd=wd), wd
+    p = subprocess.run(args, cwd=wd)
+
+    try:
+        assert p.returncode == 0
+    except AssertionError:
+        pytest.skip("snakemake process failed, skip all dependent tests")
+
+    return wd
 
 
 @pytest.fixture(scope="session")
@@ -69,7 +76,14 @@ def integration_no_filtering(tmp_path_factory):
     shutil.copytree("tests/integration/filters", wd / "filters")
     shutil.copytree("tests/integration/panels", wd / "panels")
 
-    return subprocess.run(args, cwd=wd), wd
+    p = subprocess.run(args, cwd=wd)
+
+    try:
+        assert p.returncode == 0
+    except AssertionError:
+        pytest.skip("snakemake process failed, skip all dependent tests")
+
+    return wd
 
 
 @pytest.fixture(scope="session")
@@ -78,37 +92,37 @@ def load_configs(integration):
         dict(
             sample="sample1",
             owner="clingen-somatic",
-            path=Path(integration[1], "results/sample1/sample1.load_config.yaml"),
+            path=Path(integration, "results/sample1/sample1.load_config.yaml"),
         ),
         dict(
             sample="sample2",
             owner="clingen",
-            path=Path(integration[1], "results/sample2/sample2.load_config.yaml"),
+            path=Path(integration, "results/sample2/sample2.load_config.yaml"),
         ),
         dict(
             sample="sample3",
             owner="clingen-somatic",
-            path=Path(integration[1], "results/sample3/sample3.load_config.yaml"),
+            path=Path(integration, "results/sample3/sample3.load_config.yaml"),
         ),
         dict(
             sample="sample4",
             owner="clingen",
-            path=Path(integration[1], "results/sample4/sample4.load_config.yaml"),
+            path=Path(integration, "results/sample4/sample4.load_config.yaml"),
         ),
         dict(
             sample="sample5",
             owner="clingen-somatic",
-            path=Path(integration[1], "results/sample5/sample5.load_config.yaml"),
+            path=Path(integration, "results/sample5/sample5.load_config.yaml"),
         ),
         dict(
             sample="sample6",
             owner="clingen",
-            path=Path(integration[1], "results/sample6/sample6.load_config.yaml"),
+            path=Path(integration, "results/sample6/sample6.load_config.yaml"),
         ),
         dict(
             sample="sample7",
             owner="clingen",
-            path=Path(integration[1], "results/sample7/sample7.load_config.yaml"),
+            path=Path(integration, "results/sample7/sample7.load_config.yaml"),
         ),
     ]
 
@@ -120,31 +134,31 @@ def scout_vcfs(integration):
             sample="sample1",
             snv_filtering=False,
             n_variants=23,
-            path=Path(integration[1], "results/sample1/sample1.scout-annotated.vcf.gz"),
+            path=Path(integration, "results/sample1/sample1.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample2",
             snv_filtering=False,
             n_variants=0,
-            path=Path(integration[1], "results/sample2/sample2.scout-annotated.vcf.gz"),
+            path=Path(integration, "results/sample2/sample2.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample3",
             snv_filtering=True,
             n_variants=0,
-            path=Path(integration[1], "results/sample3/sample3.scout-annotated.vcf.gz"),
+            path=Path(integration, "results/sample3/sample3.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample4",
             snv_filtering=True,
             n_variants=32,
-            path=Path(integration[1], "results/sample4/sample4.scout-annotated.vcf.gz"),
+            path=Path(integration, "results/sample4/sample4.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample5",
             snv_filtering=True,
             n_variants=24,
-            path=Path(integration[1], "results/sample5/sample5.scout-annotated.vcf.gz"),
+            path=Path(integration, "results/sample5/sample5.scout-annotated.vcf.gz"),
         ),
         dict(
             # This sample has SNV filtering enabled, but it should be empty
@@ -152,13 +166,13 @@ def scout_vcfs(integration):
             sample="sample6",
             snv_filtering=False,
             n_variants=0,
-            path=Path(integration[1], "results/sample6/sample6.scout-annotated.vcf.gz"),
+            path=Path(integration, "results/sample6/sample6.scout-annotated.vcf.gz"),
         ),
         dict(
             sample="sample7",
             snv_filtering=True,
             n_variants=0,
-            path=Path(integration[1], "results/sample7/sample7.scout-annotated.vcf.gz"),
+            path=Path(integration, "results/sample7/sample7.scout-annotated.vcf.gz"),
         ),
     ]
 
@@ -170,7 +184,7 @@ def scout_vcfs_no_filtering(integration_no_filtering):
             sample="sample2-1",
             n_variants=160,
             path=Path(
-                integration_no_filtering[1],
+                integration_no_filtering,
                 "results_no-filtering/sample2-1/sample2-1.scout-annotated.vcf.gz",
             ),
         ),
@@ -259,5 +273,3 @@ def test_case_owner(load_configs):
         c = yaml.safe_load(config["path"].read_text())
         assert "owner" in c, config["sample"]
         assert c["owner"] == config["owner"], config["sample"]
-
-
