@@ -5,7 +5,7 @@ genome_build: "37"
 scout_owner: "clingen"
 output_directory: results
 
-default_container: docker://hydragenetics/common:0.1.1
+default_container: docker://snakemake/snakemake:v9.14.0
 
 panel_filtering:
   hard_filter: yes
