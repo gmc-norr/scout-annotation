@@ -9,6 +9,11 @@ import yaml
 
 from cli_integration_test import SNAKEFILE, DEFAULT_CONFIG
 
+
+if not Path("/storage").exists():
+    pytest.skip("requires /storage", allow_module_level=True)
+
+
 @pytest.fixture(scope="session")
 def integration(tmp_path_factory):
     args = [
