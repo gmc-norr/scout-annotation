@@ -17,16 +17,6 @@ if not Path("/storage").exists():
 
 
 @pytest.fixture(scope="session")
-def trio_load_config(cli_trio):
-    config_file = Path(
-        cli_trio, "results/ceph1463/ceph1463.load_config.yaml",
-    )
-    assert config_file.exists()
-    with open(config_file) as f:
-        return yaml.safe_load(f)
-
-
-@pytest.fixture(scope="session")
 def cli_trio(tmp_path_factory) -> Tuple[subprocess.CompletedProcess, Path]:
     args = [
         "scout-annotation",
@@ -55,6 +45,17 @@ def cli_trio(tmp_path_factory) -> Tuple[subprocess.CompletedProcess, Path]:
         pytest.skip("snakemake process failed, skip all dependent tests")
 
     return wd
+
+
+@pytest.fixture(scope="session")
+def trio_load_config(cli_trio):
+    config_file = Path(
+        cli_trio,
+        "results/ceph1463/ceph1463.load_config.yaml",
+    )
+    assert config_file.exists()
+    with open(config_file) as f:
+        return yaml.safe_load(f)
 
 
 @pytest.fixture(scope="session")
@@ -134,9 +135,7 @@ def test_cli_batch_load_config(cli_batch):
 
 
 def test_trio_vcf_samples(cli_trio):
-    vcf = Path(
-        cli_trio, "results/ceph1463/ceph1463.scout-annotated.vcf.gz"
-    )
+    vcf = Path(cli_trio, "results/ceph1463/ceph1463.scout-annotated.vcf.gz")
     assert vcf.exists()
     vcf_samples = cyvcf2.VCF(vcf).samples
     assert len(vcf_samples) == 3
@@ -146,9 +145,7 @@ def test_trio_vcf_samples(cli_trio):
 
 
 def test_trio_config_samples(cli_trio):
-    config_file = Path(
-        cli_trio, "results/ceph1463/ceph1463.load_config.yaml"
-    )
+    config_file = Path(cli_trio, "results/ceph1463/ceph1463.load_config.yaml")
     assert config_file.exists()
     with open(config_file) as f:
         load_config = yaml.safe_load(f)
