@@ -41,7 +41,7 @@ def generate_sample_config(sample):
     msi_score = snakemake.params.msi_score
     hrd_score = snakemake.params.hrd_score
     tmb_score = snakemake.params.tmb_score
-    out_dir = snakemake.params.out_dir
+    out_dir = Path(snakemake.params.out_dir).resolve()
 
     sample_config = {
         "sample_id": sample,
@@ -58,9 +58,9 @@ def generate_sample_config(sample):
         sample_config["tmb"] = str(tmb_score)
 
     if include_bam:
-        sample_config["alignment_path"] = "{}/{}.bam".format(out_dir,snakemake.wildcards.sample)
+        sample_config["alignment_path"] = str(out_dir / f"{snakemake.wildcards.sample}.bam")
     if include_d4:
-        sample_config["d4_file"] = "{}/{}.d4".format(out_dir,snakemake.wildcards.sample)
+        sample_config["d4_file"] = str(out_dir / f"{snakemake.wildcards.sample}.d4")
 
     return sample_config
 

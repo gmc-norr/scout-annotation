@@ -319,19 +319,19 @@ def get_track(wildcards):
     return tracks[0]
 
 def get_msi(wildcards):
-    msi_score = samples[samples["sample"] == wildcards.sample]["msi_score"][0]
+    msi_score = samples.loc[samples["sample"] == wildcards.sample, "msi_score"].iloc[0]
     if pd.isnull(msi_score):
         return None
     return msi_score
 
 def get_hrd(wildcards):
-    hrd_score = samples[samples["sample"] == wildcards.sample]["hrd_score"][0]
+    hrd_score = samples.loc[samples["sample"] == wildcards.sample, "hrd_score"].iloc[0]
     if pd.isnull(hrd_score):
         return None
     return hrd_score
 
 def get_tmb(wildcards):
-    tmb_score = samples[samples["sample"] == wildcards.sample]["tmb_score"][0]
+    tmb_score = samples.loc[samples["sample"] == wildcards.sample, "tmb_score"].iloc[0]
     if pd.isnull(tmb_score):
         return None
     return tmb_score

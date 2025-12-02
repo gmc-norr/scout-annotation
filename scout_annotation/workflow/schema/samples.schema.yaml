@@ -57,14 +57,23 @@ properties:
     description: path to BAM file for the sample
     format: uri-reference
   msi_score:
-    type: number
+    type:
+      - number
+      - "null"
     description: MSI score for the sample
+    default: null
   hrd_score:
-    type: number
+    type:
+      - number
+      - "null"
     description: HRD score for the sample
+    default: null
   tmb_score:
-    type: number
+    type:
+      - number
+      - "null"
     description: TMB score for the sample
+    default: null
 required:
   - filtering
   - owner
