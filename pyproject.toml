@@ -13,22 +13,21 @@ include = [
     "scout_annotation/default_config"
 ]
 dependencies = [
-    "click ~=8.1.7",
-    "cyvcf2 ~=0.30.0",
-    "numpy ~=1.18",
-    "pandas ~=1.4.0",
-    "pulp <2.8.0",
-    "pysam ~=0.21.0",
-    "pyyaml ~=6.0.1",
-    "snakemake ~=7.13",
+    "click ~=8.3.0",
+    "cyvcf2~=0.30.0",
+    "numpy<2.0",
+    "pandas~=2.3.0",
+    "pysam ~=0.23.0",
+    "pyyaml ~=6.0.0",
+    "snakemake~=9.0",
 ]
-requires-python = "~=3.10.0"
+requires-python = "~=3.12.0"
 
 [dependency-groups]
 dev = [
-    "black ~=23.7.0",
-    "pre-commit ~=3.3.3",
-    "pytest ~=7.4.0",
+    "black ~=25.11.0",
+    "pre-commit ~=4.5.0",
+    "pytest ~=9.0",
 ]
 
 [project.scripts]
