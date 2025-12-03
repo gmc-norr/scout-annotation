@@ -10,7 +10,7 @@ The package is managed using uv, and this can be used to install it as a tool, o
 uv sync
 uv run scout-annotation
 # or
-uv tool install --python 3.10 .
+uv tool install --python 3.12 .
 ```
 
 > [!NOTE]
@@ -23,7 +23,7 @@ It can also be installed using pip. Just activate the environment you want to us
 python -m pip install .
 ```
 
-Currently only Python 3.10 is supported.
+Currently only Python 3.12 is supported.
 
 ## Running 
 
