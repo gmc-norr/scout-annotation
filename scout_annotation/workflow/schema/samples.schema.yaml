@@ -49,9 +49,11 @@ properties:
     description: path to PED file for the sample
     format: uri-reference
   panels:
-    type: string
+    type:
+      - string
+      - "null"
     description: comma separated list of panels to apply to sample
-    default: ""
+    default: null
   bam:
     type: string
     description: path to BAM file for the sample

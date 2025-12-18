@@ -130,8 +130,17 @@ def test_cli_batch_load_config(cli_batch):
     with open(config_path) as f:
         load_config = yaml.safe_load(f)
 
+    assert not load_config.get("gene_panels", [])
     assert load_config["samples"][0]["alignment_path"] == str(bam_path)
     assert bam_path.exists()
+
+
+def test_cli_single_load_config(cli_single):
+    config_path = Path(cli_single, "results/HD832/HD832.load_config.yaml")
+    with open(config_path) as f:
+        load_config = yaml.safe_load(f)
+
+    assert not load_config.get("gene_panels", [])
 
 
 def test_trio_vcf_samples(cli_trio):
