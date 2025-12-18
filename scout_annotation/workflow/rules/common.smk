@@ -232,7 +232,7 @@ def get_preprocessed_vcf_index(wildcards):
 def get_family_panels(wildcards):
     panels = samples[samples["family"] == wildcards["family"]]["panels"].unique()
     assert len(panels) == 1, "all samples in a family need to have the same panels"
-    if pd.isnull(panels[0]):
+    if pd.isnull(panels[0]) or not panels[0]:
         return []
     return panels[0].split(",")
 
@@ -240,7 +240,7 @@ def get_family_panels(wildcards):
 def get_family_snv_filter_tag(wildcards):
     filtering = samples[samples["family"] == wildcards.family]["filtering"].unique()
     assert len(filtering) == 1, "all samples in a family must use the same filters"
-    if pd.isnull(filtering[0]) or filtering[0] == "":
+    if pd.isnull(filtering[0]) or not filtering[0]:
         return None
     return filtering[0]
 
