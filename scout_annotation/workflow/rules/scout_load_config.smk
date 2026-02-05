@@ -25,6 +25,7 @@ rule scout_load_config_family:
         out_dir=f"{config.get('output_directory', 'results')}/{{family}}",
     container:
         "docker://python:3.10.7-slim"
+    localrule: True
     script:
         "../scripts/scout_load_config.py"
 
@@ -46,5 +47,6 @@ rule scout_load_config_sample:
         out_dir=f"{config.get('output_directory', 'results')}/{{family}}",
     container:
         "docker://python:3.10.7-slim"
+    localrule: True
     script:
         "../scripts/scout_load_config.py"

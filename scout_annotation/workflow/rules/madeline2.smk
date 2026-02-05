@@ -7,6 +7,7 @@ rule madeline2_data:
         "madeline2/{family}/{family}.madeline2_data.log",
     container:
         config.get("madeline2_data", {}).get("container", config["default_container"])
+    localrule: True
     script:
         "../scripts/madeline2_data.py"
 

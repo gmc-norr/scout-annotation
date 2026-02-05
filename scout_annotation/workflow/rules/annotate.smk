@@ -118,6 +118,7 @@ rule vcfanno_config:
         extra=config.get("vcfanno_config", {}).get("extra", ""),
     container:
         "docker://bschiffthaler/curl:7.72.0"
+    localrule: True
     shell:
         """
         echo "fetching {params.uri}" > {log}

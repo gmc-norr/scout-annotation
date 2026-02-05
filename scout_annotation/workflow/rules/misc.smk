@@ -7,6 +7,7 @@ rule link_bam:
         bai=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.bam.bai",
     log:
         f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.link_bam.log",
+    localrule: True
     run:
         from pathlib import Path
 
@@ -37,6 +38,7 @@ rule copy_peddy_files:
         pedigree=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.pedigree.svg",
     log:
         f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.copy_peddy_files.log",
+    localrule: True
     run:
         import logging
         import pathlib
@@ -67,6 +69,7 @@ rule copy_results:
         ped=f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.ped",
     log:
         f"{config.get('output_directory', 'results')}/{{family}}/{{family}}.copy_results.log",
+    localrule: True
     run:
         import logging
         import pathlib
@@ -95,6 +98,7 @@ rule tabix:
         "{filepath}.tabix.log",
     container:
         "docker://hydragenetics/common:0.1.1"
+    localrule: True
     shell:
         """
         tabix {input.vcf}
