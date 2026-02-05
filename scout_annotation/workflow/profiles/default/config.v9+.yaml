@@ -1,0 +1,17 @@
+software-deployment-method: apptainer
+
+default-resources:
+  runtime: 1h
+  cpus_per_task: 1
+  mem_mb: 4000
+  mem_mb_per_cpu: 4000
+
+set-threads:
+  vep: 4
+  vcfanno: 4
+
+set-resources:
+  vep:
+    cpus_per_task: 4
+  vcfanno:
+    cpus_per_task: 4
