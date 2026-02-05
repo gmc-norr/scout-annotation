@@ -1,8 +1,0 @@
-default_resources:
-  threads: 1
-
-vep:
-  threads: 4
-
-d4tools:
-  threads: 4

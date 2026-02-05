@@ -5,10 +5,6 @@ properties:
     type: string
     description: path to sample table file
     format: uri-reference
-  resources:
-    type: string
-    description: path to resources config file
-    format: uri-reference
   genome_build:
     type: string
     description: GRCh genome build
@@ -215,7 +211,6 @@ properties:
 
 required:
   - samples
-  - resources
   - genome_build
   - scout_owner
   - output_directory

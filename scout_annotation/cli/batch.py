@@ -3,7 +3,7 @@ import pathlib
 import subprocess
 import sys
 
-from scout_annotation.resources import default_config, default_resources, snakefile
+from scout_annotation.resources import default_config, snakefile
 from scout_annotation.panels import get_panels
 from scout_annotation.samples import write_samples
 import scout_annotation.parsers as parsers
@@ -315,10 +315,6 @@ def batch(
         ]
     )
 
-    if config.resources is not None:
-        args.append(f"resources={config.resources}")
-    else:
-        args.append(f"resources={default_resources()}")
     if out_dir is not None:
         args.append(f"output_directory={out_dir}")
 

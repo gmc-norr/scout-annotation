@@ -15,7 +15,6 @@ rule peddy:
         each=config.get("peddy", {}).get("each"),
         plot=config.get("peddy", {}).get("plot"),
         sites=config.get("peddy", {}).get("sites"),
-    threads: resources.get("peddy", {}).get("threads", resources["default_resources"]["threads"])
     container:
         config.get("peddy", {}).get("container", "docker://hydragenetics/peddy:0.4.8")
     script:

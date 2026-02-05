@@ -13,7 +13,6 @@ class Config:
     def __init__(
         self,
         config,
-        resources,
         cores,
         use_apptainer,
         apptainer_args,
@@ -21,7 +20,6 @@ class Config:
         loglevel,
     ):
         self.config = config
-        self.resources = resources
         self.cores = cores
         self.use_apptainer = use_apptainer
         self.apptainer_args = apptainer_args
@@ -37,7 +35,6 @@ class Config:
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.option("-c", "--config", help="config file used for overwriting defaults")
-@click.option("-r", "--resources", help="resources file for overwriting defaults")
 @click.option(
     "--cores", help="number of cores available for snakemake", type=click.INT, default=1
 )
@@ -64,7 +61,6 @@ class Config:
 def cli(
     ctx,
     config,
-    resources,
     cores,
     use_apptainer,
     apptainer_args,
@@ -73,7 +69,6 @@ def cli(
 ):
     ctx.obj = Config(
         config,
-        resources,
         cores,
         use_apptainer,
         apptainer_args,

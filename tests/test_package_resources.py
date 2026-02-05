@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from scout_annotation.resources import default_config, default_resources, snakefile
+from scout_annotation.resources import default_config, snakefile
 
 
 def test_default_config_path():
@@ -8,13 +8,6 @@ def test_default_config_path():
     assert isinstance(config_path, Path)
     assert config_path.name == "config.yaml"
     assert config_path.exists()
-
-
-def test_default_resource_path():
-    resource_path = default_resources()
-    assert isinstance(resource_path, Path)
-    assert resource_path.name == "resources.yaml"
-    assert resource_path.exists()
 
 
 def test_snakefile_path():
