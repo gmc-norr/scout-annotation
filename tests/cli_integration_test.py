@@ -124,6 +124,22 @@ def cli_batch(tmp_path_factory):
     return wd
 
 
+def test_cli_batch_no_samples(tmp_path_factory):
+    args = [
+        "python",
+        "-m",
+        "scout_annotation",
+        "batch",
+        "no_data_here",
+    ]
+
+    wd = tmp_path_factory.mktemp("cli_batch_no_samples")
+    (wd / "no_data_here").mkdir()
+
+    p = subprocess.run(args, cwd=wd)
+    assert p.returncode != 0
+
+
 def test_cli_batch_load_config(cli_batch):
     config_path = Path(cli_batch, "cli_batch_results/HD832/HD832.load_config.yaml")
     bam_path = Path(cli_batch, "cli_batch_results/HD832/HD832.bam")
