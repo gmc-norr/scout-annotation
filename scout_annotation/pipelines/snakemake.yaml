@@ -1,0 +1,13 @@
+pipelines:
+  - name: "Twist_Solid"
+    version: "v0.23.0"
+    files:
+      bam: "bam_dna/{sample}_{type}.bam"
+      # alignment_index: "bam_dna/{sample}_{type}.bam.bai"
+      vcf: "results/dna/{sample}_{type}/vcf/{sample}_{type}.annotated.exon_only.filter.hard_filter.codon_snv.vcf"
+      # research_vcf: "results/dna/{sample}_{type}/additional_files/vcf/{sample}_{type}.annotated.vcf.gz"
+      msi_score: "results/dna/{sample}_{type}/biomarker/{sample}_{type}.msisensor_pro.filtered.score.tsv"
+      hrd_score: "results/dna/{sample}_{type}/biomarker/{sample}_{type}.pathology_purecn.scarhrd_cnvkit_score.txt"
+      tmb_score: "results/dna/{sample}_{type}/biomarker/{sample}_{type}.TMB.txt"
+      cnv_report: "results/dna/{sample}_{type}/cnv/{sample}_{type}.pathology_purecn.cnv.html"
+      report: "results/dna/{sample}_{type}/{sample}_{type}.general_report.html"

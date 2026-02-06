@@ -4,6 +4,20 @@ import re
 from typing import Tuple
 import yaml
 
+from scout_annotation import resources
+
+
+def pipeline_files(name: str, version: str) -> dict[str, str]:
+    definitions = resources.pipeline_files()
+    available_pipelines = []
+    for pipeline in definitions.get("pipelines", []):
+        available_pipelines.append(f"{pipeline['name']} {pipeline['version']}")
+        if pipeline.get("name") == name and pipeline.get("version") == version:
+            return pipeline.get("files", {})
+    raise ValueError(
+        f"pipeline not defined, available pipelines are {', '.join(available_pipelines)}",
+    )
+
 
 def detect_pipeline(path: str | Path) -> (str, str):
     snakemake_dir = Path(path) / ".snakemake"
