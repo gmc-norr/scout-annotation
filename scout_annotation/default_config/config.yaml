@@ -1,5 +1,4 @@
 samples: "samples.tsv"
-resources: "resources.yaml"
 
 genome_build: "37"
 scout_owner: "clingen"

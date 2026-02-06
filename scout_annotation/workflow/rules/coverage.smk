@@ -5,7 +5,6 @@ rule generate_d4:
     output:
         d4_file=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.d4",
     log: f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.d4tools.log"
-    threads: resources.get("d4tools", {}).get("threads", resources["default_resources"]["threads"])
     container: 
         "docker://clinicalgenomics/d4tools:2.0"
     shell:

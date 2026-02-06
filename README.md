@@ -33,7 +33,6 @@ scout-annotation --help
 #
 # Options:
 #   -c, --config TEXT               config file used for overwriting defaults
-#   -r, --resources TEXT            resources file for overwriting defaults
 #   --cores INTEGER                 number of cores available for snakemake
 #   --use-apptainer, --use-singularity
 #                                   use apptainer as executor

@@ -681,6 +681,7 @@ dependencies = [
     { name = "pysam" },
     { name = "pyyaml" },
     { name = "snakemake" },
+    { name = "snakemake-executor-plugin-slurm" },
 ]
 
 [package.dev-dependencies]
@@ -698,7 +699,8 @@ requires-dist = [
     { name = "pandas", specifier = "~=2.3.0" },
     { name = "pysam", specifier = "~=0.23.0" },
     { name = "pyyaml", specifier = "~=6.0.0" },
-    { name = "snakemake", specifier = "~=9.0" },
+    { name = "snakemake", specifier = ">=9.14.5" },
+    { name = "snakemake-executor-plugin-slurm", specifier = "~=2.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -740,7 +742,7 @@ wheels = [
 
 [[package]]
 name = "snakemake"
-version = "9.14.0"
+version = "9.14.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "appdirs" },
@@ -774,9 +776,39 @@ dependencies = [
     { name = "wrapt" },
     { name = "yte" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a6/1b/c5fa4f4f99f6905b567dce6f212a531fb9a486b45f30aa91022d6ede10ab/snakemake-9.14.0.tar.gz", hash = "sha256:d1126fe73cd182c6810a7981130c197ce8b707122ab3aa30b510eaa69f6dec06", size = 6741640, upload-time = "2025-11-27T17:05:20.244Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0c/28/b6ad097922b45a85f792bdf9b4f823ee6f37e72d80d471d0b13262309398/snakemake-9.14.5.tar.gz", hash = "sha256:f66b181806f02f9d7f43542bd85091a2e65ab126dfcb7bd869a622917d786bfb", size = 6745401, upload-time = "2025-12-15T13:55:25.898Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9b/7f/fa06e2a2830aa066c9e5cd591f507ae1c5f2363c6660504c2d7fdd0a9f66/snakemake-9.14.0-py3-none-any.whl", hash = "sha256:693bd8443fbf1e783374812f47ce04d53a8210c14a4397b6f19bc210737b04d3", size = 1132325, upload-time = "2025-11-27T17:05:18.49Z" },
+    { url = "https://files.pythonhosted.org/packages/e0/a7/a13ec64b15cbd3dd0797847cb529e118e939d46968e80d0cdf7f5c638374/snakemake-9.14.5-py3-none-any.whl", hash = "sha256:a0f23d2250918553d283675051486f75c14f9fc33217a65810fefd52e292d390", size = 1132670, upload-time = "2025-12-15T13:55:23.721Z" },
+]
+
+[[package]]
+name = "snakemake-executor-plugin-slurm"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "snakemake-executor-plugin-slurm-jobstep" },
+    { name = "snakemake-interface-common" },
+    { name = "snakemake-interface-executor-plugins" },
+    { name = "throttler" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e2/10/576b021f1c4ed13066a74e3d429da4a483ccbbaed402a9a42045d3f15a06/snakemake_executor_plugin_slurm-2.1.0.tar.gz", hash = "sha256:428c8f459c6aa8a700f976e7ad78bd2fbea5f209e33db3bf0f2cee1a3cc5348a", size = 25907, upload-time = "2026-01-20T18:17:21.675Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f4/70/9d8a8ca1b3475d2d37858bfff9c156d2636af725300373ea73aed99a39cb/snakemake_executor_plugin_slurm-2.1.0-py3-none-any.whl", hash = "sha256:9b32097e9425932d58b9a27ad6db5a6e860a138f6cf1edbd07a56f467e311c8a", size = 29833, upload-time = "2026-01-20T18:17:22.507Z" },
+]
+
+[[package]]
+name = "snakemake-executor-plugin-slurm-jobstep"
+version = "0.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "snakemake-interface-common" },
+    { name = "snakemake-interface-executor-plugins" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/60/bd/4fef44e4a5dc95ccaafd4f238950dc1b81c1709f5fab5b47ed148a21ba57/snakemake_executor_plugin_slurm_jobstep-0.4.0.tar.gz", hash = "sha256:fcefe85c5ab75c26b673d8aff330fc9121cfc1fec97e1acf4a68a156a16a415b", size = 5112, upload-time = "2025-12-15T11:11:35.63Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/32/da/814faf51ea7784688e276f65fc3a5f0d6cb0514b503741f256ae3aff74d0/snakemake_executor_plugin_slurm_jobstep-0.4.0-py3-none-any.whl", hash = "sha256:a2ef5a1beef5a3f49ca6183f38afd27b97eebf689a52cb276a2644d31fbad8dd", size = 5923, upload-time = "2025-12-15T11:11:34.541Z" },
 ]
 
 [[package]]

@@ -15,7 +15,6 @@ rule vep:
     params:
         mode=config.get("vep", {}).get("mode", ""),
         cache_type=config.get("vep", {}).get("cache_type", "merged"),
-    threads: resources.get("vep", {}).get("threads", resources["default_resources"]["threads"])
     container:
         "docker://hydragenetics/vep:105"
     shell:
@@ -99,6 +98,7 @@ rule vcfanno:
         """
         vcfanno \\
             -base-path {params.base_path} \\
+            -p {threads} \\
             {input.toml} \\
             {input.vcf} \\
             > {output.vcf} \\
@@ -118,6 +118,7 @@ rule vcfanno_config:
         extra=config.get("vcfanno_config", {}).get("extra", ""),
     container:
         "docker://bschiffthaler/curl:7.72.0"
+    localrule: True
     shell:
         """
         echo "fetching {params.uri}" > {log}

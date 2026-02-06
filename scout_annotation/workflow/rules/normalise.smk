@@ -4,6 +4,7 @@ rule sample_name_translation:
     params:
         old_name=lambda wc: get_vcf_samples(get_vcf_file(wc))[0],
         new_name=lambda wc: wc.sample,
+    localrule: True
     run:
         with open(output.samples, "w") as f:
             print(f"{params.old_name} {params.new_name}", file=f)

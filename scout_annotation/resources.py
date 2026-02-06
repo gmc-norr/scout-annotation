@@ -14,9 +14,5 @@ def default_config() -> pathlib.Path:
     return _package_dir("default_config/config.yaml")
 
 
-def default_resources() -> pathlib.Path:
-    return _package_dir("default_config/resources.yaml")
-
-
 def snakefile() -> pathlib.Path:
     return _package_dir("workflow/Snakefile")
