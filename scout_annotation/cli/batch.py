@@ -259,6 +259,10 @@ def batch(
 
         samples.append(sample)
 
+    if len(samples) == 0:
+        config.logger.error("no samples found, aborting")
+        raise click.Abort()
+
     samples_file = write_samples(samples, samples_dir)
 
     args = [
