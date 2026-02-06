@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.9.0](https://github.com/gmc-norr/scout-annotation/compare/v0.8.0...v0.9.0) (2026-02-06)
+
+
+### Features
+
+* better slurm integration ([#90](https://github.com/gmc-norr/scout-annotation/issues/90)) ([b03a621](https://github.com/gmc-norr/scout-annotation/commit/b03a621e2030c56cfca2b5ade020186523902a4b))
+* d4 (WIP) ([#73](https://github.com/gmc-norr/scout-annotation/issues/73)) ([c93d425](https://github.com/gmc-norr/scout-annotation/commit/c93d4256688ce2aa7f0c82fd40205b22b01159f8))
+* migrate from poetry to uv ([#79](https://github.com/gmc-norr/scout-annotation/issues/79)) ([abb356c](https://github.com/gmc-norr/scout-annotation/commit/abb356c11cf0ccf03b4ce590e6747ada7e6f091d))
+* TMB, HRD, MSI ([#72](https://github.com/gmc-norr/scout-annotation/issues/72)) ([9ca59e6](https://github.com/gmc-norr/scout-annotation/commit/9ca59e6c9cba212b469d41a5a895cf30bc4df1df))
+
+
+### Bug Fixes
+
+* address issue with empty string gene panels ([#88](https://github.com/gmc-norr/scout-annotation/issues/88)) ([7377ba6](https://github.com/gmc-norr/scout-annotation/commit/7377ba6c56ccd9d7dc320722987386a461b32085))
+* allow for numbers at the beginning of a sample name ([#64](https://github.com/gmc-norr/scout-annotation/issues/64)) ([2a6a012](https://github.com/gmc-norr/scout-annotation/commit/2a6a012e43c8886cf426a239b5683d9380cad64b))
+* **deps:** pin pulp to &lt;2.8.0 ([#66](https://github.com/gmc-norr/scout-annotation/issues/66)) ([035f3d3](https://github.com/gmc-norr/scout-annotation/commit/035f3d39775a8a9e8ef8f00592be2596fa808055))
+* Do not convert msi, hrd and tmb values as integers ([#77](https://github.com/gmc-norr/scout-annotation/issues/77)) ([e11694a](https://github.com/gmc-norr/scout-annotation/commit/e11694a2dc08d311254e2f4c5c6d021c56296704))
+* Exclude duplicates from d4 calculation ([#76](https://github.com/gmc-norr/scout-annotation/issues/76)) ([2f5bdc5](https://github.com/gmc-norr/scout-annotation/commit/2f5bdc5a01d38f91b2b8713d6083ddd854f90834))
+* issue with bam path in load config ([#58](https://github.com/gmc-norr/scout-annotation/issues/58)) ([9201c5f](https://github.com/gmc-norr/scout-annotation/commit/9201c5f9a545a0764fabe7512a0f045e64205049))
+* non-zero exit if no samples are found ([#91](https://github.com/gmc-norr/scout-annotation/issues/91)) ([3014704](https://github.com/gmc-norr/scout-annotation/commit/3014704a20848137dd54a2c6b0ce8d4cacd9b843))
+* wrong key in path validation error message ([6f73576](https://github.com/gmc-norr/scout-annotation/commit/6f73576019800a642ac415a2314f018973c17cb1))
+
+
+### Documentation
+
+* update python version in readme ([#85](https://github.com/gmc-norr/scout-annotation/issues/85)) ([1a09606](https://github.com/gmc-norr/scout-annotation/commit/1a096061f694cf0873a87906a67bdde9c8e088d2))
+
 ## [0.8.0](https://github.com/gmc-norr/scout-annotation/compare/v0.7.3...v0.8.0) (2023-10-04)
 
 

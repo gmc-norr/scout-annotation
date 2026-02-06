@@ -1,6 +1,6 @@
 [project]
 name = "scout-annotation"
-version = "0.8.0"
+version = "0.9.0"
 description = "Snakemake pipeline with utilities for annotating VCFs for loading into Scout"
 authors = [
     {name = "Niklas Mähler", email = "niklas.mahler@gmail.com"},
