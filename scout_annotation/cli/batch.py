@@ -10,9 +10,7 @@ import scout_annotation.parsers as parsers
 
 
 @click.command()
-@click.argument(
-    "vcf-dir", type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False)
-)
+@click.argument("vcf-dir", type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False))
 @click.option(
     "--out-dir",
     "-o",
@@ -59,9 +57,7 @@ import scout_annotation.parsers as parsers
 @click.option(
     "--samples-dir",
     help="path to directory where to store sample files",
-    type=click.Path(
-        path_type=pathlib.Path, dir_okay=True, file_okay=False, resolve_path=True
-    ),
+    type=click.Path(path_type=pathlib.Path, dir_okay=True, file_okay=False, resolve_path=True),
     default=pathlib.Path("./sample_files"),
 )
 @click.option(
@@ -188,9 +184,7 @@ def batch(
             raise click.Abort()
         sample_name = sample_split[0]
         if sample_name in sample_names:
-            config.logger.error(
-                f"duplicated sample name found, check input files: {sample_name}"
-            )
+            config.logger.error(f"duplicated sample name found, check input files: {sample_name}")
             raise click.Abort()
         sample_names.add(sample_name)
 
@@ -198,9 +192,7 @@ def batch(
         if len(bam_filename) == 0:
             bam_filename = ""
         elif len(bam_filename) > 1:
-            config.logger.error(
-                f"found more than one possible bam file for {sample_name}"
-            )
+            config.logger.error(f"found more than one possible bam file for {sample_name}")
             raise click.Abort()
         else:
             bam_filename = bam_filename[0]
@@ -210,9 +202,7 @@ def batch(
             msi_filename = ""
             msi_score = ""
         elif len(msi_filename) > 1:
-            config.logger.error(
-                f"found more than one possible msi file for {sample_name}"
-            )
+            config.logger.error(f"found more than one possible msi file for {sample_name}")
             raise click.Abort()
         else:
             msi_filename = msi_filename[0]
@@ -223,9 +213,7 @@ def batch(
             hrd_filename = ""
             hrd_score = ""
         elif len(hrd_filename) > 1:
-            config.logger.error(
-                f"found more than one possible hrd file for {sample_name}"
-            )
+            config.logger.error(f"found more than one possible hrd file for {sample_name}")
             raise click.Abort()
         else:
             hrd_filename = hrd_filename[0]
@@ -236,22 +224,17 @@ def batch(
             tmb_filename = ""
             tmb_score = ""
         elif len(tmb_filename) > 1:
-            config.logger.error(
-                f"found more than one possible tmb file for {sample_name}"
-            )
+            config.logger.error(f"found more than one possible tmb file for {sample_name}")
             raise click.Abort()
         else:
             tmb_filename = tmb_filename[0]
             tmb_score = parsers.tmb(tmb_filename)
-            
 
         ped_filename = list(bam_dir.glob(f"{sample_name}*.ped"))
         if len(ped_filename) == 0:
             ped_filename = ""
         elif len(ped_filename) > 1:
-            config.logger.error(
-                f"found more than one possible ped file for {sample_name}"
-            )
+            config.logger.error(f"found more than one possible ped file for {sample_name}")
             raise click.Abort()
         else:
             ped_filename = ped_filename[0]
@@ -275,6 +258,10 @@ def batch(
             sample["filtering"] = snv_filter
 
         samples.append(sample)
+
+    if len(samples) == 0:
+        config.logger.error("no samples found, aborting")
+        raise click.Abort()
 
     samples_file = write_samples(samples, samples_dir)
 
