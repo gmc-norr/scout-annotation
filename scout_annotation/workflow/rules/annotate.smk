@@ -116,8 +116,6 @@ rule vcfanno_config:
             track=wc.track, version=wc.version
         ),
         extra=config.get("vcfanno_config", {}).get("extra", ""),
-    container:
-        "docker://bschiffthaler/curl:7.72.0"
     localrule: True
     shell:
         """
@@ -210,8 +208,7 @@ rule genmod_rank_model:
         extra=config.get("genmod_rank_model", {}).get("extra", ""),
     log:
         "rank_model/{track}_rank_model_{version}.log",
-    container:
-        "docker://bschiffthaler/curl:7.72.0"
+    localrule: True
     shell:
         """
         echo "fetching {params.uri}" > {log}
