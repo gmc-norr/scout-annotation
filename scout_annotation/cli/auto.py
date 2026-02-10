@@ -214,12 +214,6 @@ def auto(
         ]
     )
 
-    if config.resources is not None:
-        config.logger.debug(f"using user supplied resources in {config.resources}")
-        args.append(f"resources={config.resources}")
-    else:
-        config.logger.debug(f"using default resources in {resources.default_resources()}")
-        args.append(f"resources={resources.default_resources()}")
     if out_dir is not None:
         args.append(f"output_directory={out_dir}")
 
