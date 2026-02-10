@@ -98,7 +98,6 @@ rule tabix:
         "{filepath}.tabix.log",
     container:
         "docker://hydragenetics/common:0.1.1"
-    localrule: True
     shell:
         """
         tabix {input.vcf}
