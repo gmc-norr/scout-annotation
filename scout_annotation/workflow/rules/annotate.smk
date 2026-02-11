@@ -125,10 +125,25 @@ rule vcfanno_config:
         curl {params.extra} -fsSL {params.uri} > {output.toml} 2>> {log}
         """
 
+rule rename_info_fields:
+    input:
+        vcf=get_filtered_vcf,
+    output:
+        vcf=temp("annotate/{sample}/{sample}.renamed_info.vcf"),
+    log:
+        "annotate/{sample}/{sample}.renamed-info.log",
+    container:
+        "docker://hydragenetics/common:0.3.0"
+    shell:
+        """
+        echo "INFO/CALLERS INFO/FOUND_IN" > {rule}.$$.rename.txt
+        bcftools annotate --rename-annots {rule}.$$.rename.txt -O v -o {output.vcf} {input.vcf} 2> {log}
+        rm -f {rule}.$$.rename.txt
+        """
 
 rule genmod_annotate:
     input:
-        vcf=get_filtered_vcf,
+        vcf="annotate/{sample}/{sample}.renamed_info.vcf",
     output:
         vcf=temp("annotation/{family}/{family}.genmod_annotate.vcf"),
     log:
