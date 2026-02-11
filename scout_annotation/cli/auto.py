@@ -3,23 +3,31 @@ import subprocess
 import sys
 import click
 from pathlib import Path
+from pydantic import ValidationError
 
-from scout_annotation import pipeline_utils
+from scout_annotation import pipeline_definition, pipeline_utils
 import scout_annotation.parsers as parsers
-from scout_annotation.path import WildcardPath
 from scout_annotation.samples import write_samples
 from scout_annotation import resources
 
 
 @click.command()
 @click.argument(
-    "dir",
+    "input_dir",
+    metavar="dir",
     type=click.Path(
         path_type=Path,
         exists=True,
         dir_okay=True,
         file_okay=False,
     ),
+)
+@click.option(
+    "--pipeline-definitions",
+    "pipeline_definitions",
+    help="path to configuration of the autodetection",
+    type=click.Path(path_type=Path, dir_okay=False, file_okay=True, exists=True),
+    default=Path("~/.config/scout-annotation/pipeline_definitions.yaml"),
 )
 @click.option(
     "-n",
@@ -93,9 +101,7 @@ from scout_annotation import resources
 @click.option(
     "--samples-dir",
     help="path to directory where to store sample files",
-    type=click.Path(
-        path_type=Path, dir_okay=True, file_okay=False, resolve_path=True
-    ),
+    type=click.Path(path_type=Path, dir_okay=True, file_okay=False, resolve_path=True),
     default=Path("./sample_files"),
 )
 @click.pass_obj
@@ -109,9 +115,10 @@ def auto(
     owner: str,
     profile: Path,
     snv_filter: str,
+    pipeline_definitions: Path,
     pipeline_name: str,
     pipeline_version: str,
-    dir: Path,
+    input_dir: Path,
     track: str,
     samples_dir: Path,
 ):
@@ -119,7 +126,7 @@ def auto(
     if pipeline_name is None or pipeline_version is None:
         logger.info("trying to autodetect pipeline from output")
         try:
-            pipeline_name, pipeline_version = pipeline_utils.detect_pipeline(dir)
+            pipeline_name, pipeline_version = pipeline_utils.detect_pipeline(input_dir)
         except ValueError as e:
             logger.error(e)
             raise click.Abort
@@ -128,50 +135,28 @@ def auto(
     logger.info(f"annotating results from {pipeline_name} {pipeline_version}")
 
     try:
-        files = pipeline_utils.pipeline_files(pipeline_name, pipeline_version)
-    except ValueError as e:
-        logger.error(e)
+        pipeline_defs = pipeline_definition.read(pipeline_definitions)
+    except ValidationError as e:
+        for err in e.errors():
+            config.logger.error(
+                f"validation error: {'.'.join(map(str, err['loc']))}: {err['msg']}"
+            )
+        sys.exit(1)
+
+    pdef = pipeline_defs.find(pipeline_name, pipeline_version)
+    if pdef is None:
+        logger.error("unsupported pipeline")
         raise click.Abort
 
-    samples = {}
+    try:
+        samples = pdef.resolve_paths(input_dir)
+    except ValueError as e:
+        config.logger.error(e)
+        sys.exit(1)
 
-    for file_type, path in files.items():
-        p = WildcardPath(dir / path)
-        for path in p.expand():
-            sample = path[1]["sample"]
-            if sample not in samples:
-                samples[sample] = dict.fromkeys(
-                    [
-                        "sample",
-                        "owner",
-                        "sex",
-                        "type",
-                        "track",
-                        "vcf",
-                        "bam",
-                        "panels",
-                        "ped",
-                        "msi_score",
-                        "hrd_score",
-                        "tmb_score",
-                    ]
-                )
-                samples[sample]["sample"] = sample
-                samples[sample]["owner"] = owner
-                samples[sample]["sex"] = "unknown"
-                samples[sample]["type"] = seq_type
-                samples[sample]["track"] = track
-            if file_type == "hrd_score":
-                samples[sample][file_type] = parsers.hrd(path[0])
-            elif file_type == "msi_score":
-                samples[sample][file_type] = parsers.msi(path[0])
-            elif file_type == "tmb_score":
-                samples[sample][file_type] = parsers.tmb(path[0])
-            else:
-                samples[sample][file_type] = path[0]
-
-    # from pprint import pprint
-    # pprint(list(samples.values()))
+    if len(samples) == 0:
+        config.logger.error("no samples found, aborting")
+        sys.exit(1)
 
     samples_file = write_samples(samples.values(), samples_dir)
 
