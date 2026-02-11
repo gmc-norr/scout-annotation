@@ -129,15 +129,16 @@ rule rename_info_fields:
     input:
         vcf=get_filtered_vcf,
     output:
-        vcf=temp("annotate/{sample}/{sample}.renamed_info.vcf"),
+        vcf="annotate/{family}/{family}.renamed_info.vcf",
+        fields=temp("annotate/{family}/renamed.vcf"),
     log:
-        "annotate/{sample}/{sample}.renamed-info.log",
+        "annotate/{family}/{family}.renamed-info.log",
     container:
         "docker://hydragenetics/common:0.3.0"
     shell:
         """
-        echo "INFO/CALLERS INFO/FOUND_IN" > {rule}.$$.rename.txt
-        bcftools annotate --rename-annots {rule}.$$.rename.txt -O v -o {output.vcf} {input.vcf} 2> {log}
+        echo "INFO/CALLERS INFO/FOUND_IN" > {output.fields}
+        bcftools annotate --rename-annots {output.fields} -O v -o {output.vcf} {input.vcf} 2> {log}
         rm -f {rule}.$$.rename.txt
         """
 
