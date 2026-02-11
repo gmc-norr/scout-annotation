@@ -167,8 +167,8 @@ def auto(
         "--rerun-incomplete",
         "--verbose",
         "--debug-dag",
-        # "--cores",
-        # str(config.cores),
+        "--cores",
+        str(config.cores),
         "--configfiles",
         resources.default_config(),
     ]
@@ -183,6 +183,8 @@ def auto(
     if config.apptainer_prefix is not None:
         args.append("--singularity-prefix")
         args.append(config.apptainer_prefix)
+    if config.cores is not None:
+        args.extend(["--cores", str(config.cores)])
 
     if profile is not None:
         args.append("--profile")
