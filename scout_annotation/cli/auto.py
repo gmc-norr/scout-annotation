@@ -158,7 +158,28 @@ def auto(
         config.logger.error("no samples found, aborting")
         sys.exit(1)
 
-    samples_file = write_samples(samples.values(), samples_dir)
+    config.logger.debug(f"found {len(samples)} samples: {list(samples.keys())}")
+
+    input_samples = []
+    for sample, fm in samples.items():
+        input_samples.append({
+            "sample": sample,
+            "family": "",
+            "owner": pdef.owner,
+            "sex": "unknown",
+            "type": "panel",
+            "filtering": None,
+            "track": pdef.track,
+            "vcf": fm.snv_vcf.path,
+            "bam": fm.bam.path if fm.bam else None,
+            "ped": fm.ped.path if fm.ped else None,
+            "panels": None,
+            "msi_score": parsers.msi(fm.msi.path),
+            "hrd_score": parsers.hrd(fm.hrd.path),
+            "tmb_score": parsers.tmb(fm.tmb.path),
+        })
+
+    samples_file = write_samples(input_samples, samples_dir)
 
     args = [
         "snakemake",
