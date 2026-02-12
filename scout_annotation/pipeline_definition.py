@@ -1,19 +1,18 @@
 from collections import defaultdict
-import logging
 from pathlib import Path
 from pydantic import BaseModel, model_validator
-from typing import Annotated, TextIO
+from typing import TextIO
 import yaml
 
 from scout_annotation.path import WildcardPath
 
 
 class FileModel(BaseModel):
-    path: str
-    required: bool
+    path: str | Path
+    required: bool = True
 
 
-class FileTypes(BaseModel):
+class PipelineFiles(BaseModel):
     bam: FileModel | None = None
     bai: FileModel | None = None
     snv_vcf: FileModel
@@ -25,20 +24,19 @@ class FileTypes(BaseModel):
     ped: FileModel | None = None
 
     @model_validator(mode="after")
-    def check_bai_if_bam(self) -> "FileTypes":
+    def check_bai_if_bam(self) -> "PipelineFiles":
         if self.bam and not self.bai:
             raise ValueError("bai is required if bam is supplied")
         return self
-
 
 class PipelineDefinition(BaseModel):
     name: str
     version: str
     track: str
     owner: str
-    files: FileTypes
+    files: PipelineFiles
 
-    def resolve_paths(self, path: str | Path) -> dict[str, dict[str, Path]]:
+    def resolve_paths(self, path: str | Path) -> dict[str, PipelineFiles]:
         samples = defaultdict(dict)
         for ftype, fd in self.files.model_dump(exclude_none=True).items():
             p = WildcardPath(path / fd["path"])
@@ -51,8 +49,11 @@ class PipelineDefinition(BaseModel):
                 if "sample" not in fpath[1]:
                     continue
                 sample = fpath[1]["sample"]
-                samples[sample][ftype] = fpath[0]
-        return samples
+                samples[sample][ftype] = {"path": fpath[0]}
+        plfiles = {}
+        for sample, d in samples.items():
+            plfiles[sample] = PipelineFiles(**d)
+        return plfiles
 
 class PipelineDefinitions(BaseModel):
     pipelines: list[PipelineDefinition]
