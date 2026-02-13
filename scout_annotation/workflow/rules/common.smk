@@ -270,6 +270,9 @@ def get_family_ped(wildcards):
     assert len(peds) == 1, "samples within a family must have the same ped file"
     if not pd.isnull(peds[0]):
         return peds[0]
+    family_samples = get_family_samples(wildcards)
+    if len(family_samples) == 1:
+        return "mock_ped/{sample}.ped".format(sample=family_samples.values[0])
     return "mock_ped/{family}.ped".format(**wildcards)
 
 
