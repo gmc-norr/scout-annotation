@@ -55,16 +55,17 @@ validate(samples, "../schema/samples.schema.yaml")
 if samples.get("family", pd.Series(dtype="str")).empty:
     samples["family"] = None
 
-# if family ID is missing, set it to the same as the sample ID
+# if family ID is missing, set it to the same as the sample ID, but replace any
+# dashes with underscores
 samples["family"] = np.where(
-    samples["family"].isnull(), samples["sample"], samples["family"]
+    samples["family"].isnull(), samples["sample"].str.replace("-", "_"), samples["family"]
 )
 
 
 wildcard_constraints:
     ext=r"vcf(\.gz)?$",
-    family=r"[a-zA-Z0-9][-a-zA-Z0-9]+[^-]",
-    sample=r"[a-zA-Z0-9][-a-zA-Z0-9]+[^-]",
+    family=r"[a-zA-Z0-9][_a-zA-Z0-9]*[^_]",
+    sample=r"[a-zA-Z0-9][-a-zA-Z0-9]*[^-]",
     track=r"(rare_disease|cancer)",
 
 
