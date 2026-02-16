@@ -44,7 +44,7 @@ def main():
 
     logging.info(f"Creating mock ped for {vcf_filename}")
 
-    family_id = snakemake.wildcards.sample
+    family_id = snakemake.params.family_id
     logging.info(f"Using family id '{family_id}'")
 
     sample = get_sample(vcf_filename)

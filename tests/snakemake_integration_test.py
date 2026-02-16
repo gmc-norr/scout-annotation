@@ -93,20 +93,21 @@ def integration_no_filtering(tmp_path_factory):
 
 @pytest.fixture(
     params=[
-        ("sample1", "clingen-somatic"),
+        ("blue_gum", "clingen-somatic"),
         ("sample2", "clingen"),
         ("sample3", "clingen-somatic"),
         ("sample4", "clingen"),
         ("sample5", "clingen-somatic"),
         ("sample6", "clingen"),
         ("sample7", "clingen"),
+        ("8_sample", "clingen"),
     ],
     scope="session",
     ids=lambda x: x[0],
 )
 def load_config(request, integration):
     return {
-        "sample": request.param[0],
+        "family": request.param[0],
         "owner": request.param[1],
         "path": Path(
             integration, f"results/{request.param[0]}/{request.param[0]}.load_config.yaml"
@@ -116,22 +117,24 @@ def load_config(request, integration):
 
 @pytest.fixture(
     params=[
-        ("sample1", False, 23),
-        ("sample2", False, 0),
-        ("sample3", True, 0),
-        ("sample4", True, 32),
-        ("sample5", True, 24),
-        ("sample6", False, 0),
-        ("sample7", True, 0),
+        ("blue_gum", "sample1", False, 23),
+        ("sample2", "sample2", False, 0),
+        ("sample3", "sample3", True, 0),
+        ("sample4", "sample4", True, 32),
+        ("sample5", "sample5", True, 24),
+        ("sample6", "sample6", False, 0),
+        ("sample7", "sample7", True, 0),
+        ("8_sample", "8-sample",True, 0),
     ],
     scope="session",
     ids=lambda x: x[0],
 )
 def scout_vcf(request, integration):
     return {
-        "sample": request.param[0],
-        "snv_filtering": request.param[1],
-        "n_variants": request.param[2],
+        "family": request.param[0],
+        "sample": request.param[1],
+        "snv_filtering": request.param[2],
+        "n_variants": request.param[3],
         "path": Path(
             integration, f"results/{request.param[0]}/{request.param[0]}.scout-annotated.vcf.gz"
         ),
@@ -142,11 +145,11 @@ def scout_vcf(request, integration):
 def scout_vcfs_no_filtering(integration_no_filtering):
     return [
         dict(
-            sample="sample2-1",
+            sample="red_ball",
             n_variants=160,
             path=Path(
                 integration_no_filtering,
-                "results_no-filtering/sample2-1/sample2-1.scout-annotated.vcf.gz",
+                "results_no-filtering/red_ball/red_ball.scout-annotated.vcf.gz",
             ),
         ),
     ]
@@ -224,5 +227,16 @@ def test_rank_score_sample_names(scout_vcf):
 
 def test_case_owner(load_config):
     c = yaml.safe_load(load_config["path"].read_text())
-    assert "owner" in c, load_config["sample"]
+    assert "owner" in c, load_config["family"]
     assert c["owner"] == load_config["owner"]
+
+def test_ped_file_columns(scout_vcf):
+    """
+    Check that family, and sample, i.e. first two columns, are correct.
+    """
+    ped_path = scout_vcf["path"].parent / f"{scout_vcf['family']}.ped"
+    assert ped_path.exists()
+    with open(ped_path) as f:
+        header = f.readline().strip().split("\t")
+    expected_columns = [scout_vcf["family"], scout_vcf["sample"], '0', '0', '0', '2']
+    assert header == expected_columns
