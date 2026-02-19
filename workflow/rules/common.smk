@@ -34,13 +34,6 @@ for sample, sample_data in sample_dict.items():
     if sample_data.get("bam") is not None:
         output_d4s.append(f"{coverage_dir}/{sample_data['family']}/{sample}.coverage.d4")
 
-def get_madeline2_svg(wildcards):
-    samples = get_family_samples(wildcards)
-    outdir = config.get("output_directory")
-    if len(samples) < 2:
-        return []
-    return f"{outdir}/{{family}}/{{family}}.pedigree.svg"
-
 def get_initial_vcf_file(wildcards):
     return family_dict[wildcards.family]['vcf']
 
