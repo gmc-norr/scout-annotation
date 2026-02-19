@@ -51,15 +51,14 @@ for filepath, config_key in paths_to_check:
 samples = pd.read_csv(config["samples"], sep="\t", comment="#")
 validate(samples, "../schema/samples.schema.yaml")
 
-# add empty family column if it doesn't exist
-if samples.get("family", pd.Series(dtype="str")).empty:
-    samples["family"] = None
+sample_dict = samples.set_index("sample").to_dict(orient="index")
+family_dict = samples.set_index("family").to_dict(orient="index")
 
-# if family ID is missing, set it to the same as the sample ID
-samples["family"] = np.where(
-    samples["family"].isnull(), samples["sample"], samples["family"]
-)
-
+output_vcfs = [f"{annotation_dir}/{family}/{family}.annotated.genmod.vcf" for family in family_dict.keys()]
+output_d4s = []
+for sample, sample_data in sample_dict.items():
+    if sample_data.get("bam") is not None:
+        output_d4s.append(f"{coverage_dir}/{sample_data['family']}/{sample}.coverage.d4")
 
 wildcard_constraints:
     ext=r"vcf(\.gz)?$",
@@ -140,24 +139,6 @@ def get_filtered_vcf(wildcards):
     return "annotation/{family}/{family}.annotated.panel_filtered.filter-{snv_filter}.vcf".format(
         **wildcards, snv_filter=snv_filter
     )
-
-
-def get_bai_file(wildcards):
-    bam = get_bam_file(wildcards)
-    if not isinstance(bam, Path):
-        return []
-    return get_bam_file(wildcards).with_suffix(".bam.bai")
-
-
-def get_bam_file(wildcards):
-    sample_row = _get_sample_row(wildcards)
-    if "bam" not in sample_row:
-        return []
-    bam = _get_sample_row(wildcards)["bam"].values
-    assert len(bam) == 1
-    if pd.isnull(bam[0]):
-        return []
-    return Path(bam[0]).resolve()
 
 
 def get_case_owner(wildcards):
@@ -248,13 +229,11 @@ def get_panel_files(wildcards):
     return panel_files
 
 
-def get_vcf_file(wildcards):
-    vcf_filename = _get_sample_row(wildcards)["vcf"].values
-    if len(vcf_filename) == 0:
-        raise RuntimeError("sample not found in sample file")
-    if len(vcf_filename) != 1:
-        raise RuntimeError("duplicate sample IDs found in sample file")
-    return vcf_filename[0]
+def get_initial_vcf_file(wildcards):
+    return family_dict[wildcard.family]['vcf']
+
+def get_bam_file(wildcards):
+    return family_dict[wildcard.family]['bam']
 
 
 def get_reheadered_vcf_file(wildcards):
@@ -376,29 +355,4 @@ def get_vembrane_expression(wildcards):
     return "(" + ") and (".join(expressions) + ")"
 
 
-def get_output_files():
-    outfiles = []
-    load_configs = []
-    outdir = config.get("output_directory", "results")
-    for f in set(samples["family"].values):
-        outfiles.append(f"{outdir}/{f}/{f}.scout-annotated.vcf.gz")
-        outfiles.append(f"{outdir}/{f}/{f}.scout-annotated.vcf.gz.tbi")
-        outfiles.append(f"{outdir}/{f}/{f}.ped")
-        family_wildcard = snakemake.io.Namedlist(fromdict={"family": f})
-        family_samples = get_family_samples(family_wildcard)
-        assert len(family_samples) == 1 or len(family_samples) == 3
-        for s in family_samples:
-            sample_wildcard = snakemake.io.Namedlist(fromdict={"sample": s})
-            if isinstance(get_bam_file(sample_wildcard), Path):
-                outfiles.append(f"{outdir}/{s}/{s}.bam")
-                outfiles.append(f"{outdir}/{s}/{s}.bam.bai")
-                if config.get("coverage", {}).get("d4", False):
-                    outfiles.append(f"{outdir}/{s}/{s}.d4")
-        if len(family_samples) > 1:
-            outfiles.append(f"{outdir}/{f}/{f}.peddy.ped")
-            outfiles.append(f"{outdir}/{f}/{f}.pedigree.svg")
-        load_configs.append(f"{outdir}/{f}/{f}.load_config.yaml")
-    return outfiles, load_configs
-
-
-outfiles, load_configs = get_output_files()
+samples_with_bam =

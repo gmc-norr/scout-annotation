@@ -3,8 +3,8 @@ rule generate_d4:
         alignment=get_bam_file,
         fasta_fai=f"{config['reference']['fasta']}.fai",
     output:
-        d4_file=f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.d4",
-    log: f"{config.get('output_directory', 'results')}/{{sample}}/{{sample}}.d4tools.log"
+        d4_file=f"{coverage_dir}/{{family}}/{{sample}}.coverage.d4",
+    log: f"{coverage_dir}/{{family}}/{{sample}}.d4tools.log"
     container: 
         "docker://clinicalgenomics/d4tools:2.0"
     shell:
