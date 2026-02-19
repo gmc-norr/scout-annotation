@@ -1,14 +1,3 @@
-rule sample_name_translation:
-    output:
-        samples=temp("decompose/{sample}/{sample}.samples.txt"),
-    params:
-        old_name=lambda wc: get_vcf_samples(get_vcf_file(wc))[0],
-        new_name=lambda wc: wc.sample,
-    localrule: True
-    run:
-        with open(output.samples, "w") as f:
-            print(f"{params.old_name} {params.new_name}", file=f)
-
 
 rule bcftools_reheader:
     input:
@@ -30,9 +19,25 @@ rule bcftools_reheader:
         bcftools reheader -s {output.sample_conversion} -o {output.vcf} {input.vcf} 2> {log}
         """
 
-rule decompose:
+rule rename_info_fields:
     input:
         vcf=f"{decompose_dir}/{{family}}/{{family}}.reheadered.vcf"
+    output:
+        vcf=temp(f"{decompose_dir}/{{family}}/{{family}}.renamed_info.vcf"),
+    log:
+        f"{decompose_dir}/{{family}}/{{family}}.renamed-info.log",
+    params:
+        rename="INFO/CALLERS INFO/FOUND_IN",
+    container:
+        "docker://hydragenetics/common:0.3.0"
+    shell:
+        """
+        bcftools annotate --rename-annots <(echo "{params.rename}") -O v -o {output.vcf} {input.vcf} 2> {log}
+        """
+
+rule decompose:
+    input:
+        vcf=f"{decompose_dir}/{{family}}/{{family}}.renamed_info.vcf"
     output:
         vcf=temp(f"{decompose_dir}/{{family}}/{{family}}.decomposed.vcf"),
     log:
@@ -86,6 +91,7 @@ rule vt_uniq:
     shell:
         """
         vt uniq -o {output.vcf} {input.vcf} 2> {log}
+        """
 
 rule fix_vcf_af:
     input:

@@ -84,26 +84,14 @@ properties:
         type: string
         description: base path for annotation files
         format: uri-reference
-      config_uri:
+      config:
         type: string
         description: uri for the vcfanno config file, with a placeholders for track and version
         format: uri-reference
-      config_version:
-        type: object
-        properties:
-          rare_disease:
-            type: string
-            description: version of the rare disease config file to use
-          cancer:
-            type: string
-            description: version of the cancer config file to use
-        required:
-          - rare_disease
-          - cancer
     required:
       - base_path
-      - config_uri
-      - config_version
+      - config
+
   vep:
     type: object
     properties:
@@ -173,25 +161,12 @@ properties:
         type: string
         description: singularity container to be used
         format: uri-reference
-      rank_model_uri:
+      rank_model:
         type: string
         description: URI for the rank model to use, with a placeholder for version
         format: uri-reference
-      rank_model_version:
-        type: object
-        properties:
-          rare_disase:
-            type: string
-            description: version of the rare disease rank model to use
-          cancer:
-            type: string
-            description: version of the cancer rank model to use
-        required:
-          - rare_disease
-          - cancer
     required:
-      - rank_model_uri
-      - rank_model_version
+      - rank_model
   genmod_rank_model:
     properties:
       container:

@@ -1,37 +1,17 @@
 include: "rules/common.smk"
 include: "rules/normalise.smk"
-include: "rules/trios.smk"
 include: "rules/annotate.smk"
-include: "rules/ped.smk"
-include: "rules/peddy.smk"
-include: "rules/madeline2.smk"
-include: "rules/panel_filtering.smk"
-include: "rules/filtering.smk"
-include: "rules/scout_load_config.smk"
-include: "rules/misc.smk"
 include: "rules/coverage.smk"
 
-from pathlib import Path
+outputs_files = output_vcfs + output_d4s
+###DEBUG
+print(" ### DEBUG ###")
+print("outputs_files:", outputs_files)
+print(" ### DEBUG ###")
+###DEBUG
 
-# Create output directories
-results_dir = Path(config["results_dir"]) / config.get("results_dir_name", "scout_anno_results")
-results_dir.mkdir(exist_ok=True)
-
-annotation_dir = results_dir / "annotation"
-annotation_dir.mkdir(exist_ok=True)
-
-coverage_dir = results_dir / "coverage"
-coverage_dir.mkdir(exist_ok=True)
-
-decompose_dir = results_dir / "decompose"
-decompose_dir.mkdir(exist_ok=True)
-
-ruleorder: copy_results > tabix
-ruleorder: copy_results > bgzip
-
-
+outputs_files = output_vcfs + output_d4s
 rule all:
     input:
-        output_vcfs,
-        output_d4s
+        outputs_files
         

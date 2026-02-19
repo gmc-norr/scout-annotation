@@ -69,36 +69,16 @@ rule vep:
         """
 
 
-rule vcfanno_config:
-    output:
-        toml=get_vcfanno_config,
-    log:
-        f"{annotation_dir}/vcfanno_config.log",
-    params:
-        uri=lambda wc: config["vcfanno"]["config_uri"].format(
-            track=wc.track, version=wc.version
-        ),
-        extra=config.get("vcfanno_config", {}).get("extra", ""),
-    container:
-        "docker://bschiffthaler/curl:7.72.0"
-    localrule: True
-    shell:
-        """
-        echo "fetching {params.uri}" > {log}
-        curl {params.extra} -fsSL {params.uri} > {output.toml} 2>> {log}
-        """
-
-
 rule vcfanno:
     input:
         vcf=f"{annotation_dir}/{{family}}/{{family}}.decomposed.vep.vcf",
-        toml=get_vcfanno_config,
     output:
         vcf=temp(f"{annotation_dir}/{{family}}/{{family}}.decomposed.vep.vcfanno.vcf"),
     log:
         f"{annotation_dir}/{{family}}/{{family}}.vcfanno.log",
     params:
         base_path=config.get("vcfanno", {}).get("base_path", ""),
+        toml=config["vcfanno"]["config"],
     container:
         "docker://clinicalgenomics/vcfanno:0.3.2"
     shell:
@@ -106,18 +86,15 @@ rule vcfanno:
         vcfanno \\
             -base-path {params.base_path} \\
             -p {threads} \\
-            {input.toml} \\
+            {params.toml} \\
             {input.vcf} \\
             > {output.vcf} \\
             2> {log}
         """
 
-
-
-
 rule genmod_annotate:
     input:
-        vcf=get_filtered_vcf,
+        vcf=f"{annotation_dir}/{{family}}/{{family}}.decomposed.vep.vcfanno.vcf",
     output:
         vcf=temp(f"{annotation_dir}/{{family}}/{{family}}.genmod_annotate.vcf"),
     log:
@@ -163,12 +140,13 @@ rule genmod_models:
 rule genmod_score:
     input:
         vcf=f"{annotation_dir}/{{family}}/{{family}}.genmod_models.vcf",
-        rank_model=get_rank_model,
         ped=f"{annotation_dir}/{{family}}.ped",
     output:
-        vcf=temp("{annotation_dir}/{{family}}/{{family}}.genmod_score.vcf"),
+        vcf=temp(f"{annotation_dir}/{{family}}/{{family}}.genmod_score.vcf"),
+    params:
+        rank_model=config["genmod"]["rank_model"],
     log:
-        "annotation/{family}/{family}.genmod_score.log",
+        f"{annotation_dir}/{{family}}/{{family}}.genmod_score.log",
     container:
         "docker://quay.io/biocontainers/genmod:3.7.4--pyh5e36f6f_0"
     shell:
@@ -176,7 +154,7 @@ rule genmod_score:
         genmod score \\
             --rank_results \\
             --family_file {input.ped} \\
-            --score_config {input.rank_model} \\
+            --score_config {params.rank_model} \\
             {input.vcf} > {output.vcf} 2> {log}
         """
 
@@ -185,7 +163,7 @@ rule genmod_compound:
     input:
         vcf=f"{annotation_dir}/{{family}}/{{family}}.genmod_score.vcf",
     output:
-        vcf=temp(f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf"),
+        vcf=f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf",
     log:
         f"{annotation_dir}/{{family}}/{{family}}.genmod_compound.log",
     container:

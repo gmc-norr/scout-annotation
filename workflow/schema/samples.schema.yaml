@@ -7,17 +7,10 @@ properties:
     description: Sample ID
   family:
     type: string
-    pattern: "^[a-zA-Z0-9][-a-zA-Z0-9]+[^-]$"
+    pattern: "^[a-zA-Z0-9][-_a-zA-Z0-9]+[^-]$"
     description: >
       ID of the family that the sample belongs to. If a PED file
       is given, the family ID in the PED filem must match this value
-  sex:
-    type: string
-    description: sex of the individual sequenced
-    enum:
-      - male
-      - female
-      - unknown
   vcf:
     type: string
     description: path to the VCF file for the sample
