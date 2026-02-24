@@ -1,7 +1,7 @@
 rule vep:
     input:
-        vcf=f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf",
-        tabix=f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf.tbi",
+        vcf=f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf.gz",
+        tabix=f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf.gz.tbi",
         fasta=config["reference"]["fasta"],
         cache=config["vep"]["cache"],
         plugin=config["vep"]["plugin"],

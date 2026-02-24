@@ -11,34 +11,10 @@ properties:
     enum:
       - "37"
       - "38"
-  scout_owner:
-    type: string
-    description: Scout institute that should own the case
   output_directory:
     type: string
     description: directory where the final results should be saved
     format: uri-reference
-  panel_filtering:
-    type: object
-    properties:
-      hard_filter:
-        type: boolean
-        description: >
-          Whether or not panel filtering should be hard or soft
-        default: yes
-      panel_directory:
-        type: string
-        description: >
-          Directory where Scout panel files are kept, see
-          https://clinical-genomics.github.io/scout/user-guide/panels/.
-          If this is a relative path which is not found in the current working
-          directory, the workflow will try to locate it in the root of the
-          scout-annotation workflow repository.
-        format: uri-reference
-        default: panels
-    required:
-      - hard_filter
-      - panel_directory
   default_container:
     type: string
     description: default singularity container to be used
@@ -137,23 +113,6 @@ properties:
       - swegen
       - clinvar
       - mode
-  peddy:
-    type: object
-    properties:
-      container:
-        type: string
-        description: singularity container to be used
-        format: uri-reference
-      plot:
-        type: boolean
-        description: whether or not to generate plots of the results
-        default: false
-      sites:
-        type: string
-        description: >
-          Either a path to a file containing sites that should be taken
-          into account, or the string "hg38" if the hg38 assembly should
-          be used instead of hg19 (the default).
   genmod:
     type: object
     properties:
@@ -189,7 +148,6 @@ required:
   - genome_build
   - scout_owner
   - output_directory
-  - panel_filtering
   - reference
   - vcfanno
   - vep

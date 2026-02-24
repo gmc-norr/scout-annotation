@@ -15,7 +15,7 @@ sample_dict = samples.set_index("sample").to_dict(orient="index")
 family_dict = samples.set_index("family").to_dict(orient="index")
 
 # Create output directories
-results_dir = Path(config.get('results_dir_name', "scout_anno_results"))   
+results_dir = Path(config.get('output_directory', "scout_anno_results"))   
 results_dir.mkdir(exist_ok=True)
 
 annotation_dir = results_dir / "annotation"

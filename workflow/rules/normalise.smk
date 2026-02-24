@@ -15,7 +15,7 @@ rule bcftools_reheader:
         "docker://hydragenetics/common:0.3.0"
     shell:
         """
-        echo "$(bcftools query -l file.bcf | head -1) {params.new_name}" >> {output.sample_conversion} &&
+        echo "$(bcftools query -l {input.vcf} | head -1) {params.new_name}" >> {output.sample_conversion} &&
         bcftools reheader -s {output.sample_conversion} -o {output.vcf} {input.vcf} 2> {log}
         """
 
@@ -103,13 +103,27 @@ rule fix_vcf_af:
     container:
         "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
     script:
-        "scripts/fix_vcf_af.py"
+        "../scripts/fix_vcf_af.py"
+
+rule bgzip:
+    input:
+        vcf=f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf",
+    output:
+        vcfgz=temp(f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf.gz"),
+    log:
+        f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.bgzip.log",
+    container:
+        "docker://hydragenetics/common:0.1.1"
+    shell:
+        """
+        bgzip -c {input.vcf} > {output.vcfgz}
+        """
 
 rule tabix:
     input:
-        vcf=f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf"
+        vcf=f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf.gz"
     output:
-        tabix=temp(f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf.tbi"),
+        tabix=temp(f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf.gz.tbi"),
     log:
         f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.tabix.log",
     container:
