@@ -3,14 +3,7 @@ include: "rules/normalise.smk"
 include: "rules/annotate.smk"
 include: "rules/coverage.smk"
 
-configfile: config.get("configfile", "default_config/config.yaml")
-
-outputs_files = output_vcfs + output_d4s
-###DEBUG
-print(" ### DEBUG ###")
-print("outputs_files:", outputs_files)
-print(" ### DEBUG ###")
-###DEBUG
+configfile: config.get("configfile", "../default_config/config.yaml")
 
 outputs_files = output_vcfs + output_d4s
 rule all:
