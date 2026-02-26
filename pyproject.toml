@@ -7,20 +7,9 @@ authors = [
 ]
 license = "GPL-3.0-or-later"
 readme = "README.md"
-packages = [{include = "scout_annotation"}]
-include = [
-    "scout_annotation/data",
-    "scout_annotation/default_config"
-]
 dependencies = [
-    "click ~=8.3.0",
-    "cyvcf2~=0.30.0",
-    "numpy<2.0",
-    "pandas~=2.3.0",
-    "pysam ~=0.23.0",
-    "pyyaml ~=6.0.0",
     "snakemake>=9.14.5",
-    "snakemake-executor-plugin-slurm~=2.1",
+    "snakemake-executor-plugin-slurm~=2.1"
 ]
 requires-python = "~=3.12.0"
 
@@ -30,9 +19,6 @@ dev = [
     "pre-commit ~=4.5.0",
     "pytest ~=9.0",
 ]
-
-[project.scripts]
-scout-annotation = "scout_annotation.cli:cli"
 
 [build-system]
 requires = ["uv_build >=0.9.11,<0.10.0"]
