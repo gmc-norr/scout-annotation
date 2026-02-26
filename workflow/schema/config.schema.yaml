@@ -5,12 +5,6 @@ properties:
     type: string
     description: path to sample table file
     format: uri-reference
-  genome_build:
-    type: string
-    description: GRCh genome build
-    enum:
-      - "37"
-      - "38"
   output_directory:
     type: string
     description: directory where the final results should be saved
@@ -133,18 +127,9 @@ properties:
       extra:
         type: string
         description: arguments to pass to curl
-  coverage:
-    type: object
-    properties:
-      d4:
-        type: boolean
-        description: generate .d4 files from alignment using d4tools
-        default: true
 
 required:
   - samples
-  - genome_build
-  - scout_owner
   - output_directory
   - reference
   - vcfanno
