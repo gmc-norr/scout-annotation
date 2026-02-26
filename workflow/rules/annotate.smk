@@ -91,6 +91,8 @@ rule vcfanno:
             2> {log}
         """
 
+
+
 rule most_severe_consequence:
     input:
         vcf=f"{annotation_dir}/{{family}}/{{family}}.decomposed.vep.vcfanno.vcf",
@@ -173,7 +175,7 @@ rule genmod_compound:
     input:
         vcf=f"{annotation_dir}/{{family}}/{{family}}.genmod_score.vcf",
     output:
-        vcf=f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf",
+        vcf=temp(f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf"),
     log:
         f"{annotation_dir}/{{family}}/{{family}}.genmod_compound.log",
     container:
@@ -202,4 +204,33 @@ rule genmod_rank_model:
         """
         echo "fetching {params.uri}" > {log}
         curl {params.extra} -fsSL {params.uri} > {output.rank_model} 2>> {log}
+        """
+
+rule bgzip_annotated:
+    input:
+        vcf=f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf",
+    output:
+        vcfgz=temp(f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf.gz"),
+    log:
+        f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.bgzip.log",
+    container:
+        "docker://hydragenetics/common:0.1.1"
+    shell:
+        """
+        bgzip -c {input.vcf} > {output.vcfgz}
+        """
+
+rule tabix_annotated:
+    input:
+        vcf=f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf.gz"
+    output:
+        tabix=temp(f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf.gz.tbi"),
+    log:
+        f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.tabix.log",
+    container:
+        "docker://hydragenetics/common:0.1.1"
+    localrule: True
+    shell:
+        """
+        tabix {input.vcf}
         """

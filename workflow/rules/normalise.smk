@@ -27,7 +27,7 @@ rule rename_info_fields:
     log:
         f"{decompose_dir}/{{family}}/{{family}}.renamed-info.log",
     params:
-        rename="INFO/CALLERS INFO/FOUND_IN",
+        rename="INFO/CALLERS FOUND_IN",
     container:
         "docker://hydragenetics/common:0.3.0"
     shell:
@@ -105,7 +105,7 @@ rule fix_vcf_af:
     script:
         "../scripts/fix_vcf_af.py"
 
-rule bgzip:
+rule bgzip_normalized:
     input:
         vcf=f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf",
     output:
@@ -119,7 +119,7 @@ rule bgzip:
         bgzip -c {input.vcf} > {output.vcfgz}
         """
 
-rule tabix:
+rule tabix_normalized:
     input:
         vcf=f"{decompose_dir}/{{family}}/{{family}}.decomposed.normalized.uniq.fix-af.vcf.gz"
     output:

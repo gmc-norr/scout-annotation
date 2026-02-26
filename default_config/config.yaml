@@ -15,7 +15,6 @@ reference:
 
 vcfanno:
   base_path: "/storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37"
-  config: ""
 
 vcfanno_config:
   extra: --insecure
@@ -29,8 +28,8 @@ vep:
   clinvar: /storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37/clinvar_20220730/clinvar_20220730.vcf.gz
   mode: --offline --cache
 
-genmod:
-  rank_model: ""
+#genmod:
+#  rank_model: ""
 
 genmod_rank_model:
   extra: --insecure

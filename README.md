@@ -28,7 +28,12 @@ Currently only Python 3.12 is supported.
 ## Example Usage 
 
 ```bash
-snakemake -s scout-annotation/workflow/Snakefile --config samples=samples_minimal.tsv output_directory=results_test --configfiles config.yaml --debug-dag --cores 1
+snakemake \ 
+-s scout-annotation/workflow/Snakefile \ 
+--config samples=samples_minimal.tsv output_directory=results_test \ 
+--configfiles config.yaml \ 
+--debug-dag \ 
+--cores 1
 ```
 
 ## Testing
@@ -36,7 +41,7 @@ snakemake -s scout-annotation/workflow/Snakefile --config samples=samples_minima
 This package is managed by uv, and tests are implemented using pytest.
 
 ```bash
-uv run pytest
+uv run pytest tests/snakemake_integration_test.py 
 ```
 
 Running the above will run both unit tests and an integration test.

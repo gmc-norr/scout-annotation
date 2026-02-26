@@ -27,7 +27,7 @@ coverage_dir.mkdir(exist_ok=True)
 decompose_dir = results_dir / "decompose"
 decompose_dir.mkdir(exist_ok=True)
 
-output_vcfs = [f"{annotation_dir}/{family}/{family}.annotated.genmod.vcf" for family in family_dict.keys()]
+output_vcfs = [f"{annotation_dir}/{family}/{family}.annotated.genmod.vcf.gz" for family in family_dict.keys()]
 output_d4s = []
 for sample, sample_data in sample_dict.items():
     if sample_data.get("bam") is not None:
