@@ -15,12 +15,11 @@ sample_dict = samples.set_index("sample").to_dict(orient="index")
 family_dict = samples.set_index("family").to_dict(orient="index")
 
 # Create output directories
-results_dir = Path(config.get('output_directory', "scout_anno_results"))   
+results_dir = Path(config.get('output_directory', "results"))   
 results_dir.mkdir(exist_ok=True)
 
 annotation_dir = results_dir / "annotation"
 annotation_dir.mkdir(exist_ok=True)
-annotation_dir = str(annotation_dir)
 
 coverage_dir = results_dir / "coverage"
 coverage_dir.mkdir(exist_ok=True)
@@ -40,4 +39,15 @@ def get_initial_vcf_file(wildcards):
 def get_bam_file(wildcards):
     return family_dict[wildcards.family]['bam']
 
+def get_vcfanno_config():
+    return config.get("vcfanno", {}).get(
+        "config",
+        str(Path(workflow.basedir).parent / "default_config" / "vcfanno_config.toml")
+    )
+
+def get_genmod_rank_model():
+    return config.get("genmod", {}).get(
+        "rank_model",
+        str(Path(workflow.basedir).parent / "default_config" / "genmod_rank_model.ini")
+    )
 

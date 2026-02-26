@@ -15,11 +15,7 @@ reference:
 
 vcfanno:
   base_path: "/storage/userdata/references/homo_sapiens/vep/vep_plugin_data/GRCh37"
-  # config_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/scout-annotation/{track}/vcfanno/grch37_vcfanno_config_{version}.toml"
-  config_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/scout-annotation/rare_disease/vcfanno/grch37_vcfanno_config_{version}.toml"
-  config_version:
-    rare_disease: "0.1"
-    cancer: "0.1"
+  config: ""
 
 vcfanno_config:
   extra: --insecure
@@ -34,14 +30,8 @@ vep:
   mode: --offline --cache
 
 genmod:
-  # rank_model_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/scout-annotation/{track}/rank_model/{track}_rank_model_{version}.ini"
-  rank_model_uri: "https://raw.githubusercontent.com/gmc-norr/config-files/main/scout-annotation/rare_disease/rank_model/rare_disease_rank_model_{version}.ini"
-  rank_model_version:
-    rare_disease: "0.1"
-    cancer: "0.1"
+  rank_model: ""
 
 genmod_rank_model:
   extra: --insecure
 
-coverage:
-  d4: false
