@@ -29,6 +29,7 @@ Currently only Python 3.12 is supported.
 
 ```bash
 snakemake -s scout-annotation/workflow/Snakefile --config samples=samples_minimal.tsv output_directory=results_test --configfiles config.yaml --debug-dag --cores 1
+```
 
 ## Testing
 
