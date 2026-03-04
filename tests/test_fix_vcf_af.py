@@ -3,7 +3,7 @@ import pysam
 import pytest
 import sys
 
-SCRIPT_DIR = Path(__file__).parent / "../scout_annotation/workflow/scripts"
+SCRIPT_DIR = Path(__file__).parent / "../workflow/scripts"
 assert SCRIPT_DIR.exists()
 sys.path.insert(0, str(SCRIPT_DIR.resolve()))
 
