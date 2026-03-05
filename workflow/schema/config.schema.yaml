@@ -1,0 +1,136 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: workflow configuration
+properties:
+  samples:
+    type: string
+    description: path to sample table file
+    format: uri-reference
+  output_directory:
+    type: string
+    description: directory where the final results should be saved
+    format: uri-reference
+  default_container:
+    type: string
+    description: default singularity container to be used
+    format: uri-reference
+  reference:
+    type: object
+    properties:
+      fasta:
+        type: string
+        description: genome fasta file
+        format: uri-reference
+    required:
+      - fasta
+  decompose:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+  bgzip:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+  tabix:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+  vcfanno:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+      base_path:
+        type: string
+        description: base path for annotation files
+        format: uri-reference
+      config:
+        type: string
+        description: uri for the vcfanno config file, with a placeholders for track and version
+        format: uri-reference
+    required:
+      - base_path
+
+  vep:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+      cache:
+        type: string
+        description: path to VEP cache directory
+        format: uri-reference
+      cache_type:
+        type: string
+        description: cache type to use
+        enum:
+          - merged
+          - refseq
+      plugin:
+        type: string
+        description: path to VEP plugin directory
+        format: uri-reference
+      plugin-data:
+        type: string
+        description: path to VEP plugin data directory
+        format: uri-reference
+      swegen:
+        type: string
+        description: path to SweGen VCF file
+        format: uri-reference
+      clinvar:
+        type: string
+        description: path to ClinVar VCF file
+        format: uri-reference
+      mode:
+        type: string
+        description: what mode to run VEP in, as command-line flags
+        default: --offline --cache
+    required:
+      - cache
+      - cache_type
+      - plugin
+      - plugin-data
+      - swegen
+      - clinvar
+      - mode
+  genmod:
+    type: object
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+      rank_model:
+        type: string
+        description: URI for the rank model to use, with a placeholder for version
+        format: uri-reference
+
+  genmod_rank_model:
+    properties:
+      container:
+        type: string
+        description: singularity container to be used
+        format: uri-reference
+      extra:
+        type: string
+        description: arguments to pass to curl
+
+required:
+  - samples
+  - output_directory
+  - reference
+  - vcfanno
+  - vep

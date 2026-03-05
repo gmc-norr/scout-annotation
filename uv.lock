@@ -115,18 +115,6 @@ wheels = [
 ]
 
 [[package]]
-name = "coloredlogs"
-version = "15.0.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "humanfriendly" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/cc/c7/eed8f27100517e8c0e6b923d5f0845d0cb99763da6fdee00478f91db7325/coloredlogs-15.0.1.tar.gz", hash = "sha256:7c991aa71a4577af2f82600d8f8f3a89f936baeaf9b50a9c197da014e5bf16b0", size = 278520, upload-time = "2021-06-11T10:22:45.202Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a7/06/3d6badcf13db419e25b07041d9c7b4a2c331d3f4e7134445ec5df57714cd/coloredlogs-15.0.1-py2.py3-none-any.whl", hash = "sha256:612ee75c546f53e92e70049c9dbfcc18c935a2b9a53b66085ce9ef6a6e5c0934", size = 46018, upload-time = "2021-06-11T10:22:42.561Z" },
-]
-
-[[package]]
 name = "conda-inject"
 version = "1.3.2"
 source = { registry = "https://pypi.org/simple" }
@@ -152,25 +140,6 @@ name = "connection-pool"
 version = "0.0.3"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/bd/df/c9b4e25dce00f6349fd28aadba7b6c3f7431cc8bd4308a158fbe57b6a22e/connection_pool-0.0.3.tar.gz", hash = "sha256:bf429e7aef65921c69b4ed48f3d48d3eac1383b05d2df91884705842d974d0dc", size = 3795, upload-time = "2020-09-17T02:48:28.824Z" }
-
-[[package]]
-name = "cyvcf2"
-version = "0.30.28"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click" },
-    { name = "coloredlogs" },
-    { name = "numpy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/59/c2/5365b38279b9c422444173a8e9e08958d6cd38249559bb6331a3fceb7890/cyvcf2-0.30.28.tar.gz", hash = "sha256:dde7771570e210df9ca6d21c171a8aa376f191966826241fdcdf960befb9cc0f", size = 1332541, upload-time = "2024-01-30T18:03:06.945Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ba/ae/c2464092be4784f0f854bbbd9f6d0aa88023f60a491cb82717d53d0152a9/cyvcf2-0.30.28-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:3e40524c86a9f3fbcbf2f4f883c2597722cbae167e61cc90860a9e28c72f1a9a", size = 1402861, upload-time = "2024-01-30T18:02:21.121Z" },
-    { url = "https://files.pythonhosted.org/packages/65/f6/35cb068a7f287242df233da5f99f3bea8d7fae76af2f330bc7e0de45ab99/cyvcf2-0.30.28-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:a16b32e455f5b1df74df786322ed2dfc88ef7dd0bb605aefdd542b894f9457d6", size = 782541, upload-time = "2024-01-30T18:02:23.011Z" },
-    { url = "https://files.pythonhosted.org/packages/12/b9/3159df3c3710db08ccbe5d084eabf97cfac59daf336aae25112ab8908d6a/cyvcf2-0.30.28-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d6e07f4c8651e708a9cdc0cced6e0b0ec149b25a3fba95fe8e98e2cf70dd4da1", size = 6913943, upload-time = "2024-01-30T18:02:25.434Z" },
-    { url = "https://files.pythonhosted.org/packages/10/0f/1e54ca4fa3336ccf54aeae4182375fedd29d4d30869e7ba3e474d3c93ca5/cyvcf2-0.30.28-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:33d3d572bfa632dccf86a2906f5c099a09f1490fcf39589d9d83ef0bca1a7dd9", size = 7101356, upload-time = "2024-01-30T18:02:27.853Z" },
-    { url = "https://files.pythonhosted.org/packages/d7/88/9187579fc6681bce9ee35c5ec3181e053d227acf0fe9fa6ac7be27f42335/cyvcf2-0.30.28-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:e55a76c061f07804915b221b9ba53633e8c7188d7016ee22853b296db94882bd", size = 5966418, upload-time = "2024-01-30T18:02:30.079Z" },
-    { url = "https://files.pythonhosted.org/packages/90/c1/eedc0154eaa7cecf374f793d693ccb10e6cd47a9fc67937b797121c264c6/cyvcf2-0.30.28-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:588c1446d95fcff5cca1e39e78b222f9c308c62124abf456298e7ea6b0147e1f", size = 6235366, upload-time = "2024-01-30T18:02:31.902Z" },
-]
 
 [[package]]
 name = "distlib"
@@ -672,14 +641,8 @@ wheels = [
 [[package]]
 name = "scout-annotation"
 version = "0.8.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
-    { name = "click" },
-    { name = "cyvcf2" },
-    { name = "numpy" },
-    { name = "pandas" },
-    { name = "pysam" },
-    { name = "pyyaml" },
     { name = "snakemake" },
     { name = "snakemake-executor-plugin-slurm" },
 ]
@@ -688,17 +651,12 @@ dependencies = [
 dev = [
     { name = "black" },
     { name = "pre-commit" },
+    { name = "pysam" },
     { name = "pytest" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "click", specifier = "~=8.3.0" },
-    { name = "cyvcf2", specifier = "~=0.30.0" },
-    { name = "numpy", specifier = "<2.0" },
-    { name = "pandas", specifier = "~=2.3.0" },
-    { name = "pysam", specifier = "~=0.23.0" },
-    { name = "pyyaml", specifier = "~=6.0.0" },
     { name = "snakemake", specifier = ">=9.14.5" },
     { name = "snakemake-executor-plugin-slurm", specifier = "~=2.1" },
 ]
@@ -707,6 +665,7 @@ requires-dist = [
 dev = [
     { name = "black", specifier = "~=25.11.0" },
     { name = "pre-commit", specifier = "~=4.5.0" },
+    { name = "pysam", specifier = ">=0.23.3" },
     { name = "pytest", specifier = "~=9.0" },
 ]
 

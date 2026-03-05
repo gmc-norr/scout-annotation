@@ -1,5 +1,12 @@
 # Changelog
 
+## [unreleased]
+
+### Features
+
+* Make pipeline into a pure snakemake workflow, the python CLI wrapper is removed
+* Pipelines only scope should be to annotate a vcf file, with single sample
+
 ## [0.8.0](https://github.com/gmc-norr/scout-annotation/compare/v0.7.3...v0.8.0) (2023-10-04)
 
 

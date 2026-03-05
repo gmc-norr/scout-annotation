@@ -1,6 +1,0 @@
-filters:
-  - name: all variants
-    description: >
-      A mock filter that excludes all variants
-    expression: >
-      False
