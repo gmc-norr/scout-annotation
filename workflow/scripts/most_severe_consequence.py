@@ -42,7 +42,7 @@ SO_RANK = {
     "feature_elongation": dict(so_id="SO:0001907", rank=36),
     "regulatory_region_variant": dict(so_id="SO:0001566", rank=37),
     "feature_truncation": dict(so_id="SO:0001906", rank=38),
-    "intergenic_variant": dict(so_id="SO:0001628", rank=39)
+    "intergenic_variant": dict(so_id="SO:0001628", rank=39),
 }
 
 
@@ -78,14 +78,21 @@ def main():
 
     input_vcf.unlink()
 
-    vcf.add_info_to_header(dict(
-        ID="MOST_SEVERE_CONSEQUENCE",
-        Number=".",
-        Type="String",
-        Description="Most severe variant consequence according to https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html#consequences",
-    ))
+    vcf.add_info_to_header(
+        dict(
+            ID="MOST_SEVERE_CONSEQUENCE",
+            Number=".",
+            Type="String",
+            Description="Most severe variant consequence according to https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html#consequences",
+        )
+    )
 
-    consequence_index = vcf.get_header_type("CSQ")["Description"].split()[-1].split("|").index("Consequence")
+    consequence_index = (
+        vcf.get_header_type("CSQ")["Description"]
+        .split()[-1]
+        .split("|")
+        .index("Consequence")
+    )
 
     writer = cyvcf2.Writer(snakemake.output.vcf, vcf)
     writer.write_header()

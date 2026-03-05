@@ -41,7 +41,7 @@ snakemake \
 This package is managed by uv, and tests are implemented using pytest.
 
 ```bash
-uv run pytest tests/snakemake_integration_test.py 
+uv run pytest
 ```
 
 Running the above will run both unit tests and an integration test.
