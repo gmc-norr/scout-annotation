@@ -68,6 +68,7 @@ rule vep:
             &> {log}
         """
 
+
 rule vcfanno:
     input:
         vcf=f"{annotation_dir}/{{family}}/{{family}}.decomposed.vep.vcf",
@@ -92,7 +93,6 @@ rule vcfanno:
         """
 
 
-
 rule most_severe_consequence:
     input:
         vcf=f"{annotation_dir}/{{family}}/{{family}}.decomposed.vep.vcfanno.vcf",
@@ -104,6 +104,7 @@ rule most_severe_consequence:
         "docker://quay.io/biocontainers/cyvcf2:0.32.1--py311h921ead3_0"
     script:
         "../scripts/most_severe_consequence.py"
+
 
 rule genmod_annotate:
     input:
@@ -121,15 +122,20 @@ rule genmod_annotate:
             {input.vcf} > {output.vcf} 2> {log}
         """
 
+
 rule mock_ped:
     input:
-        vcf=f"{decompose_dir}/{{family}}/{{family}}.reheadered.vcf"
+        vcf=f"{decompose_dir}/{{family}}/{{family}}.reheadered.vcf",
     output:
-        ped=temp(f"{annotation_dir}/{{family}}.ped")
-    log: f"{annotation_dir}/{{family}}.mock_ped.log"
+        ped=temp(f"{annotation_dir}/{{family}}.ped"),
+    log:
+        f"{annotation_dir}/{{family}}.mock_ped.log",
     localrule: True
-    container: config.get("mock_ped", {}).get("container", config.get("default_container", ""))
-    script: "../scripts/mock_ped.py"
+    container:
+        config.get("mock_ped", {}).get("container", config.get("default_container", ""))
+    script:
+        "../scripts/mock_ped.py"
+
 
 rule genmod_models:
     input:
@@ -202,9 +208,10 @@ rule genmod_rank_model:
         "docker://bschiffthaler/curl:7.72.0"
     shell:
         """
-        echo "fetching {params.uri}" > {log}
-        curl {params.extra} -fsSL {params.uri} > {output.rank_model} 2>> {log}
-        """
+echo "fetching {params.uri}" > {log}
+curl {params.extra} -fsSL {params.uri} > {output.rank_model} 2>> {log}
+"""
+
 
 rule bgzip_annotated:
     input:
@@ -217,14 +224,17 @@ rule bgzip_annotated:
         "docker://hydragenetics/common:0.1.1"
     shell:
         """
-        bgzip -c {input.vcf} > {output.vcfgz}
-        """
+bgzip -c {input.vcf} > {output.vcfgz}
+"""
+
 
 rule tabix_annotated:
     input:
-        vcf=f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf.gz"
+        vcf=f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf.gz",
     output:
-        tabix=temp(f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf.gz.tbi"),
+        tabix=temp(
+            f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.vcf.gz.tbi"
+        ),
     log:
         f"{annotation_dir}/{{family}}/{{family}}.annotated.genmod.tabix.log",
     container:
@@ -232,5 +242,5 @@ rule tabix_annotated:
     localrule: True
     shell:
         """
-        tabix {input.vcf}
-        """
+tabix {input.vcf}
+"""

@@ -33,8 +33,6 @@ def integration(tmp_path_factory):
         "1",
     ]
 
-    print(args)
-
     wd = tmp_path_factory.mktemp("integration")
     shutil.copy("tests/integration/config.yaml", wd)
     shutil.copy("tests/integration/data/samples.tsv", wd)

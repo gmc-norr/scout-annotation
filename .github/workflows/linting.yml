@@ -1,0 +1,33 @@
+name: Linting
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install linters
+        run: |
+          pip install snakefmt black
+
+      - name: Run snakefmt check
+        run: |
+          snakefmt --check workflow/
+
+      - name: Run black check
+        run: |
+          black --check workflow/
