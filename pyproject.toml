@@ -8,7 +8,6 @@ authors = [
 license = "GPL-3.0-or-later"
 readme = "README.md"
 dependencies = [
-    "pysam>=0.23.3",
     "snakemake>=9.14.5",
     "snakemake-executor-plugin-slurm~=2.1",
 ]
@@ -19,4 +18,5 @@ dev = [
     "black ~=25.11.0",
     "pre-commit ~=4.5.0",
     "pytest ~=9.0",
+    "pysam>=0.23.3",
 ]
