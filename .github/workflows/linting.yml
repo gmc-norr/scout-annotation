@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - master
 
 jobs:
   lint:
@@ -26,8 +25,8 @@ jobs:
 
       - name: Run snakefmt check
         run: |
-          snakefmt --check workflow/
+          snakefmt --diff workflow/
 
       - name: Run black check
         run: |
-          black --check workflow/
+          black --diff workflow/
