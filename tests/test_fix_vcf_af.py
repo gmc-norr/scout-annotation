@@ -88,9 +88,12 @@ def test_fix_vcf_af_multiple_alts(af_ao_vcf2):
     assert variants[3].samples[0]["DP"] == None
     assert variants[3].samples[0]["AF"] == (None,)
 
-    assert variants[4].samples[0]["AO"] == (248,150)
+    assert variants[4].samples[0]["AO"] == (248, 150)
     assert variants[4].samples[0]["DP"] == 1175
-    assert variants[4].samples[0]["AF"] == (pytest.approx(0.21106383), pytest.approx(0.12765957))
+    assert variants[4].samples[0]["AF"] == (
+        pytest.approx(0.21106383),
+        pytest.approx(0.12765957),
+    )
 
 
 def test_write_vcf(hd832_vcf, tmpdir):

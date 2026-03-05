@@ -47,16 +47,14 @@ def integration(tmp_path_factory):
 
     return wd
 
+
 def test_integration_fixture_runs(integration):
     # Just check that the working directory was created by the fixture
     assert integration.exists()
 
 
 @pytest.fixture(
-    params=[
-        ("family1","sample1", 160),
-        ("family2", "sample2", 160)
-    ],
+    params=[("family1", "sample1", 160), ("family2", "sample2", 160)],
     scope="session",
     ids=lambda x: x[0],
 )
@@ -66,9 +64,11 @@ def annotated_vcf(request, integration):
         "sample": request.param[1],
         "n_variants": request.param[2],
         "path": Path(
-            integration, f"results/annotation/{request.param[0]}/{request.param[0]}.annotated.genmod.vcf.gz"
+            integration,
+            f"results/annotation/{request.param[0]}/{request.param[0]}.annotated.genmod.vcf.gz",
         ),
     }
+
 
 def test_vcfs_exist(annotated_vcf):
     assert annotated_vcf["path"].exists()
@@ -84,6 +84,7 @@ def test_vcf_sample_names(annotated_vcf):
                 assert sample_name == annotated_vcf["sample"]
                 break
 
+
 def test_number_of_variants(annotated_vcf):
     n_variants = 0
     with gzip.open(annotated_vcf["path"], "rt") as f:
@@ -94,6 +95,7 @@ def test_number_of_variants(annotated_vcf):
                 n_variants += 1
     assert annotated_vcf["n_variants"] == n_variants
 
+
 def test_rank_score_family_names(annotated_vcf):
     rank_score_pattern = re.compile(r"RankScore=(?P<family>[^:]+):(-?\d+)")
     with gzip.open(annotated_vcf["path"], "rt") as f:
@@ -103,6 +105,5 @@ def test_rank_score_family_names(annotated_vcf):
             if line.startswith("#"):
                 continue
             rs_match = rank_score_pattern.search(line)
-            #assert rs_match is not None
+            # assert rs_match is not None
             assert rs_match.group("family") == annotated_vcf["family"]
-

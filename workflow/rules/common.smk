@@ -26,11 +26,11 @@ family_dict = samples.set_index("family").to_dict(orient="index")
 # Create output directories
 results_dir = Path(config.get("output_directory", "results"))
 
-annotation_dir = results_dir / "annotation"
+annotation_dir = str(results_dir / "annotation")
 
-coverage_dir = results_dir / "coverage"
+coverage_dir = str(results_dir / "coverage")
 
-decompose_dir = results_dir / "decompose"
+decompose_dir = str(results_dir / "decompose")
 
 output_vcfs = [
     f"{annotation_dir}/{family}/{family}.annotated.genmod.vcf.gz"

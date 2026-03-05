@@ -21,7 +21,7 @@ jobs:
 
       - name: Install linters
         run: |
-          pip install snakefmt black
+          pip install snakefmt==0.8.4 black==23.1.0
 
       - name: Run snakefmt check
         run: |

@@ -22,5 +22,3 @@ vep:
 
 genmod:
   rank_model: "/storage/userdata/config-files/scout-annotation/cancer/rank_model/cancer_rank_model_0.1.ini"
-
-

@@ -25,14 +25,14 @@ python -m pip install .
 
 Currently only Python 3.12 is supported.
 
-## Example Usage 
+## Example Usage
 
 ```bash
-snakemake \ 
--s scout-annotation/workflow/Snakefile \ 
---config samples=samples_minimal.tsv output_directory=results_test \ 
---configfiles config.yaml \ 
---debug-dag \ 
+snakemake \
+-s scout-annotation/workflow/Snakefile \
+--config samples=samples_minimal.tsv output_directory=results_test \
+--configfiles config.yaml \
+--debug-dag \
 --cores 1
 ```
 
@@ -47,4 +47,3 @@ uv run pytest
 Running the above will run both unit tests and an integration test.
 Currently, the integration test is only expected to run properly on one of the RV servers where `/storage` is mounted.
 If `/storage` is not found, the integration tests will be skipped.
-
