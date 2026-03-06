@@ -98,9 +98,23 @@ rule vt_uniq:
         """
 
 
-rule fix_vcf_af:
+rule fix_multi_snv_codons:
     input:
         vcf=decompose_dir + "/{family}/{family}.decomposed.normalized.uniq.vcf",
+        ref=config.get("reference", {}).get("fasta"),
+    output:
+        vcf=temp(decompose_dir + "/{family}/{family}.decomposed.normalized.codons.vcf"),
+    log:
+        decompose_dir + "/{family}/{family}.decomposed.normalized.codons.log",
+    container:
+        "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
+    script:
+        "../scripts/add_multi_snv_in_codon.py"
+
+
+rule fix_vcf_af:
+    input:
+        vcf=decompose_dir + "/{family}/{family}.decomposed.normalized.codons.vcf",
     output:
         vcf=temp(
             decompose_dir + "/{family}/{family}.decomposed.normalized.uniq.fix-af.vcf"
