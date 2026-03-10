@@ -20,33 +20,34 @@ rule bcftools_reheader:
         """
 
 
-rule bcftools_norm:
-    input:
-        vcf=decompose_dir + "/{family}/{family}.reheadered.vcf",
-        fasta=config["reference"]["fasta"],
-    output:
-        vcf=temp(decompose_dir + "/{family}/{family}.normalized.vcf"),
-    log:
-        decompose_dir + "/{family}/{family}.bcftools-norm.log",
-    container:
-        "docker://hydragenetics/common:0.3.0"
-    shell:
-        """
-        bcftools norm -f {input.fasta} --check-ref x --rm-dup exact -o {output.vcf} {input.vcf} 2> {log}
-        """
-
-
 rule undecompose:
     input:
-        vcf=decompose_dir + "/{family}/{family}.normalized.vcf",
+        vcf=decompose_dir + "/{family}/{family}.reheadered.vcf",
     output:
-        vcf=temp(decompose_dir + "/{family}/{family}.normalized.undecomposed.vcf"),
+        vcf=temp(decompose_dir + "/{family}/{family}.undecomposed.vcf"),
     log:
         decompose_dir + "/{family}/{family}.undecomposed.log",
     container:
         "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
     script:
         "../scripts/undecompose_vcf.py"
+
+
+rule bcftools_norm:
+    input:
+        vcf=decompose_dir + "/{family}/{family}.undecomposed.vcf",
+        fasta=config["reference"]["fasta"],
+    output:
+        vcf=temp(decompose_dir + "/{family}/{family}.normalized.undecomposed.vcf"),
+    log:
+        decompose_dir + "/{family}/{family}.bcftools-norm.log",
+    container:
+        "docker://hydragenetics/common:0.3.0"
+    shell:
+        """
+        bcftools norm -f {input.fasta} --check-ref x -Ou {input.vcf} \\
+        | bcftools norm --rm-dup exact -o {output.vcf} 2> {log}
+        """
 
 
 rule rename_info_fields:

@@ -1,6 +1,9 @@
 import re
 import pysam
-from typing import List, Tuple, Optional
+import logging
+from typing import Dict, List, Tuple, Optional, Set
+
+logger = logging.getLogger(__name__)
 
 old_re = re.compile(
     r"^(?P<chrom>.+):(?P<pos>\d+):(?P<ref>[ACGTN]+)\/(?P<alt>[ACGTN]+)$"
@@ -24,6 +27,51 @@ def parse_old_clumped(v: str) -> Optional[Tuple[str, int, str, str]]:
     return chrom, pos, ref, alt
 
 
+def expected_decomposed_snvs(
+    old: Optional[Tuple[str, int, str, str]],
+) -> Optional[List[Tuple[str, int, str, str]]]:
+    """
+    For a same-length MNV in OLD_CLUMPED, return the expected decomposed SNVs.
+
+    Example:
+      chr1:1111:ACGT/GGGC
+    becomes:
+      [
+        ("chr1", 1111, "A", "G"),
+        ("chr1", 1112, "C", "G"),
+        ("chr1", 1114, "T", "C"),
+      ]
+    """
+    if old is None:
+        return None
+
+    chrom, pos, ref, alt = old
+
+    if len(ref) != len(alt):
+        return None
+
+    expected = []
+    for i, (r, a) in enumerate(zip(ref, alt)):
+        if r != a:
+            expected.append((chrom, pos + i, r, a))
+
+    return expected
+
+
+def rec_as_simple_snv(
+    rec: pysam.VariantRecord,
+) -> Optional[Tuple[str, int, str, str]]:
+    """Return (chrom, pos, ref, alt) if record is a simple biallelic SNV, else None."""
+    if len(rec.alleles) != 2:
+        return None
+
+    ref, alt = rec.alleles
+    if len(ref) != 1 or len(alt) != 1:
+        return None
+
+    return rec.contig, rec.pos, ref, alt
+
+
 def copy_same_info(
     member_recs: List[pysam.VariantRecord],
     new_rec: pysam.VariantRecord,
@@ -31,20 +79,11 @@ def copy_same_info(
 ) -> None:
     first = member_recs[0]
 
-    # copy INFO from first record except OLD_CLUMPED, CALLERS and CSQ
+    # copy INFO from first record except OLD_CLUMPED and CSQ
     for key in first.info.keys():
-        if key in {"OLD_CLUMPED", "CALLERS", "CSQ"}:
+        if key in {"OLD_CLUMPED", "CSQ"}:
             continue
         _set_info_value(new_rec, key, first.info[key], header)
-
-    callers = []
-    seen = set()
-    for rec in member_recs:
-        for c in _as_list(rec.info.get("CALLERS")):
-            if c not in seen:
-                seen.add(c)
-                callers.append(c)
-    _set_info_value(new_rec, "CALLERS", callers, header)
 
 
 def copy_fmt(
@@ -69,6 +108,8 @@ def make_new_rec(
 
     old_txt = first.info.get("OLD_CLUMPED")
     old = parse_old_clumped(old_txt)
+    if old is None:
+        raise ValueError(f"Cannot make merged record: invalid OLD_CLUMPED={old_txt!r}")
 
     chrom, pos, ref, alt = old
 
@@ -84,14 +125,6 @@ def make_new_rec(
     copy_fmt(recs, new_rec)
 
     return new_rec
-
-
-def _as_list(x):
-    if x is None:
-        return []
-    if isinstance(x, (list, tuple)):
-        return list(x)
-    return [x]
 
 
 def _set_info_value(
@@ -128,46 +161,120 @@ def _set_info_value(
         rec.info[key] = value
 
 
-def _flush_buffer(
-    buffer: List[pysam.VariantRecord],
-    out_vcf: pysam.VariantFile,
-) -> None:
-    if not buffer:
-        return
-    out_vcf.write(make_new_rec(buffer, out_vcf))
-    buffer.clear()
+def _collect_old_clumped_status(
+    vcf_in: str,
+) -> Set[Tuple[str, int, str, str]]:
+    """
+    collect which OLD_CLUMPED groups have the full expected decomposed SNVs.
+    """
+    groups: Dict[Tuple[str, int, str, str], dict] = {}
+
+    with pysam.VariantFile(vcf_in, "r") as in_vcf:
+        for record in in_vcf:
+            old_txt = record.info.get("OLD_CLUMPED")
+            old = parse_old_clumped(old_txt)
+            if old is None:
+                continue
+
+            if old not in groups:
+                expected = expected_decomposed_snvs(old)
+                groups[old] = {
+                    "old_txt": old_txt,
+                    "expected": expected,
+                    "expected_set": set(expected) if expected is not None else None,
+                    "observed": set(),
+                    "invalid": expected is None,
+                }
+
+            group = groups[old]
+            snv = rec_as_simple_snv(record)
+
+            if snv is None:
+                group["invalid"] = True
+                continue
+
+            if group["expected_set"] is None:
+                group["invalid"] = True
+                continue
+
+            if snv not in group["expected_set"]:
+                group["invalid"] = True
+                continue
+
+            group["observed"].add(snv)
+
+    complete_groups: Set[Tuple[str, int, str, str]] = set()
+
+    for old, group in groups.items():
+        expected = group["expected"]
+        observed = sorted(group["observed"], key=lambda x: x[1])
+
+        if not group["invalid"] and group["expected_set"] == group["observed"]:
+            complete_groups.add(old)
+            chrom, pos, ref, alt = old
+            logger.info(
+                "Found complete OLD_CLUMPED group %r -> %s:%d %s>%s from %d decomposed SNVs",
+                group["old_txt"],
+                chrom,
+                pos,
+                ref,
+                alt,
+                len(observed),
+            )
+        else:
+            logger.warning(
+                "Incomplete or invalid OLD_CLUMPED group %r; expected=%s observed=%s. Will write original records unchanged.",
+                group["old_txt"],
+                expected,
+                observed,
+            )
+
+    return complete_groups
 
 
 def undecompose(vcf_in: str, vcf_out: str) -> None:
-    """Read vcf and merge adjacent decomposed records back using OLD_CLUMPED."""
+    """
+    Read VCF in two passes and merge OLD_CLUMPED groups only when the full
+    expected decomposed SNV set is present somewhere in the file.
+    """
+    complete_groups = _collect_old_clumped_status(vcf_in)
+    written_groups: Set[Tuple[str, int, str, str]] = set()
+
     with pysam.VariantFile(vcf_in, "r") as in_vcf:
         with pysam.VariantFile(vcf_out, "w", header=in_vcf.header) as out_vcf:
-            buffer: List[pysam.VariantRecord] = []
-            prev_old_clumped = None
-
             for record in in_vcf:
-                old_val = record.info.get("OLD_CLUMPED")
-                old_clumped = parse_old_clumped(old_val)
+                old_txt = record.info.get("OLD_CLUMPED")
+                old = parse_old_clumped(old_txt)
 
-                if old_clumped is None:
-                    _flush_buffer(buffer, out_vcf)
-                    prev_old_clumped = None
+                # no OLD_CLUMPED -> always keep as-is
+                if old is None:
                     out_vcf.write(record)
                     continue
 
-                if prev_old_clumped is None or old_clumped == prev_old_clumped:
-                    buffer.append(record)
-                    prev_old_clumped = old_clumped
+                # incomplete/invalid group -> keep decomposed record as-is
+                if old not in complete_groups:
+                    out_vcf.write(record)
                     continue
 
-                _flush_buffer(buffer, out_vcf)
-                buffer.append(record)
-                prev_old_clumped = old_clumped
+                # complete group: write merged once, skip the rest
+                if old in written_groups:
+                    continue
 
-            _flush_buffer(buffer, out_vcf)
+                chrom, pos, ref, alt = old
+                logger.info(
+                    "Writing merged OLD_CLUMPED group %r as %s:%d %s>%s",
+                    old_txt,
+                    chrom,
+                    pos,
+                    ref,
+                    alt,
+                )
+                out_vcf.write(make_new_rec([record], out_vcf))
+                written_groups.add(old)
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     try:
         log = snakemake.log_fmt_shell(stdout=False, stderr=True)
         undecompose(
