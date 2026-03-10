@@ -20,11 +20,43 @@ rule bcftools_reheader:
         """
 
 
-rule rename_info_fields:
+rule bcftools_norm:
     input:
         vcf=decompose_dir + "/{family}/{family}.reheadered.vcf",
+        fasta=config["reference"]["fasta"],
     output:
-        vcf=temp(decompose_dir + "/{family}/{family}.renamed_info.vcf"),
+        vcf=temp(decompose_dir + "/{family}/{family}.normalized.vcf"),
+    log:
+        decompose_dir + "/{family}/{family}.bcftools-norm.log",
+    container:
+        "docker://hydragenetics/common:0.3.0"
+    shell:
+        """
+        bcftools norm -f {input.fasta} --check-ref x --rm-dup exact -o {output.vcf} {input.vcf} 2> {log}
+        """
+
+
+rule undecompose:
+    input:
+        vcf=decompose_dir + "/{family}/{family}.normalized.vcf",
+    output:
+        vcf=temp(decompose_dir + "/{family}/{family}.normalized.undecomposed.vcf"),
+    log:
+        decompose_dir + "/{family}/{family}.undecomposed.log",
+    container:
+        "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
+    script:
+        "../scripts/undecompose_vcf.py"
+
+
+rule rename_info_fields:
+    input:
+        vcf=decompose_dir + "/{family}/{family}.normalized.undecomposed.vcf",
+    output:
+        vcf=temp(
+            decompose_dir
+            + "/{family}/{family}.normalized.undecomposed.renamed_info.vcf"
+        ),
     log:
         decompose_dir + "/{family}/{family}.renamed-info.log",
     params:
@@ -37,90 +69,17 @@ rule rename_info_fields:
         """
 
 
-rule decompose:
-    input:
-        vcf=decompose_dir + "/{family}/{family}.renamed_info.vcf",
-    output:
-        vcf=temp(decompose_dir + "/{family}/{family}.decomposed.vcf"),
-    log:
-        decompose_dir + "/{family}/{family}.decomposed.log",
-    container:
-        "docker://hydragenetics/vt:2015.11.10"
-    shell:
-        """
-        (vt decompose -s {input.vcf} | vt decompose_blocksub -o {output.vcf} -) 2> {log}
-        """
-
-
-rule normalize:
-    input:
-        vcf=decompose_dir + "/{family}/{family}.decomposed.vcf",
-        fasta=config.get("reference", {}).get("fasta"),
-    output:
-        vcf=temp(decompose_dir + "/{family}/{family}.decomposed.normalized.vcf"),
-    log:
-        decompose_dir + "/{family}/{family}.decomposed.normalized.log",
-    container:
-        "docker://hydragenetics/vt:2015.11.10"
-    shell:
-        """
-        vt normalize -n -r {input.fasta} {input.vcf} -o {output.vcf} 2> {log}
-        """
-
-
-rule vt_sort:
-    input:
-        vcf=decompose_dir + "/{family}/{family}.decomposed.normalized.vcf",
-    output:
-        vcf=temp(decompose_dir + "/{family}/{family}.decomposed.normalized.sort.vcf"),
-    log:
-        decompose_dir + "/{family}/{family}.decomposed.normalized.sort.log",
-    container:
-        "docker://hydragenetics/vt:2015.11.10"
-    shell:
-        """
-        vt sort -o {output.vcf} {input.vcf} 2> {log}
-        """
-
-
-rule vt_uniq:
-    input:
-        vcf=decompose_dir + "/{family}/{family}.decomposed.normalized.sort.vcf",
-    output:
-        vcf=temp(decompose_dir + "/{family}/{family}.decomposed.normalized.uniq.vcf"),
-    log:
-        decompose_dir + "/{family}/{family}.decomposed.normalized.uniq.log",
-    container:
-        "docker://hydragenetics/vt:2015.11.10"
-    shell:
-        """
-        vt uniq -o {output.vcf} {input.vcf} 2> {log}
-        """
-
-
-rule fix_multi_snv_codons:
-    input:
-        vcf=decompose_dir + "/{family}/{family}.decomposed.normalized.uniq.vcf",
-        ref=config.get("reference", {}).get("fasta"),
-    output:
-        vcf=temp(decompose_dir + "/{family}/{family}.decomposed.normalized.codons.vcf"),
-    log:
-        decompose_dir + "/{family}/{family}.decomposed.normalized.codons.log",
-    container:
-        "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
-    script:
-        "../scripts/add_multi_snv_in_codon.py"
-
-
 rule fix_vcf_af:
     input:
-        vcf=decompose_dir + "/{family}/{family}.decomposed.normalized.codons.vcf",
+        vcf=decompose_dir
+        + "/{family}/{family}.normalized.undecomposed.renamed_info.vcf",
     output:
         vcf=temp(
-            decompose_dir + "/{family}/{family}.decomposed.normalized.uniq.fix-af.vcf"
+            decompose_dir
+            + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf"
         ),
     log:
-        decompose_dir + "/{family}/{family}.decomposed.fix-af.log",
+        decompose_dir + "/{family}/{family}.fix-af.log",
     container:
         "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
     script:
@@ -129,14 +88,15 @@ rule fix_vcf_af:
 
 rule bgzip_normalized:
     input:
-        vcf=decompose_dir + "/{family}/{family}.decomposed.normalized.uniq.fix-af.vcf",
+        vcf=decompose_dir
+        + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf",
     output:
         vcfgz=temp(
             decompose_dir
-            + "/{family}/{family}.decomposed.normalized.uniq.fix-af.vcf.gz"
+            + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf.gz"
         ),
     log:
-        decompose_dir + "/{family}/{family}.decomposed.normalized.uniq.fix-af.bgzip.log",
+        decompose_dir + "/{family}/{family}.bgzip.log",
     container:
         "docker://hydragenetics/common:0.1.1"
     shell:
@@ -148,14 +108,14 @@ rule bgzip_normalized:
 rule tabix_normalized:
     input:
         vcf=decompose_dir
-        + "/{family}/{family}.decomposed.normalized.uniq.fix-af.vcf.gz",
+        + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf.gz",
     output:
         tabix=temp(
             decompose_dir
-            + "/{family}/{family}.decomposed.normalized.uniq.fix-af.vcf.gz.tbi"
+            + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf.gz.tbi"
         ),
     log:
-        decompose_dir + "/{family}/{family}.decomposed.normalized.uniq.fix-af.tabix.log",
+        decompose_dir + "/{family}/{family}.fix-af.tabix.log",
     container:
         "docker://hydragenetics/common:0.1.1"
     localrule: True
