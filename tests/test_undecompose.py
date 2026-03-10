@@ -15,6 +15,8 @@ def vcf_header():
     header = pysam.VariantHeader()
     header.add_line("##fileformat=VCFv4.2")
     header.add_line("##contig=<ID=chr1,length=1000000>")
+    header.add_line("##contig=<ID=chr2,length=1000000>")
+    header.add_line("##contig=<ID=chr3,length=1000000>")
     header.add_line(
         '##INFO=<ID=OLD_CLUMPED,Number=1,Type=String,Description="Original clumped variant">'
     )
@@ -174,6 +176,7 @@ def test_undecompose_merges_same_old_clumped_and_preserves_first_record_fields(
     old = "chr3:300:ACGT/GGGC"
     # Fourth decomposed, missing SNVs
     rec8 = make_record(
+        chrom="chr3",
         pos=300,
         ref="A",
         alt="G",
@@ -183,6 +186,7 @@ def test_undecompose_merges_same_old_clumped_and_preserves_first_record_fields(
         ad=(9, 8),
     )
     rec9 = make_record(
+        chrom="chr3",
         pos=303,
         ref="T",
         alt="C",
