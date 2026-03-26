@@ -1,9 +1,9 @@
 rule vep:
     input:
         vcf=decompose_dir
-        + "/{family}/{family}.decomposed.normalized.uniq.fix-af.vcf.gz",
+        + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf.gz",
         tabix=decompose_dir
-        + "/{family}/{family}.decomposed.normalized.uniq.fix-af.vcf.gz.tbi",
+        + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf.gz.tbi",
         fasta=config["reference"]["fasta"],
         cache=config["vep"]["cache"],
         plugin=config["vep"]["plugin"],
@@ -11,9 +11,9 @@ rule vep:
         swegen=config["vep"]["swegen"],
         clinvar=config["vep"]["clinvar"],
     output:
-        vcf=temp(annotation_dir + "/{family}/{family}.decomposed.vep.vcf"),
+        vcf=temp(annotation_dir + "/{family}/{family}.vep.vcf"),
     log:
-        annotation_dir + "/{family}/{family}.decomposed.vep.log",
+        annotation_dir + "/{family}/{family}.vep.log",
     params:
         mode=config.get("vep", {}).get("mode", ""),
         cache_type=config.get("vep", {}).get("cache_type", "merged"),
@@ -73,10 +73,10 @@ rule vep:
 
 rule vcfanno:
     input:
-        vcf=annotation_dir + "/{family}/{family}.decomposed.vep.vcf",
+        vcf=annotation_dir + "/{family}/{family}.vep.vcf",
         toml=get_vcfanno_config(),
     output:
-        vcf=temp(annotation_dir + "/{family}/{family}.decomposed.vep.vcfanno.vcf"),
+        vcf=temp(annotation_dir + "/{family}/{family}.vep.vcfanno.vcf"),
     log:
         annotation_dir + "/{family}/{family}.vcfanno.log",
     params:
@@ -97,7 +97,7 @@ rule vcfanno:
 
 rule most_severe_consequence:
     input:
-        vcf=annotation_dir + "/{family}/{family}.decomposed.vep.vcfanno.vcf",
+        vcf=annotation_dir + "/{family}/{family}.vep.vcfanno.vcf",
     output:
         vcf=temp(annotation_dir + "/{family}/{family}.annotated.vcf"),
     log:
