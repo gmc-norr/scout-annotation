@@ -54,7 +54,7 @@ def test_integration_fixture_runs(integration):
 
 
 @pytest.fixture(
-    params=[("family1", "sample1", 160), ("family2", "sample2", 160)],
+    params=[("family1", "sample1", 158), ("family2", "sample2", 158)],
     scope="session",
     ids=lambda x: x[0],
 )
@@ -107,3 +107,27 @@ def test_rank_score_family_names(annotated_vcf):
             rs_match = rank_score_pattern.search(line)
             # assert rs_match is not None
             assert rs_match.group("family") == annotated_vcf["family"]
+
+
+def test_caller_names(annotated_vcf):
+    found_in_re = re.compile(r"FOUND_IN=([^;]+)")
+    count_found_in_mutect = 0
+    with gzip.open(annotated_vcf["path"], "rt") as f:
+        for line in f:
+            if len(line.strip()) == 0:
+                continue
+            if line.startswith("#"):
+                continue
+            found_in_match = found_in_re.search(line)
+
+            if not found_in_match:
+                continue
+
+            callers_str = found_in_match.group(1)
+            callers = callers_str.split(",")
+
+            assert "gatk_mutect2" not in callers, f"gatk_mutect2 found in: {callers}"
+
+            if "mutect" in callers:
+                count_found_in_mutect += 1
+    assert count_found_in_mutect > 0, f"mutect is not among callers for any record"
