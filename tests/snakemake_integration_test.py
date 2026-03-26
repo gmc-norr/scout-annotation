@@ -126,8 +126,8 @@ def test_caller_names(annotated_vcf):
             callers_str = found_in_match.group(1)
             callers = callers_str.split(",")
 
-            assert "gatk_mutect2" not in callers, f"gatk_mutect2 found in: {callers}"
+            assert "mutect2" not in callers, f"mutect2 found in: {callers}"
 
-            if "mutect" in callers:
+            if "gatk" in callers:
                 count_found_in_mutect += 1
     assert count_found_in_mutect > 0, f"mutect is not among callers for any record"

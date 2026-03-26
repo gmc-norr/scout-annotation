@@ -82,7 +82,7 @@ rule rename_callers:
     log:
         decompose_dir + "/{family}/{family}.renamed-callers.log",
     params:
-        callers_map={"gatk_mutect2": "mutect", "mutect2": "mutect"},
+        callers_map={"gatk_mutect2": "gatk", "mutect2": "gatk"},
         callers_field="FOUND_IN",
     container:
         "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
