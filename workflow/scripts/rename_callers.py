@@ -11,7 +11,10 @@ CALLERS_FIELD = "FOUND_IN"
 def _rename_callers_in_rec(
     rec: pysam.VariantRecord, callers_map: dict, callers_field: str
 ) -> None:
-    callers = list(rec.info[callers_field])
+    try:
+        callers = list(rec.info[callers_field])
+    except KeyError:
+        return
     new_callers = list()
     for caller in callers:
         if caller in callers_map:
