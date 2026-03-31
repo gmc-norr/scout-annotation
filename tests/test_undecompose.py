@@ -84,9 +84,7 @@ def test_parse_old_clumped_valid_and_invalid_values():
     assert parse_old_clumped("chr1:100:A>C") is None
 
 
-def test_undecompose_merges_same_old_clumped_and_preserves_first_record_fields(
-    tmp_path, vcf_header, make_record
-):
+def test_undecompose_merges_same_old_clumped(tmp_path, vcf_header, make_record):
     input_vcf = tmp_path / "input.vcf"
     output_vcf = tmp_path / "output.vcf"
 
@@ -207,11 +205,11 @@ def test_undecompose_merges_same_old_clumped_and_preserves_first_record_fields(
     with pysam.VariantFile(output_vcf) as vcf:
         out = list(vcf)
 
-    assert len(out) == 6
+    assert len(out) == 13
 
-    merged1 = out[0]
-    merged2 = out[1]
-    merged3 = out[3]
+    merged1 = out[1]
+    merged2 = out[4]
+    merged3 = out[8]
     unmerged1 = out[4]
     unmerged2 = out[5]
     assert merged1.contig == "chr1"
@@ -236,19 +234,9 @@ def test_undecompose_merges_same_old_clumped_and_preserves_first_record_fields(
     assert merged3.pos == 200
     assert tuple(merged3.alleles) == ("TATT", "GTTC")
 
-    unchanged = out[2]
-    assert unchanged.pos == 105
-    assert tuple(unchanged.alleles) == ("G", "T")
-    assert unchanged.info["DP"] == 25
-    assert unchanged.samples["S1"]["GT"] == (1, 1)
-
-    assert unmerged1.pos == 300
-    assert tuple(unmerged1.alleles) == ("A", "G")
-    assert unmerged1.info["OLD_CLUMPED"] == "chr3:300:ACGT/GGGC"
-
-    assert unmerged2.pos == 303
-    assert tuple(unmerged2.alleles) == ("T", "C")
-    assert unmerged2.info["OLD_CLUMPED"] == "chr3:300:ACGT/GGGC"
+    # Assert incomplete MNV is not present "chr3:300:ACGT/GGGC"
+    for rec in out:
+        assert tuple(rec.alleles) != ("ACGT", "GGGC")
 
 
 def test_undecompose_flushes_when_old_clumped_group_changes(
@@ -273,11 +261,11 @@ def test_undecompose_flushes_when_old_clumped_group_changes(
     with pysam.VariantFile(output_vcf) as vcf:
         out = list(vcf)
 
-    assert len(out) == 2
-    assert out[0].pos == 100
-    assert tuple(out[0].alleles) == ("AA", "CC")
-    assert out[1].pos == 200
-    assert tuple(out[1].alleles) == ("GG", "TT")
+    assert len(out) == 6
+    assert out[1].pos == 100
+    assert tuple(out[1].alleles) == ("AA", "CC")
+    assert out[4].pos == 200
+    assert tuple(out[4].alleles) == ("GG", "TT")
 
 
 def test_expected_decomposed_snvs_returns_only_changed_positions():

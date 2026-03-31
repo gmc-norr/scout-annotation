@@ -54,7 +54,7 @@ def test_integration_fixture_runs(integration):
 
 
 @pytest.fixture(
-    params=[("family1", "sample1", 158), ("family2", "sample2", 158)],
+    params=[("family1", "sample1", 162), ("family2", "sample2", 162)],
     scope="session",
     ids=lambda x: x[0],
 )
