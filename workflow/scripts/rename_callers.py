@@ -3,8 +3,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-CALLERS_MAP = {"gatk_mutect2": "mutect"}
-
+CALLERS_MAP = {"gatk_mutect2": "gatk", "mutect2": "gatk"}
 CALLERS_FIELD = "FOUND_IN"
 
 
@@ -43,9 +42,8 @@ def rename_callers(
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, filename=snakemake.log[0])
     try:
-        log = snakemake.log_fmt_shell(stdout=False, stderr=True)
         rename_callers(
             snakemake.input.vcf,
             snakemake.output.vcf,

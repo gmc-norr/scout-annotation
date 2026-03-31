@@ -81,7 +81,7 @@ def test_rename_callers(tmp_path, vcf_header, make_record):
         [rec1, rec2, rec3, rec4],
     )
 
-    rename_callers(str(input_vcf), str(output_vcf), {"gatk_mutect2": "mutect"})
+    rename_callers(str(input_vcf), str(output_vcf))
 
     with pysam.VariantFile(output_vcf) as vcf:
         out = list(vcf)
@@ -93,10 +93,10 @@ def test_rename_callers(tmp_path, vcf_header, make_record):
     renamed3 = out[2]
     renamed4 = out[3]
 
-    assert renamed1.info["FOUND_IN"] == ("mutect", "vardict")
+    assert renamed1.info["FOUND_IN"] == ("gatk", "vardict")
     assert renamed2.info["FOUND_IN"] == ("vardict",)
-    assert renamed3.info["FOUND_IN"] == ("mutect",)
-    assert renamed4.info["FOUND_IN"] == ("other", "vardict", "mutect")
+    assert renamed3.info["FOUND_IN"] == ("gatk",)
+    assert renamed4.info["FOUND_IN"] == ("other", "vardict", "gatk")
 
     rename_callers(
         str(input_vcf),
