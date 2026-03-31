@@ -272,8 +272,8 @@ def undecompose(vcf_in: str, vcf_out: str) -> None:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
     try:
+        logging.basicConfig(level=logging.INFO, filename=snakemake.log[0])
         log = snakemake.log_fmt_shell(stdout=False, stderr=True)
         undecompose(
             snakemake.input.vcf,
@@ -282,6 +282,7 @@ if __name__ == "__main__":
     except NameError:
         import argparse
 
+        logging.basicConfig(level=logging.INFO)
         p = argparse.ArgumentParser()
         p.add_argument("-i", "--input-vcf", required=True)
         p.add_argument("-o", "--output-vcf", required=True)
