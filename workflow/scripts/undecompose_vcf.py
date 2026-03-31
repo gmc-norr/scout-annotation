@@ -246,14 +246,12 @@ def undecompose(vcf_in: str, vcf_out: str) -> None:
                 old_txt = record.info.get("OLD_CLUMPED")
                 old = parse_old_clumped(old_txt)
 
-                # no OLD_CLUMPED -> always keep as-is
+                out_vcf.write(record)
+
                 if old is None:
-                    out_vcf.write(record)
                     continue
 
-                # incomplete/invalid group -> keep decomposed record as-is
                 if old not in complete_groups:
-                    out_vcf.write(record)
                     continue
 
                 # complete group: write merged once, skip the rest
