@@ -1,9 +1,9 @@
 rule vep:
     input:
         vcf=decompose_dir
-        + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf.gz",
+        + "/{family}/{family}.normalized.undecomposed.renamed_info.renamed_callers.fix-af.vcf.gz",
         tabix=decompose_dir
-        + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf.gz.tbi",
+        + "/{family}/{family}.normalized.undecomposed.renamed_info.renamed_callers.fix-af.vcf.gz.tbi",
         fasta=config["reference"]["fasta"],
         cache=config["vep"]["cache"],
         plugin=config["vep"]["plugin"],
