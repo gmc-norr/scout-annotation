@@ -70,14 +70,34 @@ rule rename_info_fields:
         """
 
 
-rule fix_vcf_af:
+rule rename_callers:
     input:
         vcf=decompose_dir
         + "/{family}/{family}.normalized.undecomposed.renamed_info.vcf",
     output:
         vcf=temp(
             decompose_dir
-            + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf"
+            + "/{family}/{family}.normalized.undecomposed.renamed_info.renamed_callers.vcf"
+        ),
+    log:
+        decompose_dir + "/{family}/{family}.renamed-callers.log",
+    params:
+        callers_map={"gatk_mutect2": "gatk", "mutect2": "gatk"},
+        callers_field="FOUND_IN",
+    container:
+        "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
+    script:
+        "../scripts/rename_callers.py"
+
+
+rule fix_vcf_af:
+    input:
+        vcf=decompose_dir
+        + "/{family}/{family}.normalized.undecomposed.renamed_info.renamed_callers.vcf",
+    output:
+        vcf=temp(
+            decompose_dir
+            + "/{family}/{family}.normalized.undecomposed.renamed_info.renamed_callers.fix-af.vcf"
         ),
     log:
         decompose_dir + "/{family}/{family}.fix-af.log",
@@ -90,11 +110,11 @@ rule fix_vcf_af:
 rule bgzip_normalized:
     input:
         vcf=decompose_dir
-        + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf",
+        + "/{family}/{family}.normalized.undecomposed.renamed_info.renamed_callers.fix-af.vcf",
     output:
         vcfgz=temp(
             decompose_dir
-            + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf.gz"
+            + "/{family}/{family}.normalized.undecomposed.renamed_info.renamed_callers.fix-af.vcf.gz"
         ),
     log:
         decompose_dir + "/{family}/{family}.bgzip.log",
@@ -109,11 +129,11 @@ rule bgzip_normalized:
 rule tabix_normalized:
     input:
         vcf=decompose_dir
-        + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf.gz",
+        + "/{family}/{family}.normalized.undecomposed.renamed_info.renamed_callers.fix-af.vcf.gz",
     output:
         tabix=temp(
             decompose_dir
-            + "/{family}/{family}.normalized.undecomposed.renamed_info.fix-af.vcf.gz.tbi"
+            + "/{family}/{family}.normalized.undecomposed.renamed_info.renamed_callers.fix-af.vcf.gz.tbi"
         ),
     log:
         decompose_dir + "/{family}/{family}.fix-af.tabix.log",
