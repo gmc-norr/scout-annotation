@@ -28,7 +28,7 @@ rule undecompose:
     log:
         decompose_dir + "/{family}/{family}.undecomposed.log",
     container:
-        "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
+        "docker://quay.io/biocontainers/pysam:0.23.3--py312h8f9e533_2"
     script:
         "../scripts/undecompose_vcf.py"
 
@@ -85,7 +85,7 @@ rule rename_callers:
         callers_map={"gatk_mutect2": "gatk", "mutect2": "gatk"},
         callers_field="FOUND_IN",
     container:
-        "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
+        "docker://quay.io/biocontainers/pysam:0.23.3--py312h8f9e533_2"
     script:
         "../scripts/rename_callers.py"
 
@@ -102,7 +102,7 @@ rule fix_vcf_af:
     log:
         decompose_dir + "/{family}/{family}.fix-af.log",
     container:
-        "docker://quay.io/biocontainers/pysam:0.15.2--py38h7be0bb8_11"
+        "docker://quay.io/biocontainers/pysam:0.23.3--py312h8f9e533_2"
     script:
         "../scripts/fix_vcf_af.py"
 
