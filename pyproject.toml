@@ -8,7 +8,7 @@ authors = [
 license = "GPL-3.0-or-later"
 readme = "README.md"
 dependencies = [
-    "snakemake==9.18.2",
+    "snakemake~=9.14",
     "snakemake-executor-plugin-slurm~=2.1",
 ]
 requires-python = "~=3.12.0"
