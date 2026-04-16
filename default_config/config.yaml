@@ -2,7 +2,7 @@ samples: "samples.tsv"
 
 output_directory: results
 
-default_container: docker://snakemake/snakemake:v9.18.2
+default_container: docker://python:3.12-alpine
 
 reference:
   fasta: /storage/userdata/references/homo_sapiens/hg19/fasta/hg19.fa.gz
