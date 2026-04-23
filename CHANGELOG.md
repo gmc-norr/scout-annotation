@@ -1,5 +1,44 @@
 # Changelog
 
+## [1.0.0](https://github.com/gmc-norr/scout-annotation/compare/v0.8.0...v1.0.0) (2026-04-23)
+
+
+### Features
+
+* Add rename callers feature ([#99](https://github.com/gmc-norr/scout-annotation/issues/99)) ([cecb4a9](https://github.com/gmc-norr/scout-annotation/commit/cecb4a9d0b01c4f78b5a6f7ee1358a059167acbc))
+* better slurm integration ([#90](https://github.com/gmc-norr/scout-annotation/issues/90)) ([b03a621](https://github.com/gmc-norr/scout-annotation/commit/b03a621e2030c56cfca2b5ade020186523902a4b))
+* d4 (WIP) ([#73](https://github.com/gmc-norr/scout-annotation/issues/73)) ([c93d425](https://github.com/gmc-norr/scout-annotation/commit/c93d4256688ce2aa7f0c82fd40205b22b01159f8))
+* migrate from poetry to uv ([#79](https://github.com/gmc-norr/scout-annotation/issues/79)) ([abb356c](https://github.com/gmc-norr/scout-annotation/commit/abb356c11cf0ccf03b4ce590e6747ada7e6f091d))
+* TMB, HRD, MSI ([#72](https://github.com/gmc-norr/scout-annotation/issues/72)) ([9ca59e6](https://github.com/gmc-norr/scout-annotation/commit/9ca59e6c9cba212b469d41a5a895cf30bc4df1df))
+
+
+### Bug Fixes
+
+* ability to install dependencies with pip ([#101](https://github.com/gmc-norr/scout-annotation/issues/101)) ([8c3a5ca](https://github.com/gmc-norr/scout-annotation/commit/8c3a5ca8b6fe83c4c1a7c1e6d668238061fdd811))
+* address issue with empty string gene panels ([#88](https://github.com/gmc-norr/scout-annotation/issues/88)) ([7377ba6](https://github.com/gmc-norr/scout-annotation/commit/7377ba6c56ccd9d7dc320722987386a461b32085))
+* allow for numbers at the beginning of a sample name ([#64](https://github.com/gmc-norr/scout-annotation/issues/64)) ([2a6a012](https://github.com/gmc-norr/scout-annotation/commit/2a6a012e43c8886cf426a239b5683d9380cad64b))
+* bug in biomarker helper functions with more than one sample ([829c4b8](https://github.com/gmc-norr/scout-annotation/commit/829c4b83552429331ba19510a6cb2ac33d4eeea4))
+* **deps:** pin pulp to &lt;2.8.0 ([#66](https://github.com/gmc-norr/scout-annotation/issues/66)) ([035f3d3](https://github.com/gmc-norr/scout-annotation/commit/035f3d39775a8a9e8ef8f00592be2596fa808055))
+* Do not convert msi, hrd and tmb values as integers ([#77](https://github.com/gmc-norr/scout-annotation/issues/77)) ([e11694a](https://github.com/gmc-norr/scout-annotation/commit/e11694a2dc08d311254e2f4c5c6d021c56296704))
+* Exclude duplicates from d4 calculation ([#76](https://github.com/gmc-norr/scout-annotation/issues/76)) ([2f5bdc5](https://github.com/gmc-norr/scout-annotation/commit/2f5bdc5a01d38f91b2b8713d6083ddd854f90834))
+* issue with bam path in load config ([#58](https://github.com/gmc-norr/scout-annotation/issues/58)) ([9201c5f](https://github.com/gmc-norr/scout-annotation/commit/9201c5f9a545a0764fabe7512a0f045e64205049))
+* keep the undecomposed SNVs from clumped variants ([#100](https://github.com/gmc-norr/scout-annotation/issues/100)) ([bf2bfdc](https://github.com/gmc-norr/scout-annotation/commit/bf2bfdc3191fdf61369f0747ebd416742187dcb8))
+* non-zero exit if no samples are found ([#91](https://github.com/gmc-norr/scout-annotation/issues/91)) ([3014704](https://github.com/gmc-norr/scout-annotation/commit/3014704a20848137dd54a2c6b0ce8d4cacd9b843))
+* Recreate previously decomposed MNVs  ([#97](https://github.com/gmc-norr/scout-annotation/issues/97)) ([f882327](https://github.com/gmc-norr/scout-annotation/commit/f88232769cf45cebc733b05fc1ca71feb802d5e1))
+* remove default resources from default profile ([#104](https://github.com/gmc-norr/scout-annotation/issues/104)) ([802fdfb](https://github.com/gmc-norr/scout-annotation/commit/802fdfb4f62e61ade98da1ae5506d77a909af7b5))
+* snakemake version mismatch ([#103](https://github.com/gmc-norr/scout-annotation/issues/103)) ([c6d06ad](https://github.com/gmc-norr/scout-annotation/commit/c6d06ad6b36dab1970ff90ac8beb4bd8550a16e1))
+* wrong key in path validation error message ([6f73576](https://github.com/gmc-norr/scout-annotation/commit/6f73576019800a642ac415a2314f018973c17cb1))
+
+
+### Documentation
+
+* update python version in readme ([#85](https://github.com/gmc-norr/scout-annotation/issues/85)) ([1a09606](https://github.com/gmc-norr/scout-annotation/commit/1a096061f694cf0873a87906a67bdde9c8e088d2))
+
+
+### Miscellaneous Chores
+
+* release 1.0.0 ([#105](https://github.com/gmc-norr/scout-annotation/issues/105)) ([18d3fb1](https://github.com/gmc-norr/scout-annotation/commit/18d3fb15eadf7114eabe20eac8cd196e7b6e80a9))
+
 ## [unreleased]
 
 ### Features
