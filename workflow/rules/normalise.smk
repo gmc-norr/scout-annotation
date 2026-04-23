@@ -7,12 +7,12 @@ rule bcftools_reheader:
             decompose_dir + "/{family}/{family}.sample_name_conversion.txt"
         ),
         vcf=temp(decompose_dir + "/{family}/{family}.reheadered.vcf"),
-    params:
-        new_name=lambda wc: family_dict[wc.family]["sample"],
     log:
         decompose_dir + "/{family}/{family}.reheadered.log",
     container:
         "docker://hydragenetics/common:0.3.0"
+    params:
+        new_name=lambda wc: family_dict[wc.family]["sample"],
     shell:
         """
         echo "$(bcftools query -l {input.vcf} | head -1) {params.new_name}" >> {output.sample_conversion} &&
@@ -60,10 +60,10 @@ rule rename_info_fields:
         ),
     log:
         decompose_dir + "/{family}/{family}.renamed-info.log",
-    params:
-        rename="INFO/CALLERS FOUND_IN",
     container:
         "docker://hydragenetics/common:0.3.0"
+    params:
+        rename="INFO/CALLERS FOUND_IN",
     shell:
         """
         bcftools annotate --rename-annots <(echo "{params.rename}") -O v -o {output.vcf} {input.vcf} 2> {log}
@@ -81,11 +81,11 @@ rule rename_callers:
         ),
     log:
         decompose_dir + "/{family}/{family}.renamed-callers.log",
+    container:
+        "docker://quay.io/biocontainers/pysam:0.23.3--py312h8f9e533_2"
     params:
         callers_map={"gatk_mutect2": "gatk", "mutect2": "gatk"},
         callers_field="FOUND_IN",
-    container:
-        "docker://quay.io/biocontainers/pysam:0.23.3--py312h8f9e533_2"
     script:
         "../scripts/rename_callers.py"
 
@@ -137,9 +137,9 @@ rule tabix_normalized:
         ),
     log:
         decompose_dir + "/{family}/{family}.fix-af.tabix.log",
+    localrule: True
     container:
         "docker://hydragenetics/common:0.1.1"
-    localrule: True
     shell:
         """
         tabix {input.vcf}

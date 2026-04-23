@@ -2,7 +2,6 @@ import pathlib
 import cyvcf2
 import tempfile
 
-
 SO_RANK = {
     "transcript_ablation": dict(so_id="SO:0001893", rank=1),
     "splice_acceptor_variant": dict(so_id="SO:0001574", rank=2),
