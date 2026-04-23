@@ -14,11 +14,11 @@ rule vep:
         vcf=temp(annotation_dir + "/{family}/{family}.vep.vcf"),
     log:
         annotation_dir + "/{family}/{family}.vep.log",
+    container:
+        "docker://hydragenetics/vep:105"
     params:
         mode=config.get("vep", {}).get("mode", ""),
         cache_type=config.get("vep", {}).get("cache_type", "merged"),
-    container:
-        "docker://hydragenetics/vep:105"
     shell:
         """
         vep {params.mode} \\
@@ -79,10 +79,10 @@ rule vcfanno:
         vcf=temp(annotation_dir + "/{family}/{family}.vep.vcfanno.vcf"),
     log:
         annotation_dir + "/{family}/{family}.vcfanno.log",
-    params:
-        base_path=config.get("vcfanno", {}).get("base_path", ""),
     container:
         "docker://clinicalgenomics/vcfanno:0.3.2"
+    params:
+        base_path=config.get("vcfanno", {}).get("base_path", ""),
     shell:
         """
         vcfanno \\
@@ -218,9 +218,9 @@ rule tabix_annotated:
         tabix=temp(annotation_dir + "/{family}/{family}.annotated.genmod.vcf.gz.tbi"),
     log:
         annotation_dir + "/{family}/{family}.annotated.genmod.tabix.log",
+    localrule: True
     container:
         "docker://hydragenetics/common:0.1.1"
-    localrule: True
     shell:
         """
         tabix {input.vcf}
