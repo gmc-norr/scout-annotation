@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/gmc-norr/scout-annotation/compare/v1.0.0...v1.1.0) (2026-04-28)
+
+
+### Features
+
+* annotated vcf files are always indexed with tabix ([c61cff1](https://github.com/gmc-norr/scout-annotation/commit/c61cff148a397eb17d4fc25f52708ab119bb2527))
+* annotated vcf files are always indexed with tabix ([#114](https://github.com/gmc-norr/scout-annotation/issues/114)) ([c61cff1](https://github.com/gmc-norr/scout-annotation/commit/c61cff148a397eb17d4fc25f52708ab119bb2527))
+
+
+### Documentation
+
+* update installation instructions ([#112](https://github.com/gmc-norr/scout-annotation/issues/112)) ([42b8de1](https://github.com/gmc-norr/scout-annotation/commit/42b8de138739f0207442fc9d85db3c1b762dd65d))
+
 ## [1.0.0](https://github.com/gmc-norr/scout-annotation/compare/v0.8.0...v1.0.0) (2026-04-23)
 
 
