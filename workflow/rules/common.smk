@@ -36,6 +36,12 @@ output_vcfs = [
     f"{annotation_dir}/{family}/{family}.annotated.genmod.vcf.gz"
     for family in family_dict.keys()
 ]
+
+output_tbis = [
+    f"{annotation_dir}/{family}/{family}.annotated.genmod.vcf.gz.tbi"
+    for family in family_dict.keys()
+]
+
 output_d4s = []
 for sample, sample_data in sample_dict.items():
     if sample_data.get("bam") is not None:

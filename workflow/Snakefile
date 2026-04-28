@@ -4,7 +4,7 @@ include: "rules/annotate.smk"
 include: "rules/coverage.smk"
 
 
-outputs_files = output_vcfs + output_d4s
+outputs_files = output_vcfs + output_tbis + output_d4s
 
 
 rule all:
