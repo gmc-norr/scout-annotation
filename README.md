@@ -4,23 +4,30 @@ Snakemake workflow for annotating VCFs prior loading into Scout.
 
 ## Setup
 
-The package is managed using uv, and this can be used to install it as a tool, or just run it directly in the project directory:
+### uv
+
+The package is uv-compatible, and can be installed into a virtual environment in the repo by running:
 
 ```bash
+git clone https://github.com/gmc-norr/scout-annotation
+cd scout-annotation
 uv sync
-uv run scout-annotation
-# or
-uv tool install --python 3.12 .
 ```
 
-> [!NOTE]
-> Due to a [current limitation in uv](https://github.com/astral-sh/uv/issues/11624), the Python version restriction in `pyproject.toml` isn't fully respected.
-> Therefore the version must be passed in when installing using `uv tool install`.
+### pip
 
 It can also be installed using pip. Just activate the environment you want to use and run:
 
 ```bash
+git clone https://github.com/gmc-norr/scout-annotation
+cd scout-annotation
 python -m pip install .
+```
+
+For development, the dev dependencies are useful (requires pip >=25.1):
+
+```bash
+python -m pip install --group dev
 ```
 
 Currently only Python 3.12 is supported.
@@ -29,16 +36,16 @@ Currently only Python 3.12 is supported.
 
 ```bash
 snakemake \
--s scout-annotation/workflow/Snakefile \
---config samples=samples_minimal.tsv output_directory=results_test \
---configfiles config.yaml \
---debug-dag \
---cores 1
+    -s scout-annotation/workflow/Snakefile \
+    --config samples=samples_minimal.tsv output_directory=results_test \
+    --configfiles config.yaml \
+    --debug-dag \
+    --cores 1
 ```
 
 ## Testing
 
-This package is managed by uv, and tests are implemented using pytest.
+The simplest way to run the tests is using uv:
 
 ```bash
 uv run pytest
