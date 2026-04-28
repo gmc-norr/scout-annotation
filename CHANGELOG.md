@@ -5,7 +5,6 @@
 
 ### Features
 
-* annotated vcf files are always indexed with tabix ([c61cff1](https://github.com/gmc-norr/scout-annotation/commit/c61cff148a397eb17d4fc25f52708ab119bb2527))
 * annotated vcf files are always indexed with tabix ([#114](https://github.com/gmc-norr/scout-annotation/issues/114)) ([c61cff1](https://github.com/gmc-norr/scout-annotation/commit/c61cff148a397eb17d4fc25f52708ab119bb2527))
 
 
